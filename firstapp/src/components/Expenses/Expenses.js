@@ -6,7 +6,6 @@ import './Expenses.css';
 
 function Expenses(props) {
     const filteredExpenses = props.expenses.filter(e => e.date.getFullYear() === props.selectedYear).sort((a,b) => a.date > b.date ? 1 : -1);
-    console.log(filteredExpenses);
 
     return (
         <Card className="expenses">
