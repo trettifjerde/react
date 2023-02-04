@@ -2,9 +2,12 @@ import { useState } from 'react';
 import './ExpenseForm.css';
 
 function ExpenseForm(props) {
-    const [title, setTitle] = useState('Expense');
-    const [date, setDate] = useState('');
-    const [amount, setAmount] = useState('0.1');
+    function getNowForInput() {
+        return `${new Date().toISOString().slice(0, 10)}`;
+    }
+    const [title, setTitle] = useState('');
+    const [date, setDate] = useState(getNowForInput());
+    const [amount, setAmount] = useState('');
 
     const titleChangeHandler = (event) => setTitle(event.target.value);
     const dateChangeHandler = (event) => setDate(event.target.value);
@@ -18,7 +21,7 @@ function ExpenseForm(props) {
             date: new Date(date)
         }
         setTitle('');
-        setDate('');
+        setDate(getNowForInput());
         setAmount('');
         props.onSaveExpenseData(newExp);
     };
@@ -32,7 +35,7 @@ function ExpenseForm(props) {
                 </div>
                 <div className="new-expense__control">
                     <label>Date</label>
-                    <input type="date" value={date} min="2021-01-01" max="2023-02-03" onChange={dateChangeHandler}/>
+                    <input type="date" value={date} min="2021-01-01" max={getNowForInput()} onChange={dateChangeHandler}/>
                 </div>
                 <div className="new-expense__control">
                     <label>Amount</label>
@@ -40,6 +43,7 @@ function ExpenseForm(props) {
                 </div>
             </div>
             <div className='new-expense__actions'>
+                <button type="button" onClick={props.onHideForm}>Cancel</button>
                 <button type="submit">Add expense</button>
             </div>
         </form>

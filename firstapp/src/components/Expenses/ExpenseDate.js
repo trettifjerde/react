@@ -3,7 +3,7 @@ import './ExpenseDate.css';
 function ExpenseDate(props) {
     const date = {
         year: props.date.getFullYear(),
-        day: props.date.getDay(),
+        day: props.date.getDate(),
         month: props.date.toLocaleString('en', {month: 'long'})
     }
 

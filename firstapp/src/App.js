@@ -1,12 +1,13 @@
-import ExpenseList from "./components/Expenses/ExpenseList";
+import { useState } from "react";
+import Expenses from "./components/Expenses/Expenses";
 import NewExpense from "./components/Expenses/NewExpense";
 
 function App() {
-  const expenses = [
+  const initialExpenses = [
     {
       title: 'Car Insurance',
       amount: 278.67,
-      date: new Date(2022, 2, 28),
+      date: new Date(2022, 1, 28),
       id: 1
     },
     {
@@ -28,14 +29,23 @@ function App() {
       id: 4
     },
   ];
-  let currentLastId = expenses.length;
 
-  const saveExpenseData = (data) => expenses.push({...data, id: ++currentLastId});
+  const [expenses, setExpenses] = useState(initialExpenses);
+  const [selectedYear, setYear] = useState(2022);
+
+  const saveExpenseDataHandler = (newExpense) => {
+    setExpenses((prevExpenses) => {
+      return [...prevExpenses, {id: expenses.length + 1, ...newExpense}];
+    })
+    setYear(newExpense.date.getFullYear());
+  };
+
+  const selectYearHandler = (year) => setYear(year);
 
   return (
     <div>
-      <NewExpense onSaveExpenseData={saveExpenseData}/>
-      <ExpenseList expenses={expenses} />
+      <NewExpense onSaveExpenseData={saveExpenseDataHandler}/>
+      <Expenses expenses={expenses} selectedYear={selectedYear} onSelectYear={selectYearHandler} />
     </div>
   );
 }
