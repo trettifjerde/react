@@ -1,0 +1,8 @@
+.error-list li {
+    list-style-position: inside;
+    list-style-type: square;
+}
+
+.error-list li::marker {
+    color: purple;
+}

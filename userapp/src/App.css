@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    position: relative;
+}
+
+button {
+    background-color: purple;
+    transition: background-color .3s;
+    color: white;
+    padding: 0.7rem 1rem;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: rgb(156, 92, 156);
+}

@@ -1,0 +1,42 @@
+.form {
+    width: 100%;
+}
+
+.form-control {
+    display: flex;
+    align-items: center;
+}
+
+.form-control label, .form-control input {
+    padding: 0.3rem;
+}
+
+.form-control label {
+    min-width: 100px;
+}
+
+.form-control input {
+    flex-grow: 1;
+    border: 1px solid black;
+    outline: none;
+    border-radius: 3px;
+}
+
+.form-actions {
+    text-align: center;
+}
+
+.form-control, .form-actions {
+    margin-block: 0.5rem;
+}
+
+.form-control input.invalid {
+    border-color: red;
+}
+
+@media (min-width: 500px) {
+    .form {
+        width: 400px;
+        margin: auto;
+    }
+}

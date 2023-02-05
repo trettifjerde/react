@@ -1,0 +1,42 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(180, 180, 180, 0.5);
+}
+
+.modal-content {
+    position: absolute;
+    top: 15vh;
+    width: 100%;
+    background-color: white;
+}
+
+.modal-content__title {
+    background-color: purple;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.modal-content__button {
+    text-align: right;
+}
+
+
+.modal.hidden {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .modal-content {
+        position: relative;
+        top: 0;
+        width: 500px;
+    }
+}
+    
