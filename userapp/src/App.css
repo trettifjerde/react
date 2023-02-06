@@ -5,6 +5,7 @@
 }
 body {
     position: relative;
+    background-color: darkgray;
 }
 
 button {
@@ -20,4 +21,8 @@ button {
 
 button:hover {
     background-color: rgb(156, 92, 156);
+}
+
+.c {
+    text-align: center;
 }

@@ -1,0 +1,18 @@
+ul.users {
+    list-style-type: none;
+}
+
+ul.users li {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.users-title {
+    background-color: purple;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: normal;
+    text-align: center;
+}
