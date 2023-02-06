@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Card from "../UI/Card";
-import Modal from "../UI/Modal";
+import ErrorModal from "../UI/Modal";
 import UserForm from "./UserForm";
 import './NewUser.css';
 
@@ -15,12 +15,12 @@ function NewUser(props) {
     return (
         <Card>
             <UserForm onSaveUser={props.onSaveUser} onValidationError={handleFormErrors}/>
-            <Modal title={'Invalid form input'} hide={() => setVisible(false)} isVisible={isVisible}>
+            <ErrorModal title={'Invalid form input'} hide={() => setVisible(false)} isVisible={isVisible}>
                 <ul className="error-list">
                     {Object.entries(errors).map(([k, v]) => <li key={k}>{v}</li>)}
                 </ul>
                 
-            </Modal>
+            </ErrorModal>
         </Card>
     )
 }

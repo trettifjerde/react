@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import NewUser from './components/NewUser/NewUser';
 import Users from './components/User/Users';
 import './App.css';
@@ -12,10 +12,10 @@ function App() {
     });
   }
   return (
-    <div>
+    <Fragment>
       <NewUser onSaveUser={createNewUser}/>
       <Users users={users} />
-    </div>
+    </Fragment>
   );
 }
 

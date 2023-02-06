@@ -5,7 +5,7 @@ function Users(props) {
     let content = <p className='c'>No users yet</p>;
     if (props.users.length > 0) {
         content = (<ul className="users">
-            {props.users.map(user => <li key={user.id}>{user.username} ({user.age})</li>)}
+            {props.users.map(user => <li key={user.id}>{user.username} ({user.age.toString()})</li>)}
             </ul>
         );
     }

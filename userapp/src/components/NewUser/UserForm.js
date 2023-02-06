@@ -1,63 +1,61 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import './UserForm.css';
 
 function UserForm(props) {
-    const [username, setUsername] = useState('');
-    const [age, setAge] = useState('');
+    const nameInputRef = useRef();
+    const ageInputRef = useRef();
+    
     const [isUsernameValid, setUsernameValid] = useState(true);
     const [isAgeValid, setAgeValid] = useState(true);
 
     const validateForm = () => {
         const errs= {};
-        if (! username.trim()) {
+
+        const cleanUsername = nameInputRef.current.value.trim();
+        if (! cleanUsername) {
             errs['username'] = 'Invalid username';
             setUsernameValid(false);
         }
-        else {
-            setUsernameValid(true);
-        }
-        if (isNaN(+age) || +age < 1) {
+
+        const cleanAge = +ageInputRef.current.value;
+        if (isNaN(cleanAge) || cleanAge < 1) {
             errs['age'] = 'Invalid age';
             setAgeValid(false);
         }
-        else {
-            setAgeValid(true);
-        }
+
 
         if (Object.keys(errs).length > 0) {
             props.onValidationError(errs);
-            return false;
+            return null;
         }
-        return true;
+
+        nameInputRef.current.value = '';
+        ageInputRef.current.value = '';
+
+        return {username: cleanUsername, age: cleanAge};
     }
 
     const formSubmitHandler = (event) => {
         event.preventDefault();
-        if (validateForm()) {
-            props.onSaveUser({username: username.trim(), age: +age.toString()});
-            setUsername('');
-            setAge('');
+        const cleanData = validateForm();
+        if (cleanData) {
+            props.onSaveUser(cleanData);
         }
-    };
-
-    const usernameChangeHandler = (e) => {
-        setUsernameValid(true);
-        setUsername(e.target.value);
-    };
-    const ageChangeHandler = (e) => {
-        setAgeValid(true);
-        setAge(e.target.value);
     };
 
     return (
         <form className="form" onSubmit={formSubmitHandler}>
             <div className="form-control">
                 <label>Username</label>
-                <input type="text" className={isUsernameValid ? '' : 'invalid'} value={username} onChange={usernameChangeHandler}/>
+                <input type="text" ref={nameInputRef}
+                    className={isUsernameValid ? '' : 'invalid'}  
+                    onFocus={setUsernameValid.bind(null, true)}/>
             </div>
             <div className="form-control">
                 <label>Age (Years)</label>
-                <input type="number" className={isAgeValid ? '' : 'invalid'}  value={age} onChange={ageChangeHandler}/>
+                <input type="number" ref={ageInputRef}
+                    className={isAgeValid ? '' : 'invalid'} 
+                    onFocus={setAgeValid.bind(null, true)}/>
             </div>
             <div className="form-actions">
                 <button type="submit">Add User</button>
