@@ -26,3 +26,14 @@ button:hover {
 .c {
     text-align: center;
 }
+
+#root {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    #root {
+        width: 600px;
+        margin: auto;
+    }
+}
