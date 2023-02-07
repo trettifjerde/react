@@ -1,0 +1,14 @@
+.start-frame {
+    display: flex;
+    flex-direction: column;
+    min-height: 40vh;
+    justify-content: space-evenly;
+    align-items: center;
+    text-align: center;
+    padding-block: 3rem;
+    font-size: 1.7rem;
+}
+
+.start-frame p {
+    font-size: 1rem;
+}
