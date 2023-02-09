@@ -2,6 +2,7 @@ import MealItemForm from './MealItemForm';
 import './MealItem.css';
 
 const MealItem = (props) => {
+
     return (
         <li className="meal">
             <div>
@@ -9,7 +10,7 @@ const MealItem = (props) => {
                 <div>{props.item.description}</div>
                 <div>${props.item.price.toFixed(2).toString()}</div>
             </div>
-            <MealItemForm item={props.item}/>
+            <MealItemForm addItem={props.addItem}/>
         </li>
     )
 }

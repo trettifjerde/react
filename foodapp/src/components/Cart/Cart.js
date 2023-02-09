@@ -6,7 +6,7 @@ import CartContext from '../../store/CartContext';
 import CartItem from './CartItem';
 
 const Cart = () => {
-    const {isCartVisible, items, totalAmount, toggleCartVisibility} = useContext(CartContext);
+    const {isCartVisible, items, totalAmount, toggleCartVisibility, addItemToCart, removeItemFromCart} = useContext(CartContext);
     const onCartHide = () => toggleCartVisibility(false);
 
     return (
@@ -16,13 +16,16 @@ const Cart = () => {
                     <ul className='cart-items'>
                         { 
                             items.map(item => (
-                                <CartItem key={item.id} name={item.name} price={item.price} amount={item.amount} />
+                                <CartItem key={item.id} item={item} 
+                                    onRemove={removeItemFromCart.bind(null, item.id, 1)} 
+                                    onAdd={addItemToCart.bind(null, item, 1)} 
+                                />
                             ))
                         }
                     </ul>
                     <div className='total'>
                         <span>Total Amount</span>
-                        <span>{totalAmount.toFixed(2)}</span>
+                        <span>{`$${totalAmount}`}</span>
                     </div>
                     <div className='actions'>
                         <button className='button--alt' type="button" onClick={onCartHide}>Close</button>

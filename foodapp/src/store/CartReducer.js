@@ -8,31 +8,80 @@ export const cartInitialState = {
     items: [],
 };
 
+const roundFloat = (n) => Math.round(n * 100 + Number.EPSILON ) / 100;
+
 export const cartReducer = (state, action) => {
-    switch (action.type) {
-        case cartActions.ADD_ITEM:
-            const { itemToAdd, amount } = action.payload;
-            const itemI = state.items.findIndex(i => i.id === itemToAdd.id);
+    if (action.type === cartActions.ADD_ITEM) {
+        const itemToAdd = action.payload;
+        const itemI = state.items.findIndex(i => i.id === itemToAdd.id);
+        /*
 
-            return {
-                ...state,
-                totalAmount: state.totalAmount + itemToAdd.price * amount,
-                items: (
-                    (itemI > -1) ? (
-                        state.items.map((item, i) => (i === itemI) ? { ...item, amount: item.amount + amount } : item)
-                    ) : (
-                        [...state.items, { ...itemToAdd, amount: amount }]
-                    )
+        return {
+            ...state,
+            totalAmount: state.totalAmount + itemToAdd.price * itemToAdd.amount,
+            items: (
+                (itemI > -1) ? (
+                    state.items.map((item, i) => (i === itemI) ? { ...item, amount: item.amount + itemToAdd.amount } : item)
+                ) : (
+                    state.items.concat(itemToAdd)
                 )
-            };
+            )
+        };
+        */
+        const updatedItems = [...state.items];
 
-        case cartActions.REMOVE_ITEM:
+        if (itemI === -1) {
+            updatedItems.push(itemToAdd);
+        }
+        else {
+            const existingItem = state.items[itemI];
+            updatedItems[itemI] = { ...existingItem, amount: existingItem.amount + itemToAdd.amount }
+        }
 
-            return {
-                items: state.items.filter(item => item.id !== action.payload.id),
-                totalAmount: state.totalAmount - action.payload.price
-            };
-        default:
-            return state;
+        return {
+            ...state,
+            totalAmount: roundFloat(state.totalAmount + itemToAdd.price * itemToAdd.amount),
+            items: updatedItems
+        };
+    }
+    else if (action.type === cartActions.REMOVE_ITEM) {
+
+        /*
+        const { id, amount } = action.payload;
+        const itemToRemove = state.items.find(i => i.id === id);
+
+        return {
+            ...state,
+            totalAmount: state.totalAmount - itemToRemove.price * amount,
+            items: (
+                (itemToRemove.amount === amount) ? (
+                    state.items.filter(item => item.id !== id)
+                ) : (
+                    state.items.map(item => (item.id === id) ? { ...item, amount: item.amount - amount } : item)
+                )
+            )
+        };
+        */
+        const { id, amount } = action.payload;
+        const itemI = state.items.findIndex(item => item.id === id);
+        const existingItem = state.items[itemI];
+        const updatedItems = [...state.items];
+
+        if (existingItem.amount === amount) {
+            updatedItems.splice(itemI, 1);
+        }
+        else {
+            updatedItems[itemI] = {...existingItem, amount: existingItem.amount - amount};
+        }
+
+        return {
+            ...state,
+            items: updatedItems,
+            totalAmount: roundFloat(state.totalAmount - existingItem.price * amount)
+        }
+
+    }
+    else {
+        return state;
     }
 };

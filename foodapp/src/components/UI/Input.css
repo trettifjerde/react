@@ -16,3 +16,7 @@
     font: inherit;
     padding-left: 0.5rem;
   }
+
+  .input input.invalid {
+    border-color: red;
+  }

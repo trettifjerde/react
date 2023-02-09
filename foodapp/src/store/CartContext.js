@@ -6,20 +6,21 @@ const CartContext = createContext({
     items: {},
     totalAmount: 0,
     toggleCartVisibility: () => {},
-    addItem: () => {},
-    removeItem: () => {}
+    addItemToCart: () => {},
+    removeItemFromCart: () => {}
 
 });
 
 export const CartContextProvider = (props) => {
     const [state, dispatchState] = useReducer(cartReducer, cartInitialState);
+    console.log(state);
     const [isCartVisible, setCartVisibility] = useState(false);
 
     const {totalAmount, items} = state;
 
     const toggleCartVisibility = (flag) => setCartVisibility(flag);
-    const addItem = (item, amount) => dispatchState({type: cartActions.ADD_ITEM, payload: {itemToAdd: item, amount: amount}});
-    const removeItem = (item, amount) => dispatchState({type: cartActions.REMOVE_ITEM, payload: {itemToRemove: item, amount: amount}});
+    const addItemToCart = (item, amount) => dispatchState({type: cartActions.ADD_ITEM, payload: {...item, amount: amount}});
+    const removeItemFromCart = (itemId, amount) => dispatchState({type: cartActions.REMOVE_ITEM, payload: {id: itemId, amount: amount}});
 
     return (
         <CartContext.Provider 
@@ -28,8 +29,8 @@ export const CartContextProvider = (props) => {
                 totalAmount: totalAmount,
                 items: items,
                 toggleCartVisibility: toggleCartVisibility,
-                removeItem: removeItem,
-                addItem: addItem
+                removeItemFromCart: removeItemFromCart,
+                addItemToCart: addItemToCart
         }}>
             {props.children}
         </CartContext.Provider>

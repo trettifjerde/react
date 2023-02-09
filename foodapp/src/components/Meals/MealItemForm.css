@@ -18,3 +18,8 @@
     background-color: #641e03;
     border-color: #641e03;
   }
+
+  .form p {
+    color: red;
+    font-size: 0.8rem;;
+  }
