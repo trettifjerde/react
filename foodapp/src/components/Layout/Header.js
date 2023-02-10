@@ -4,8 +4,8 @@ import './Header.css';
 import mealsImage from '../../assets/meals.jpg';
 
 
-const Header = (props) => {
-
+const Header = () => {
+    console.log('Header');
     return (
         <Fragment>
             <header className='header'>

@@ -1,8 +1,6 @@
 import Card from "../UI/Card";
 import MealItem from "./MealItem";
 import './AvailableMeals.css';
-import CartContext from '../../store/CartContext';
-import { useContext } from "react";
 
 const DUMMY_MEALS = [
     {
@@ -32,10 +30,11 @@ const DUMMY_MEALS = [
   ];
 
 const AvailableMeals = () => {
-  const {addItemToCart} = useContext(CartContext);
+  console.log('Available Meals');
+
 
     const mealsList = DUMMY_MEALS.map(meal => (
-      <MealItem key={meal.id} item={meal} addItem={addItemToCart.bind(null, meal)}/>
+      <MealItem key={meal.id} item={meal}/>
     ));
 
     return <section className="meals">

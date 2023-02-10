@@ -1,4 +1,4 @@
-import { createContext, useState, useReducer } from "react";
+import { createContext, useState, useReducer, useCallback } from "react";
 import { cartActions, cartReducer, cartInitialState } from './CartReducer';
 
 const CartContext = createContext({
@@ -12,15 +12,15 @@ const CartContext = createContext({
 });
 
 export const CartContextProvider = (props) => {
+    console.log('cart context provider');
     const [state, dispatchState] = useReducer(cartReducer, cartInitialState);
-    console.log(state);
     const [isCartVisible, setCartVisibility] = useState(false);
 
     const {totalAmount, items} = state;
 
-    const toggleCartVisibility = (flag) => setCartVisibility(flag);
-    const addItemToCart = (item, amount) => dispatchState({type: cartActions.ADD_ITEM, payload: {...item, amount: amount}});
-    const removeItemFromCart = (itemId, amount) => dispatchState({type: cartActions.REMOVE_ITEM, payload: {id: itemId, amount: amount}});
+    const toggleCartVisibility = useCallback((flag) => setCartVisibility(flag), []);
+    const addItemToCart = useCallback((item, amount) => dispatchState({type: cartActions.ADD_ITEM, payload: {...item, amount: amount}}), []);
+    const removeItemFromCart = useCallback((itemId, amount) => dispatchState({type: cartActions.REMOVE_ITEM, payload: {id: itemId, amount: amount}}), []);
 
     return (
         <CartContext.Provider 
@@ -31,7 +31,8 @@ export const CartContextProvider = (props) => {
                 toggleCartVisibility: toggleCartVisibility,
                 removeItemFromCart: removeItemFromCart,
                 addItemToCart: addItemToCart
-        }}>
+            }}
+        >
             {props.children}
         </CartContext.Provider>
     )

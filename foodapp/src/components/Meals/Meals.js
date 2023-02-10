@@ -3,6 +3,7 @@ import AvailableMeals from "./AvailableMeals";
 import MealsSummary from "./MealsSummary";
 
 const Meals = () => {
+    console.log('Meals');
     return <Fragment>
             <MealsSummary />
             <AvailableMeals />

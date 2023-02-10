@@ -1,5 +1,7 @@
 import './MealsSummary.css';
 export const MealsSummary = () => {
+  console.log('Meals summary');
+  
     return (
         <section className="summary">
           <h2>Delicious Food, Delivered To You</h2>

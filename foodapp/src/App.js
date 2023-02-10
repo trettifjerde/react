@@ -5,7 +5,7 @@ import Meals from "./components/Meals/Meals";
 import Cart from "./components/Cart/Cart";
 
 const App = () => {
-
+  console.log('App');
   return (
     <Fragment>
       <Header />

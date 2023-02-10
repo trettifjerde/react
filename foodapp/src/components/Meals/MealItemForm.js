@@ -1,8 +1,12 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
+import CartContext from '../../store/CartContext';
 import Input from '../UI/Input';
 import './MealItemForm.css';
 
 const MealItemForm = (props) => {
+    console.log('MealItemForm ', props.item.id);
+
+    const {addItemToCart} = useContext(CartContext);
     const inputRef = useRef();
     const [isFormValid, setFormValid] = useState(true);
 
@@ -16,7 +20,7 @@ const MealItemForm = (props) => {
         }
         setFormValid(true);
         inputRef.current.value = 1;
-        props.addItem(amount);
+        addItemToCart(props.item, amount);
     }
 
     return <form className="form" onSubmit={addItem}>

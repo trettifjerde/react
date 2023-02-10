@@ -6,6 +6,7 @@ import CartContext from '../../store/CartContext';
 import CartItem from './CartItem';
 
 const Cart = () => {
+    console.log('Cart');
     const {isCartVisible, items, totalAmount, toggleCartVisibility, addItemToCart, removeItemFromCart} = useContext(CartContext);
     const onCartHide = () => toggleCartVisibility(false);
 

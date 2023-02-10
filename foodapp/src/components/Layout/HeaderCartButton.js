@@ -3,7 +3,8 @@ import CartContext from '../../store/CartContext';
 import CartIcon from '../Cart/CartIcon';
 import classes from './HeaderCartButton.module.css';
 
-const HeaderCartButton = (props) => {
+const HeaderCartButton = () => {
+    console.log('HeaderCartButton');
     const {toggleCartVisibility, items} = useContext(CartContext);
 
     return (

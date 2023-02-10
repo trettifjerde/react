@@ -11,6 +11,7 @@ export const cartInitialState = {
 const roundFloat = (n) => Math.round(n * 100 + Number.EPSILON ) / 100;
 
 export const cartReducer = (state, action) => {
+    console.log('cart reducer');
     if (action.type === cartActions.ADD_ITEM) {
         const itemToAdd = action.payload;
         const itemI = state.items.findIndex(i => i.id === itemToAdd.id);
