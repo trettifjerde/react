@@ -54,7 +54,6 @@ const Login = () => {
 
   useEffect(() => {
     const debouncer = setTimeout(() => setFormIsValid(isEmailValid && isPasswordValid), 300);
-    console.log('meow');
     return () => clearTimeout(debouncer);
   }, [isEmailValid, isPasswordValid]);
 

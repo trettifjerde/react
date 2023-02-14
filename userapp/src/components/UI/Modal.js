@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { Fragment } from 'react';
 
 function Modal(props) {
-    console.log(props.title);
     return (
         <div className={`modal ${props.isVisible ? '' : 'hidden'}`}>
             <div className='modal-shadow' onClick={props.hide}></div>

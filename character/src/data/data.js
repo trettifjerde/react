@@ -96,8 +96,6 @@ const QUESTIONS = _questions.map((q, i) => {
 });
 
 const calculateResult = (selectedOptions) => {
-  console.log(selectedOptions);
-
   const results = selectedOptions.reduce((acc, option) => {
     const key = option.toString();
     if (! (key in acc)) 
@@ -120,8 +118,6 @@ const calculateResult = (selectedOptions) => {
     res.isComplete = true;
     res.result = +gotMax[0];
   }
-
-  console.log('Result', res);
   
   return res;
 };
