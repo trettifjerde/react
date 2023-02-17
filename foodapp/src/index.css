@@ -13,3 +13,42 @@ body {
   background-color: #3f3f3f;
 }
 
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #8a2b06;
+  background-color: #8a2b06;
+  color: white;
+  padding: 0.5rem 2rem;
+  border-radius: 25px;
+  margin-inline: 0.5rem;
+  transition: color .2s, background-color .2s;
+}
+
+button.alt {
+  color: #8a2b06;
+  background-color: transparent;
+}
+
+
+button:hover,
+button:active {
+  background-color: #5a1a01;
+  border-color: #5a1a01;
+  color: white;
+}
+
+button:disabled {
+  background-color: #d18f75;
+  border-color: #d18f75;
+  cursor: default;
+}
+
+.c {
+  text-align: center;
+}
+
+.b {
+  font-weight: 600;
+  white-space: nowrap;
+}

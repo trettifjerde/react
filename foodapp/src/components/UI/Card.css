@@ -4,3 +4,23 @@
     border-radius: 14px;
     background-color: white;
   }
+
+  .card .c {
+    text-align: center;
+  }
+
+  .card-appear {
+    animation: card-appear 1s ease-out forwards;
+  }
+
+  @keyframes card-appear {
+    from {
+      opacity: 0;
+      transform: translateY(3rem);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

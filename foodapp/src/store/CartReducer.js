@@ -1,6 +1,7 @@
 export const cartActions = {
     ADD_ITEM: 'ADD_ITEM',
-    REMOVE_ITEM: 'REMOVE_ITEM'
+    REMOVE_ITEM: 'REMOVE_ITEM',
+    EMPTY_CART: 'EMPTY_CART'
 };
 
 export const cartInitialState = {
@@ -81,6 +82,9 @@ export const cartReducer = (state, action) => {
             totalAmount: roundFloat(state.totalAmount - existingItem.price * amount)
         }
 
+    }
+    else if (action.type === cartActions.EMPTY_CART) {
+        return cartInitialState;
     }
     else {
         return state;

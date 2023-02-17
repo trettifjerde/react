@@ -8,9 +8,11 @@ const Modal = (props) => {
         <Fragment>
         { props.isVisible && <div className='modal'>
                 <div className='modal-shadow' onClick={props.hide}></div>
-                <Card className="modal-content">
-                    {props.children}
-                </Card>
+                <div className='modal-content'>
+                    <Card className={props.className ? props.className : ''}>
+                        {props.children}
+                    </Card>
+                </div>    
             </div>
         }
         </Fragment>

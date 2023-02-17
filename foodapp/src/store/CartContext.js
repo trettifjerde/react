@@ -3,11 +3,12 @@ import { cartActions, cartReducer, cartInitialState } from './CartReducer';
 
 const CartContext = createContext({
     isCartVisible: false,
-    items: {},
+    items: [],
     totalAmount: 0,
     toggleCartVisibility: () => {},
     addItemToCart: () => {},
-    removeItemFromCart: () => {}
+    removeItemFromCart: () => {},
+    emptyCart: () => {}
 
 });
 
@@ -21,6 +22,7 @@ export const CartContextProvider = (props) => {
     const toggleCartVisibility = useCallback((flag) => setCartVisibility(flag), []);
     const addItemToCart = useCallback((item, amount) => dispatchState({type: cartActions.ADD_ITEM, payload: {...item, amount: amount}}), []);
     const removeItemFromCart = useCallback((itemId, amount) => dispatchState({type: cartActions.REMOVE_ITEM, payload: {id: itemId, amount: amount}}), []);
+    const emptyCart = useCallback(() => dispatchState({type: cartActions.EMPTY_CART}), []);
 
     return (
         <CartContext.Provider 
@@ -30,7 +32,8 @@ export const CartContextProvider = (props) => {
                 items: items,
                 toggleCartVisibility: toggleCartVisibility,
                 removeItemFromCart: removeItemFromCart,
-                addItemToCart: addItemToCart
+                addItemToCart: addItemToCart,
+                emptyCart: emptyCart
             }}
         >
             {props.children}
