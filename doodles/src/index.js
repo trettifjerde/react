@@ -1,9 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './formsApp/index.css';
-import App from './formsApp/App';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
+import App from './reduxTut/App';
+import { store } from './reduxTut/store/toolkitStore';
+import './reduxTut/index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <App />
-);
+    <Provider store={store}>
+        <App />
+    </Provider>
+
+)

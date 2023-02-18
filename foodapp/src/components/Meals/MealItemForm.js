@@ -1,14 +1,16 @@
-import { useContext, useRef, useState } from 'react';
-import CartContext from '../../store/CartContext';
+import { useRef, useState } from 'react';
+//import CartContext from '../../store/CartContext';
 import Input from '../UI/Input';
 import './MealItemForm.css';
+import { useDispatch } from 'react-redux';
+import { cartActions } from '../../store/redux';
 
 const MealItemForm = (props) => {
     console.log('MealItemForm ', props.item.id);
 
-    const {addItemToCart} = useContext(CartContext);
     const inputRef = useRef();
     const [isFormValid, setFormValid] = useState(true);
+    const dispatch = useDispatch();
 
     const addItem = (event) => {
         event.preventDefault();
@@ -20,7 +22,7 @@ const MealItemForm = (props) => {
         }
         setFormValid(true);
         inputRef.current.value = 1;
-        addItemToCart(props.item, amount);
+        dispatch(cartActions.addItemToCart({item: props.item, amount}));
     }
 
     return <form className="form" onSubmit={addItem}>

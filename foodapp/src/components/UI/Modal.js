@@ -7,7 +7,7 @@ const Modal = (props) => {
     return (
         <Fragment>
         { props.isVisible && <div className='modal'>
-                <div className='modal-shadow' onClick={props.hide}></div>
+            <div className='modal-shadow' onClick={props.hide}></div>
                 <div className='modal-content'>
                     <Card className={props.className ? props.className : ''}>
                         {props.children}

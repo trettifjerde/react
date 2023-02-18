@@ -1,37 +1,44 @@
 import classes from './Cart.module.css';
-import {Fragment, useCallback, useContext, useEffect, useState} from 'react';
+import {Fragment, useCallback, useEffect, useState} from 'react';
 import ReactDOM  from 'react-dom';
 import Modal from '../UI/Modal';
-import CartContext from '../../store/CartContext';
+//import CartContext from '../../store/CartContext';
 import CartForm from './CartForm';
 import CartList from './CartList';
+import { useSelector, useDispatch } from 'react-redux';
+import { cartActions } from '../../store/redux';
 
 const Cart = () => {
     console.log('Cart');
-    const {isCartVisible, items, totalAmount, toggleCartVisibility, addItemToCart, removeItemFromCart, emptyCart} = useContext(CartContext);
+    //const {isCartVisible, items, totalAmount, toggleCartVisibility, addItemToCart, removeItemFromCart, emptyCart} = useContext(CartContext);
+    const {items, totalAmount, isCartVisible} = useSelector(state => state.cart);
+    const dispatch = useDispatch();
     const [isFormVisible, setFormVisible] = useState(false);
     const [orderId, setOrderId] = useState(null);
 
-    const onCartHide = useCallback(() => toggleCartVisibility(false), [toggleCartVisibility]);
+    const onCartHide = useCallback(() => dispatch(cartActions.toggleCartVisibility()), [dispatch]);
+
+    const addItemToCart = (item, amount) => dispatch(cartActions.addItemToCart({item, amount}));
+    const removeItemFromCart = (id, amount) => dispatch(cartActions.removeItemFromCart({id, amount}))
 
     const handleOrderBtnClick = useCallback(() => {
         setFormVisible(true)
     }, [setFormVisible]);
 
-    const onOrderSubmit = useCallback((orderId) => {
+    const onOrderSubmit = (orderId) => {
         setOrderId(orderId);
-        emptyCart();
-    }, [emptyCart]);
+        dispatch(cartActions.emptyCart());
+    };
 
-    const onOrderCancel = useCallback(() => {
+    const onOrderCancel = () => {
         setFormVisible(false);
-        onCartHide();
-    }, [onCartHide]);
+        dispatch(cartActions.toggleCartVisibility());
+    };
 
-    const onMakeANewOrder = useCallback(() => {
+    const onMakeANewOrder = () => {
         setOrderId(null);
-        toggleCartVisibility(false);
-    }, [toggleCartVisibility]);
+        dispatch(cartActions.toggleCartVisibility());
+    };
 
     useEffect(() => {
         if (items.length === 0) {
