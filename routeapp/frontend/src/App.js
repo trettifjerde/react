@@ -2,13 +2,14 @@
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import EditEventPage from "./pages/EditEvent";
-import EventDetailsPage from "./pages/EventDetail";
-import EventsPage from "./pages/EventsPage";
+import EventDetailsPage, { loader as eventDetailLoader, deleteEventAction} from "./pages/EventDetail";
+import EventsPage, { loader as eventsLoader } from "./pages/Events";
 import HomePage from "./pages/Home";
 import NewEventPage from "./pages/NewEvent";
 import Root from "./pages/Root";
 import EventRoot from "./pages/EventRoot";
-
+import ErrorPage from "./pages/Error";
+import { formSubmitAction } from "./components/EventForm";
 
 // 1. Add five new (dummy) page components (content can be simple <h1> elements)
 //    - HomePage
@@ -34,21 +35,42 @@ const router = createBrowserRouter([
   {
     path: '/', 
     element: <Root />, 
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage/>},
       { 
         path: 'events', 
         element: <EventRoot/>, 
         children: [
-          { index: true, element: <EventsPage/>},
-          { path: 'new', element: <NewEventPage/> },
-          { path: ':eventId', element: <EventDetailsPage/> },
-          { path: ':eventId/edit', element: <EditEventPage/> }
-        ]
-      },
-
-    ]
-  }
+          { 
+            index: true, 
+            element: <EventsPage/>, 
+            loader: eventsLoader
+          },
+          { 
+            path: 'new', 
+            element: <NewEventPage/>,
+            action: formSubmitAction
+          },
+          { 
+            path: ':eventId', 
+            loader: eventDetailLoader, 
+            id: 'event-details', 
+            children: [
+              { 
+                index: true, 
+                element: <EventDetailsPage/>,
+                action: deleteEventAction 
+              },
+              { 
+                path: 'edit', 
+                element: <EditEventPage/>,
+                action: formSubmitAction
+               }
+            ]
+          },
+        ]},
+    ]}
 ]);
 
 function App() {
