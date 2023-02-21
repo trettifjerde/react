@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function EventsList({ events }) {
   return (
-    <div className={classes.events}>
+    <>
       <h1>All Events</h1>
       <ul className={classes.list}>
         {events.map((event) => (
@@ -18,7 +18,7 @@ function EventsList({ events }) {
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 }
 

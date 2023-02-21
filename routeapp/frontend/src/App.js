@@ -10,7 +10,7 @@ import Root from "./pages/Root";
 import EventRoot from "./pages/EventRoot";
 import ErrorPage from "./pages/Error";
 import { formSubmitAction } from "./components/EventForm";
-
+import NewsletterPage, { action as newsletterAction} from "./pages/Newsletter";
 // 1. Add five new (dummy) page components (content can be simple <h1> elements)
 //    - HomePage
 //    - EventsPage
@@ -70,6 +70,11 @@ const router = createBrowserRouter([
             ]
           },
         ]},
+        {
+          path: 'newsletter',
+          element: <NewsletterPage />,
+          action: newsletterAction,
+        },
     ]}
 ]);
 
