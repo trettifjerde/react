@@ -6,11 +6,14 @@ import EventDetailsPage, { loader as eventDetailLoader, deleteEventAction} from 
 import EventsPage, { loader as eventsLoader } from "./pages/Events";
 import HomePage from "./pages/Home";
 import NewEventPage from "./pages/NewEvent";
-import Root from "./pages/Root";
+import Root, { tokenLoader, authGuard } from "./pages/Root";
 import EventRoot from "./pages/EventRoot";
 import ErrorPage from "./pages/Error";
 import { formSubmitAction } from "./components/EventForm";
 import NewsletterPage, { action as newsletterAction} from "./pages/Newsletter";
+import AuthenticationPage, {action as authAction} from "./pages/Authentication";
+import {action as logoutAction} from './pages/Logout';
+
 // 1. Add five new (dummy) page components (content can be simple <h1> elements)
 //    - HomePage
 //    - EventsPage
@@ -35,6 +38,8 @@ const router = createBrowserRouter([
   {
     path: '/', 
     element: <Root />, 
+    loader: tokenLoader,
+    id: 'token',
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage/>},
@@ -50,7 +55,8 @@ const router = createBrowserRouter([
           { 
             path: 'new', 
             element: <NewEventPage/>,
-            action: formSubmitAction
+            action: formSubmitAction,
+            loader: authGuard
           },
           { 
             path: ':eventId', 
@@ -65,7 +71,8 @@ const router = createBrowserRouter([
               { 
                 path: 'edit', 
                 element: <EditEventPage/>,
-                action: formSubmitAction
+                action: formSubmitAction,
+                loader: authGuard
                }
             ]
           },
@@ -75,6 +82,15 @@ const router = createBrowserRouter([
           element: <NewsletterPage />,
           action: newsletterAction,
         },
+        {
+          path: 'auth',
+          element: <AuthenticationPage />,
+          action: authAction
+        },
+        {
+          path: 'logout',
+          action: logoutAction
+        }
     ]}
 ]);
 

@@ -1,6 +1,7 @@
 import { json, useRouteLoaderData, redirect, defer, Await } from 'react-router-dom';
 import { Suspense } from 'react';
 import EventItem  from '../components/EventItem'; 
+import { getAuthToken } from '../helpers/auth';
 
 const EventDetailsPage = () => {
     const {event} = useRouteLoaderData('event-details');
@@ -33,7 +34,10 @@ export function loader({request, params}) {
 
 export async function deleteEventAction({request, params}) {
     const response = await fetch('http://localhost:8080/events/' + params.eventId, {
-        method: request.method
+        method: request.method,
+        headers: {
+            'Authorization': 'Bearer ' + getAuthToken()
+        }
     });
     if (! response.ok) throw json({message: 'Failed to delete event'}, {status: 500});
     return redirect('/events');
