@@ -6,7 +6,7 @@ const Root = () => {
     return (
         <Fragment>
             <NavigationHeader />
-            <main>
+            <main className='container'>
                 <Outlet />
             </main>
         </Fragment>

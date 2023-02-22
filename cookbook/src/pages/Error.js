@@ -1,11 +1,17 @@
 import { Fragment } from 'react';
-import { Outlet } from 'react-router-dom';
 import EmptyComponent from '../components/Empty';
 import NavigationHeader from '../components/NavigationHeader';
+import { useRouteError } from 'react-router-dom';
 
 const ErrorPage = () => {
+    const error = useRouteError();
+
     let title = 'An error has occurred';
     let message = 'Something went wrong';
+
+    if (error.message) {
+        message = error.message;
+    }
     
     return (
         <Fragment>

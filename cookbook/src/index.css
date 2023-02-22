@@ -38,6 +38,10 @@
     white-space: nowrap;
     min-width: 2rem;
   }
+
+  a {
+    text-decoration: none !important;
+  }
   
   @keyframes fadeIn {
     from {opacity: 0}

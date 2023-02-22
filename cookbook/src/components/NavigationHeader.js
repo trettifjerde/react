@@ -1,4 +1,4 @@
-import '.NavigationHeader.css';
+import './NavigationHeader.css';
 import { NavLink } from 'react-router-dom';
 
 const NavigationHeader = () => {
