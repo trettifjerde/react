@@ -1,0 +1,9 @@
+.nav-link {
+    color: var(--primary);
+}
+
+@media (max-width: 576px) {
+    .navbar-header {
+        display: none;
+    }
+}
