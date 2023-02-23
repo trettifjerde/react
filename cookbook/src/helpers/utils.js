@@ -18,7 +18,7 @@ export function transformFirebaseRecipe(recipe, id) {
 export function makeRecipe(recipeData, id) {
     let recipe = {
         name: '',
-        id: null,
+        id: id ? id : null,
         description: '',
         imagePath: '',
         steps: [],

@@ -8,7 +8,7 @@ import { store } from "./store/store";
 
 import RecipesPage, {loader as recipesLoader} from "./pages/recipes/Recipes";
 import RecipeDetailsPage, { recipeLoader } from "./pages/recipes/RecipeDetails";
-import RecipeFormPage, {loader as recipeFormLoader, action as recipeFormAction } from "./pages/recipes/RecipeForm";
+import RecipeFormPage, {loader as recipeFormLoader } from "./pages/recipes/RecipeForm";
 
 const router = createBrowserRouter([
     { 
@@ -30,8 +30,7 @@ const router = createBrowserRouter([
                     { 
                         path: 'new', 
                         element: <RecipeFormPage />,
-                        loader: recipeFormLoader,
-                        action: recipeFormAction    
+                        loader: recipeFormLoader  
                     },
                     { 
                         path: ':id', 
@@ -45,8 +44,7 @@ const router = createBrowserRouter([
                             {   
                                 path: 'edit', 
                                 element: <RecipeFormPage />,
-                                loader: recipeFormLoader,
-                                action: recipeFormAction                    
+                                loader: recipeFormLoader                   
                             },
                         ]
                     },

@@ -16,7 +16,6 @@ const RecipeFormPage = () => {
         <Suspense fallback={<Spinner />}>  
             <Await resolve={recipe}>
                 {loadedRecipe => <div className="fadeIn">
-                    <h3>{ loadedRecipe ? 'Edit recipe' : 'Add recipe'}</h3>
                     <RecipeForm recipe={loadedRecipe} />
                 </div>}
             </Await>
@@ -29,9 +28,4 @@ export async function loader({request, params}) {
     return defer({
         recipe: params.id ? loadRecipe(params.id) : makeRecipe()
     })
-}
-
-export async function action({request, params}) {
-    const form = await request.formData();
-    console.log(form);
 }

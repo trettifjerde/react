@@ -26,6 +26,14 @@ const recipesSlice = createSlice({
         },
         setSubmittingStatus(state, action) {
             state.isSubmitting = action.payload;
+        },
+        addRecipe(state, action) {
+            state.recipes.push(action.payload);
+            state.error = null;
+        },
+        updateRecipe(state, action) {
+            state.recipes = [...state.recipes.filter(r => r.id !== action.payload.id), action.payload];
+            state.error = null;
         }
     }
 });

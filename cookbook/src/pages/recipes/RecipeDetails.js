@@ -77,9 +77,8 @@ export async function loadRecipe(recipeId) {
     const recipe = await fetchRecipe(recipeId);
 
     if ('error' in recipe) {
-        console.log(recipe.error);
         store.dispatch(recipesActions.announceError(recipe.error));
-        return json({message: recipe.error.message}, {status: recipe.error.status});
+        throw json({message: recipe.error.message}, {status: recipe.error.status});
     }
 
     return recipe;

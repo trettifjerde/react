@@ -25,6 +25,7 @@
     border-radius: 10px 10px 0 0;
     padding-block: 1.5rem;
     z-index: 1;
+    min-height: 200px;
 }
 
 .detail-header-text .dropdown-menu {

@@ -40,3 +40,19 @@ export async function fetchRecipe(recipeId) {
         .then(data => transformFirebaseRecipe(data, recipeId))
         .catch(makeError);
 }
+
+export async function sendRecipe(recipe, id) {
+    return fetch(makeUrl(id ? id : ''), {
+            method: id ? 'PATCH' : 'POST',
+            body: JSON.stringify(recipe),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to send recipe', {cause: res.status})
+            else return res.json();
+        })
+        .catch(makeError);
+    
+}
