@@ -1,25 +1,28 @@
+import { Suspense, useCallback, useState } from 'react';
 import { Outlet, NavLink, defer, useLoaderData, Await } from "react-router-dom";
-import { Suspense } from 'react';
-import './Recipes.css';
+import { useSelector } from "react-redux";
 
-import RecipeList from '../../components/recipes/RecipeList';
 import { store } from "../../store/store";
 import { recipesActions } from "../../store/recipesState";
+import { fetchRecipes } from "../../helpers/dataService";
+
+import RecipeList from '../../components/recipes/RecipeList';
 import Spinner from '../../components/Spinner';
 import Alert from '../../components/Alert';
-import { fetchRecipes } from "../../helpers/dataService";
-import { useDispatch, useSelector } from "react-redux";
+
+import './Recipes.css';
 
 const RecipesPage = () => {
     const { recipesFetched } = useLoaderData();
     const error = useSelector(state => state.recipes.error);
     const isSubmitting = useSelector(state => state.recipes.isSubmitting);
-    const dispatch = useDispatch();
-    console.log('RecipesPage');
 
-    const handleSubmitting = () => {
-        dispatch(recipesActions.setSubmittingStatus(true));
-    }
+    const [filterString, setFilterString] = useState('');
+    const handleFilterChange = useCallback((e) => {
+        setFilterString(e.target.value);
+
+    }, []);
+    const clearFilter = useCallback(() => setFilterString(''), []);
 
     return (
         <Suspense fallback={<Spinner />}>
@@ -28,17 +31,17 @@ const RecipesPage = () => {
                 <div className="fadeIn">
                     <div className="row">
                         <div className="col-auto">
-                            <button onClick={handleSubmitting} className="btn btn-success mb-2" to="new">New Recipe</button>
+                            <NavLink to="new" className="btn btn-success mb-2">New Recipe</NavLink>
                         </div>
                         <div className="col input-cont">
-                            <input type="text" className="form-control" placeholder="Type for a recipe..." />
-                            <button type="button" className="btn btn-danger">X</button>
+                            <input type="text" className="form-control" value={filterString} onChange={handleFilterChange} placeholder="Type for a recipe..." />
+                            <button type="button" className="btn btn-danger" onClick={clearFilter}>X</button>
                         </div>
                     </div>
                     <div className="row mb-4">
                         <div className="col-md-5 side">
                             <div className="side-content">
-                                <RecipeList />
+                                <RecipeList filterString={filterString} />
                             </div>
                         </div>
                         <div className="col-md-7 main">

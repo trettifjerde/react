@@ -6,13 +6,18 @@ import { fetchRecipes } from "../../helpers/dataService";
 import { recipesActions } from "../../store/recipesState";
 import Spinner from '../../components/Spinner';
 
-const RecipeList = () => {
+const RecipeList = (props) => {
     const recipes = useSelector(state => state.recipes.recipes);
     const dispatch = useDispatch();
 
     const [fetchBtnText, setFetchBtnText] = useState('Load more');
     const [isSpinnerVisible, setSpinnerVisible] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
+
+    const {filterString} = props;
+
+    const filteredRecipes = recipes.filter(recipe => recipe.name.includes(filterString));
+
     console.log('RecipeList');
 
     const onLoadMoreRecipes = useCallback(async () => {
@@ -49,15 +54,18 @@ const RecipeList = () => {
     }, [isFetching])
 
     return (
-        <div className="recipes-c">
-            { recipes.length > 0 && <Fragment>
-                    { recipes.map(r => <RecipeItem key={r.id} recipe={r} />) }
+        <Fragment>
+            { filteredRecipes.length > 0 && <div className="recipes-c">
+                    {filteredRecipes.map(r => <RecipeItem key={r.id} recipe={r} />) }
+
                     <button type="button" className="btn btn-success" onClick={onLoadMoreRecipes}>{fetchBtnText}</button>
-                    { isSpinnerVisible && <Spinner /> }
-                </Fragment>
+
+                    
+                </div>
             }
-            { recipes.length === 0 && <div className="empty">No recipes found</div>}
-        </div>
+            { filteredRecipes.length === 0 && <div className="empty">No recipes found</div>}
+            { isSpinnerVisible && <Spinner /> }
+        </Fragment>
     )
 }
 export default RecipeList;

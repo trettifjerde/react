@@ -4,12 +4,16 @@ import  { store } from '../../store/store';
 import { recipesActions } from '../../store/recipesState';
 import { fetchRecipe } from '../../helpers/dataService';
 import Spinner from '../../components/Spinner';
-import { Suspense } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
+import Dropdown from '../../components/Dropdown';
 
 const RecipeDetailsPage = () => {
     const {recipe} = useLoaderData();
     const manageBtnDisabled = false;
-    
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const ddBtnRef = useRef();
+
+    const toggleDropdown = useCallback(() => setDropdownVisible((prevState) => (!prevState)), []);
     const toShoppingList = () => {};
     const deleteRecipe = () => {};
 
@@ -27,14 +31,14 @@ const RecipeDetailsPage = () => {
                                 <h1 className="col-8">{ loadedRecipe.name }</h1>
                                 <div className="col-auto">
                                     <div className="dropdown">
-                                        <button className="btn btn-outline-light dropdown-toggle" disabled={manageBtnDisabled}>
+                                        <button ref={ddBtnRef} className="btn btn-outline-light dropdown-toggle" onClick={toggleDropdown} disabled={manageBtnDisabled}>
                                             Manage
                                         </button>
-                                        <div className={`dropdown-menu ${manageBtnDisabled ? 'disabled' : ''}`}>
-                                            <div className="dropdown-item" onClick={toShoppingList}>To Shopping List</div>
-                                            <NavLink className="dropdown-item" to="edit">Edit Recipe</NavLink>
-                                            <div className="dropdown-item" onClick={deleteRecipe}>Delete Recipe</div>
-                                        </div>
+                                        <Dropdown btn={ddBtnRef} isVisible={isDropdownVisible} onBgClick={toggleDropdown}>
+                                            <div className='dropdown-item' onClick={toShoppingList}>To Shopping List</div>
+                                            <NavLink className='dropdown-item' to="edit">Edit Recipe</NavLink>
+                                            <div className='dropdown-item' onClick={deleteRecipe}>Delete Recipe</div>
+                                        </Dropdown>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +73,7 @@ export function recipeLoader({request, params}) {
     })
 }
 
-async function loadRecipe(recipeId) {
+export async function loadRecipe(recipeId) {
     const recipe = await fetchRecipe(recipeId);
 
     if ('error' in recipe) {

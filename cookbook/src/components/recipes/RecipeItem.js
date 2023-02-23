@@ -1,5 +1,6 @@
 import './RecipeItem.css';
 import { NavLink } from 'react-router-dom';
+import { memo } from 'react';
 
 const RecipeItem = (props) => {
     const { recipe } = props;
@@ -20,4 +21,4 @@ const RecipeItem = (props) => {
     )
 }
 
-export default RecipeItem;
+export default memo(RecipeItem);

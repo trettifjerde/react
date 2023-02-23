@@ -1,3 +1,5 @@
+import { transformFirebaseRecipe, transformRecipeList } from './utils';
+
 export const MAX_FETCH_BATCH = 3;
 
 const makeUrl = (path) => {
@@ -7,34 +9,6 @@ const makeUrl = (path) => {
 const makeError = (error) => {
     console.log(error);
     return {error: {message: error.message, status: error.cause}};
-}
-
-function transformRecipeList(data) {
-    return data ? Object.entries(data).reduce(
-        (acc, [id, recipe]) => {
-            acc.push({
-                name: recipe.name,
-                id: id,
-                description: recipe.description,
-                imagePath: recipe.imagePath
-            })
-            return acc;
-        }, []) : [];
-}
-
-function transformFirebaseRecipe(recipe, id) {
-    return recipe ? {
-        name: recipe.name,
-        id: id,
-        description: recipe.description,
-        imagePath: recipe.imagePath,
-        steps: [...recipe.steps],
-        ingredients: recipe.ingredients.map(ing => ({
-            name: ing.name,
-            amount: ing.amount ? ing.amount : '',
-            unit: ing.unit ? ing.unit : ''
-        }))
-    } : null;
 }
 
 export async function fetchRecipes(startAt='') {

@@ -8,6 +8,7 @@ import { store } from "./store/store";
 
 import RecipesPage, {loader as recipesLoader} from "./pages/recipes/Recipes";
 import RecipeDetailsPage, { recipeLoader } from "./pages/recipes/RecipeDetails";
+import RecipeFormPage, {loader as recipeFormLoader, action as recipeFormAction } from "./pages/recipes/RecipeForm";
 
 const router = createBrowserRouter([
     { 
@@ -22,15 +23,34 @@ const router = createBrowserRouter([
                 loader: recipesLoader,
                 id: 'recipes',
                 children: [
-                    { index: true, element: <EmptyComponent message='No recipe selected' />},
-                    /*{ path: 'new', element: <RecipeFormPage /> },*/
+                    { 
+                        index: true, 
+                        element: <EmptyComponent message='No recipe selected' />
+                    },
+                    { 
+                        path: 'new', 
+                        element: <RecipeFormPage />,
+                        loader: recipeFormLoader,
+                        action: recipeFormAction    
+                    },
                     { 
                         path: ':id', 
-                        element: <RecipeDetailsPage />, 
                         errorElement: <RecipeErrorPage />,
-                        loader: recipeLoader 
+                        children: [
+                            {
+                                index: true, 
+                                element: <RecipeDetailsPage />, 
+                                loader: recipeLoader
+                            },
+                            {   
+                                path: 'edit', 
+                                element: <RecipeFormPage />,
+                                loader: recipeFormLoader,
+                                action: recipeFormAction                    
+                            },
+                        ]
                     },
-                    /*{ path: ':id/edit', element: <RecipeFormPage />, loader: recipeLoader },*/
+
                 ]
             },
             {path: 'list'},
@@ -39,6 +59,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+    console.log('App');
     return (
         <Provider store={store}>
             <RouterProvider router={router}/>
