@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom";
 import EmptyComponent from "./components/Empty";
 import ErrorPage from "./pages/Error";
-import RecipeErrorPage from "./pages/recipes/RecipeError";
 import Root from "./pages/Root";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
@@ -21,6 +20,7 @@ const router = createBrowserRouter([
                 path: 'recipes', 
                 element: <RecipesPage />, 
                 loader: recipesLoader,
+                shouldRevalidate: () => false,
                 id: 'recipes',
                 children: [
                     { 
@@ -30,10 +30,11 @@ const router = createBrowserRouter([
                     { 
                         path: 'new', 
                         element: <RecipeFormPage />, 
-                        loader: recipeFormLoader
+                        loader: recipeFormLoader,
+                        shouldRevalidate: () => false
                     },
                     { 
-                        path: ':id', 
+                        path: ':id',
                         children: [
                             {
                                 index: true, 

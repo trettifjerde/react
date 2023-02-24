@@ -1,6 +1,5 @@
 import { Suspense, useCallback, useState } from 'react';
 import { Outlet, NavLink, defer, useLoaderData, Await } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import { store } from "../../store/store";
 import { recipesActions } from "../../store/recipesState";
@@ -29,16 +28,16 @@ const RecipesPage = () => {
             <Await resolve={recipesFetched}>
                 {error && <Alert message={error.message} /> }
                 <div className="fadeIn">
-                    <div className="row">
+                    <div className="row align-items-center search-bar">
                         <div className="col-auto">
-                            <NavLink to="/recipes/new" className="btn btn-success mb-2">New Recipe</NavLink>
+                            <NavLink to="/recipes/new" className="btn btn-success">New Recipe</NavLink>
                         </div>
                         <div className="col input-cont">
                             <input type="text" className="form-control" value={filterString} onChange={handleFilterChange} placeholder="Type for a recipe..." />
                             <button type="button" className="btn btn-danger" onClick={clearFilter}>X</button>
                         </div>
                     </div>
-                    <div className="row mb-4">
+                    <div className="row mb-3">
                         <div className="col-md-5 side">
                             <div className="side-content">
                                 <RecipeList filterString={filterString} />

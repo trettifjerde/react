@@ -2,8 +2,14 @@
     color: var(--primary);
 }
 
+nav.navbar { height: 5rem; }
+
 @media (max-width: 576px) {
     .navbar-header {
         display: none;
     }
+}
+
+@media (max-width: 760px) {
+    nav.navbar { height: unset; }
 }

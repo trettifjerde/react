@@ -1,7 +1,6 @@
 .detail-header {
     position: relative;
     overflow: hidden;
-    background-color: rgba(7, 71, 27, 0.7);
     height: 60vh;
     z-index: 0;
 }

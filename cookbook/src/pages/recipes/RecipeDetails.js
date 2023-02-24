@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useLoaderData, NavLink, json, defer, Await, useParams, useNavigate } from 'react-router-dom';
 
 import  { store } from '../../store/store';
@@ -16,11 +16,16 @@ const RecipeDetailsPage = () => {
     const {recipe} = useLoaderData();
     const params = useParams();
     const navigate = useNavigate();
-    
+    const top = useRef();
+
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const ddBtnRef = useRef();
 
     const manageBtnDisabled = false;
+
+    useEffect(() => {
+        if (top.current) top.current.scrollIntoView();
+    }, [params]);
 
     const toggleDropdown = useCallback(() => setDropdownVisible((prevState) => (!prevState)), []);
     const toShoppingList = () => {};
@@ -43,7 +48,7 @@ const RecipeDetailsPage = () => {
         <Suspense fallback={<Spinner />}>
             <Await resolve={recipe} errorElement={<RecipeErrorPage />}>
                 { loadedRecipe => 
-                <div className="fadeIn">
+                <div className="fadeIn" ref={top}>
                     <div className="detail-header">
                         <div className="detail-header-img">
                             <img src={loadedRecipe.imagePath} className="img-fluid" />
