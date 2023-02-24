@@ -18,7 +18,7 @@ export function transformFirebaseRecipe(recipe, id) {
 export function makeRecipe(recipeData, id) {
     let recipe = {
         name: '',
-        id: id ? id : null,
+        id: id || null,
         description: '',
         imagePath: '',
         steps: [],
@@ -34,11 +34,20 @@ export function makeRecipe(recipeData, id) {
             steps: [...recipeData.steps],
             ingredients: recipeData.ingredients.map(ing => ({
                 name: ing.name,
-                amount: ing.amount ? ing.amount : '',
-                unit: ing.unit ? ing.unit : ''
+                amount: ing.amount || '',
+                unit: ing.unit || ''
             }))
         };
     }
 
     return recipe;
+}
+
+export function transformFirebaseIngredientsToList(data) {
+    return Object.entries(data).map(([id, ing]) => ({
+        amount: ing.amount || null,
+        unit: ing.unit || null,
+        name: ing.name,
+        id: id
+    }));
 }

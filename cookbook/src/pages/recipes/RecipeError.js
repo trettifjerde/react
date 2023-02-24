@@ -1,4 +1,3 @@
-import './RecipeDetails.css';
 import { useAsyncError } from 'react-router-dom';
 import EmptyComponent from '../../components/Empty';
 

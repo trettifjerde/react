@@ -1,20 +1,17 @@
 import { Suspense, useCallback, useState } from 'react';
 import { Outlet, NavLink, defer, useLoaderData, Await } from "react-router-dom";
 
-import { store } from "../../store/store";
+import { generalActions, store } from "../../store/store";
 import { recipesActions } from "../../store/recipesState";
 import { fetchRecipes } from "../../helpers/dataService";
 
 import RecipeList from '../../components/recipes/RecipeList';
 import Spinner from '../../components/Spinner';
-import Alert from '../../components/Alert';
 
-import './Recipes.css';
 
 const RecipesPage = () => {
     console.log('Recipe Page');
     const { recipesFetched } = useLoaderData();
-    const error = null;
 
     const [filterString, setFilterString] = useState('');
     const handleFilterChange = useCallback((e) => {
@@ -26,7 +23,6 @@ const RecipesPage = () => {
     return (
         <Suspense fallback={<Spinner />}>
             <Await resolve={recipesFetched}>
-                {error && <Alert message={error.message} /> }
                 <div className="fadeIn">
                     <div className="row align-items-center search-bar">
                         <div className="col-auto">
@@ -75,11 +71,12 @@ async function initializeRecipes() {
 
         if ('error' in recipes) {
             console.log(recipes.error);
-            store.dispatch(recipesActions.announceError(recipes.error));
+            store.dispatch(generalActions.announceError(recipes.error));
             return true;
         }
 
         store.dispatch(recipesActions.setInitialRecipes(recipes));
+        store.dispatch(generalActions.announceError(null));
         return true;
     }
 }

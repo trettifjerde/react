@@ -1,4 +1,4 @@
-import { transformFirebaseRecipe, transformRecipeList } from './utils';
+import { transformFirebaseIngredientsToList, transformFirebaseRecipe, transformRecipeList } from './utils';
 
 export const MAX_FETCH_BATCH = 3;
 
@@ -70,5 +70,15 @@ export async function sendRecipe(recipe, id) {
 export async function deleteRecipe(id) {
     return fetch(makeUrl(id), {method: 'DELETE'})
         .then(res => ({}))
+        .catch(makeError)
+}
+
+export async function fetchIngredients() {
+    return fetch(`https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list.json`)
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to fetch ingredients', {cause: res.status})
+            else return res.json()
+        })
+        .then(data => transformFirebaseIngredientsToList(data))
         .catch(makeError)
 }

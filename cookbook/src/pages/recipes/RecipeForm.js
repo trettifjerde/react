@@ -10,6 +10,7 @@ import { recipesActions } from "../../store/recipesState";
 import RecipeForm from "../../components/recipes/RecipeForm";
 import Spinner from "../../components/Spinner";
 import RecipeErrorPage from "./RecipeError";
+import { generalActions } from "../../store/store";
 
 
 const RecipeFormPage = () => {
@@ -25,16 +26,18 @@ const RecipeFormPage = () => {
         const response = await sendRecipe(data, params.id);
             
         if ('error' in response) {
-            dispatch(recipesActions.announceError(response.error));
+            dispatch(generalActions.announceError(response.error));
             throw json({message: response.error.message}, {status: response.error.status});
         }
 
         if (params.id) {
             dispatch(recipesActions.updateRecipe({...data, id: params.id}));
+            dispatch(generalActions.announceError(null));
             navigate('/recipes/' + params.id);
         }
         else {
             dispatch(recipesActions.addRecipe({...data, id: response.name}));
+            dispatch(generalActions.announceError(null));
             navigate('/recipes/' + response.name);
         }
     }, [dispatch, params, navigate]);

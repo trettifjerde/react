@@ -8,6 +8,7 @@ import { store } from "./store/store";
 import RecipesPage, {loader as recipesLoader} from "./pages/recipes/Recipes";
 import RecipeDetailsPage, { recipeLoader } from "./pages/recipes/RecipeDetails";
 import RecipeFormPage, {loader as recipeFormLoader } from "./pages/recipes/RecipeForm";
+import ShoppingListPage, {loader as shoppingListLoader } from "./pages/Shopping";
 
 const router = createBrowserRouter([
     { 
@@ -51,7 +52,11 @@ const router = createBrowserRouter([
 
                 ]
             },
-            {path: 'list'},
+            {
+                path: 'list',
+                element: <ShoppingListPage />,
+                loader: shoppingListLoader
+            },
             {path: 'login'},
         ]}
 ]);

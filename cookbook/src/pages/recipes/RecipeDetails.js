@@ -1,7 +1,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useLoaderData, NavLink, json, defer, Await, useParams, useNavigate } from 'react-router-dom';
 
-import  { store } from '../../store/store';
+import  { generalActions, store } from '../../store/store';
 import { recipesActions } from '../../store/recipesState';
 import { fetchRecipe, deleteRecipe } from '../../helpers/dataService';
 
@@ -9,7 +9,6 @@ import Spinner from '../../components/Spinner';
 import Dropdown from '../../components/Dropdown';
 import RecipeErrorPage from './RecipeError';
 
-import './RecipeDetails.css';
 
 const RecipeDetailsPage = () => {
     console.log('Recipe Details Page');
@@ -35,11 +34,12 @@ const RecipeDetailsPage = () => {
             const response = await deleteRecipe(params.id);
 
             if ('error' in response) {
-                store.dispatch(recipesActions.announceError(response.error));
+                store.dispatch(generalActions.announceError(response.error));
                 throw json({message: response.error.message}, {status: response.error.status});
             }
 
             store.dispatch(recipesActions.deleteRecipe(params.id));
+            store.dispatch(generalActions.announceError(null));
             navigate('/recipes');
         }
     }, [navigate, params]);
@@ -113,6 +113,7 @@ export async function loadRecipe(id) {
     }
 
     store.dispatch(recipesActions.saveRecipeInCache({recipe, id}));
+    store.dispatch(generalActions.announceError(null));
 
     return recipe;
 }

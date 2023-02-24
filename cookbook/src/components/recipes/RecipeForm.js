@@ -1,7 +1,5 @@
 import { useCallback, useState, useRef } from "react";
 
-import './RecipeForm.css';
-
 const RecipeForm = (props) => {
     console.log('Recipe Form Comp');
 

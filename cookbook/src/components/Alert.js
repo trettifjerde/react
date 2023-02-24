@@ -1,10 +1,17 @@
-import './Alert.css';
+import { Fragment } from 'react';
+import { useSelector } from 'react-redux';
 
-const Alert = (props) => {
+const Alert = () => {
+    const error = useSelector(state => state.general.error);
+    console.log(error);
+
     return (
-        <div className="mt-3 alert alert-danger">
-            <span>{props.message}</span>
-        </div>
+        <Fragment>
+            {error && <div className="mt-3 alert alert-danger">
+                <span>{error.message}</span>
+                </div>
+            }
+        </Fragment>
     )
 }
 

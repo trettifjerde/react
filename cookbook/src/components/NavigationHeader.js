@@ -1,4 +1,3 @@
-import './NavigationHeader.css';
 import { NavLink } from 'react-router-dom';
 
 const NavigationHeader = () => {
@@ -18,9 +17,9 @@ const NavigationHeader = () => {
                     <li className="nav-item">
                         <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
                     </li>
-                    { user && <li className="nav-item">
+                    <li className="nav-item">
                         <NavLink className="nav-link" to="/list">Shopping List</NavLink>
-                    </li> }
+                    </li>
                 </ul>
                 <ul className="nav nav-tabs">
                     <li className="nav-item">

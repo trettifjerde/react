@@ -1,10 +1,10 @@
 import RecipeItem from "./RecipeItem";
 import { Fragment, useCallback, useState, useEffect, useRef } from 'react';
-import './RecipeList.css';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRecipes } from "../../helpers/dataService";
 import { recipesActions } from "../../store/recipesState";
 import Spinner from '../../components/Spinner';
+import { generalActions } from "../../store/store";
 
 const RecipeList = (props) => {
     const recipes = useSelector(state => state.recipes.recipes);
@@ -29,9 +29,11 @@ const RecipeList = (props) => {
         const newRecipes = await fetchRecipes(recipes[recipes.length - 1].id);
         
         if ("error" in newRecipes) 
-            dispatch(recipesActions.announceError(newRecipes.error));
-        else if (newRecipes.length > 0) 
+            dispatch(generalActions.announceError(newRecipes.error));
+        else if (newRecipes.length > 0) {
             dispatch(recipesActions.setFetchedRecipes(newRecipes));
+            dispatch(generalActions.announceError(null));
+        }
         else 
             setFetchBtnText('No more recipes to load');
 
