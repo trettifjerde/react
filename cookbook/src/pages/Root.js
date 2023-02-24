@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import NavigationHeader from '../components/NavigationHeader';
 
 const Root = () => {
+    console.log('Root');
     return (
         <Fragment>
             <NavigationHeader />

@@ -29,12 +29,11 @@ const router = createBrowserRouter([
                     },
                     { 
                         path: 'new', 
-                        element: <RecipeFormPage />,
-                        loader: recipeFormLoader  
+                        element: <RecipeFormPage />, 
+                        loader: recipeFormLoader
                     },
                     { 
                         path: ':id', 
-                        errorElement: <RecipeErrorPage />,
                         children: [
                             {
                                 index: true, 

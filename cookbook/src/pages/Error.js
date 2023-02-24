@@ -5,13 +5,13 @@ import { useRouteError } from 'react-router-dom';
 
 const ErrorPage = () => {
     const error = useRouteError();
-
+    console.log(error);    
+    
     let title = 'An error has occurred';
     let message = 'Something went wrong';
 
-    if (error.message) {
-        message = error.message;
-    }
+    if (error.data)
+        message = error.data;
     
     return (
         <Fragment>

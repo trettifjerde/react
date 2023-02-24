@@ -7,7 +7,7 @@ const makeUrl = (path) => {
 }
 
 const makeError = (error) => {
-    console.log(error);
+    console.log('Error caught inside make Error', error);
     return {error: {message: error.message, status: error.cause}};
 }
 
@@ -30,14 +30,25 @@ export async function fetchRecipes(startAt='') {
 }
 
 export async function fetchRecipe(recipeId) {
+    console.log('fetching recipe');
     return fetch(makeUrl(recipeId))
         .then(res => {
-            if (!res.ok)
+            if (!res.ok) {
+                console.log('Failed to fetch recipe');
                 throw new Error('Failed to fetch recipe', {cause: res.status})
-            else 
+            }
+            else {
                 return res.json()
+            }
         })
-        .then(data => transformFirebaseRecipe(data, recipeId))
+        .then(data => {
+            if (data)
+                return transformFirebaseRecipe(data, recipeId)
+            else {
+                console.log('no data, recipe does not exist');
+                    throw new Error('Recipe does not exist', {cause: 404});
+            }
+        })
         .catch(makeError);
 }
 
@@ -54,5 +65,10 @@ export async function sendRecipe(recipe, id) {
             else return res.json();
         })
         .catch(makeError);
-    
+}
+
+export async function deleteRecipe(id) {
+    return fetch(makeUrl(id), {method: 'DELETE'})
+        .then(res => ({}))
+        .catch(makeError)
 }

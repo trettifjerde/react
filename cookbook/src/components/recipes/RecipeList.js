@@ -1,5 +1,5 @@
 import RecipeItem from "./RecipeItem";
-import { Fragment, useCallback, useState, useEffect } from 'react';
+import { Fragment, useCallback, useState, useEffect, useRef } from 'react';
 import './RecipeList.css';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRecipes } from "../../helpers/dataService";
@@ -14,11 +14,13 @@ const RecipeList = (props) => {
     const [isSpinnerVisible, setSpinnerVisible] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
 
+    const loadBtn = useRef();
+
     const {filterString} = props;
 
     const filteredRecipes = recipes.filter(recipe => recipe.name.includes(filterString));
 
-    console.log('RecipeList');
+    console.log('RecipeListComp');
 
     const onLoadMoreRecipes = useCallback(async () => {
 
@@ -39,7 +41,11 @@ const RecipeList = (props) => {
 
     useEffect(() => {
         if (fetchBtnText !== 'Load more') {
-            const timer = setTimeout(() => setFetchBtnText('Load more'), 3000);
+            loadBtn.current.disabled = true;
+            const timer = setTimeout(() => {
+                setFetchBtnText('Load more');
+                loadBtn.current.disabled = false;
+            }, 1000 * 60);
             return () => clearTimeout(timer);
         }
     }, [fetchBtnText])
@@ -58,7 +64,7 @@ const RecipeList = (props) => {
             { filteredRecipes.length > 0 && <div className="recipes-c">
                     {filteredRecipes.map(r => <RecipeItem key={r.id} recipe={r} />) }
 
-                    <button type="button" className="btn btn-success" onClick={onLoadMoreRecipes}>{fetchBtnText}</button>
+                    <button ref={loadBtn} type="button" className="btn btn-success" onClick={onLoadMoreRecipes}>{fetchBtnText}</button>
 
                     
                 </div>

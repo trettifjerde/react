@@ -1,17 +1,11 @@
 import { useCallback, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { redirect, useNavigate, json } from "react-router-dom";
-import { sendRecipe } from "../../helpers/dataService";
-
-import { recipesActions } from "../../store/recipesState";
 
 import './RecipeForm.css';
 
 const RecipeForm = (props) => {
+    console.log('Recipe Form Comp');
 
-    const {recipe} = props;
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const {recipe, onSubmitForm, onCancelSubmit} = props;
 
     const [ings, setIngs] = useState(makeInitIngs(recipe.ingredients));
     const [steps, setSteps] = useState(makeInitSteps(recipe.steps));
@@ -25,7 +19,7 @@ const RecipeForm = (props) => {
     const removeIng = useCallback(id => setIngs(prev => prev.filter(ing => ing.id !== id)), [setIngs]);
     const removeStep = useCallback(id => setSteps(prev => prev.filter(step => step.id !== id)), [setSteps]);
 
-    const submitForm = useCallback(async (e) => {
+    const submitForm = useCallback((e) => {
         e.preventDefault()
 
         const formData = new FormData(e.target);
@@ -37,33 +31,16 @@ const RecipeForm = (props) => {
         }
         else {
             const data = transformToRequestData(formData);
-
-            const response = await sendRecipe(data, recipe.id);
-            
-            if ('error' in response) {
-                dispatch(recipesActions.announceError(response.error));
-                throw json({message: response.error.message}, {status: response.error.status});
-            }
-
-            if (recipe.id) {
-                dispatch(recipesActions.updateRecipe({...data, id: recipe.id}));
-                return redirect('/recipes/' + recipe.id);
-            }
-            else {
-                dispatch(recipesActions.addRecipe({...data, id: response.name}));
-                return redirect('/recipes/' + response.name);
-            }
-
+            onSubmitForm(data);
         }
-    }, [setErrors, recipe, dispatch]);
+    }, [setErrors, onSubmitForm]);
 
-    const cancelSubmit = useCallback(() => navigate('../'), [navigate]);
+    const cancelSubmit = useCallback(() => onCancelSubmit(), [onCancelSubmit]);
 
     return (            
         <form className="recipe-form" onSubmit={submitForm}
         >
-            <div className="label-row">
-                <h3 ref={contTop}>{ recipe.id ? 'Edit recipe' : 'Add recipe'}</h3>
+            <div className="label-row" ref={contTop}>
                 {Object.keys(errors).length > 0 && <p className="form-text text-danger">Form contains errors</p>}
             </div>      
             

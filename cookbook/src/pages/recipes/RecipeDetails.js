@@ -1,25 +1,47 @@
-import './RecipeDetails.css';
-import { useLoaderData, NavLink, json, defer, Await } from 'react-router-dom';
+import { Suspense, useCallback, useRef, useState } from 'react';
+import { useLoaderData, NavLink, json, defer, Await, useParams, useNavigate } from 'react-router-dom';
+
 import  { store } from '../../store/store';
 import { recipesActions } from '../../store/recipesState';
-import { fetchRecipe } from '../../helpers/dataService';
+import { fetchRecipe, deleteRecipe } from '../../helpers/dataService';
+
 import Spinner from '../../components/Spinner';
-import { Suspense, useCallback, useRef, useState } from 'react';
 import Dropdown from '../../components/Dropdown';
+import RecipeErrorPage from './RecipeError';
+
+import './RecipeDetails.css';
 
 const RecipeDetailsPage = () => {
+    console.log('Recipe Details Page');
     const {recipe} = useLoaderData();
-    const manageBtnDisabled = false;
+    const params = useParams();
+    const navigate = useNavigate();
+    
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const ddBtnRef = useRef();
 
+    const manageBtnDisabled = false;
+
     const toggleDropdown = useCallback(() => setDropdownVisible((prevState) => (!prevState)), []);
     const toShoppingList = () => {};
-    const deleteRecipe = () => {};
+    const onDeleteRecipe = useCallback(async() => {
+        const isConfirmed = window.confirm('Delete recipe?');
+        if (isConfirmed) {
+            const response = await deleteRecipe(params.id);
+
+            if ('error' in response) {
+                store.dispatch(recipesActions.announceError(response.error));
+                throw json({message: response.error.message}, {status: response.error.status});
+            }
+
+            store.dispatch(recipesActions.deleteRecipe(params.id));
+            navigate('/recipes');
+        }
+    }, [navigate, params]);
 
     return (
         <Suspense fallback={<Spinner />}>
-            <Await resolve={recipe}>
+            <Await resolve={recipe} errorElement={<RecipeErrorPage />}>
                 { loadedRecipe => 
                 <div className="fadeIn">
                     <div className="detail-header">
@@ -37,7 +59,7 @@ const RecipeDetailsPage = () => {
                                         <Dropdown btn={ddBtnRef} isVisible={isDropdownVisible} onBgClick={toggleDropdown}>
                                             <div className='dropdown-item' onClick={toShoppingList}>To Shopping List</div>
                                             <NavLink className='dropdown-item' to="edit">Edit Recipe</NavLink>
-                                            <div className='dropdown-item' onClick={deleteRecipe}>Delete Recipe</div>
+                                            <div className='dropdown-item' onClick={onDeleteRecipe}>Delete Recipe</div>
                                         </Dropdown>
                                     </div>
                                 </div>
@@ -73,13 +95,19 @@ export function recipeLoader({request, params}) {
     })
 }
 
-export async function loadRecipe(recipeId) {
-    const recipe = await fetchRecipe(recipeId);
+export async function loadRecipe(id) {
+    console.log('loading recipe');
 
+    const cache = store.getState().recipes.cache;
+
+    if (id in cache) return cache[id];
+    
+    const recipe = await fetchRecipe(id);
     if ('error' in recipe) {
-        store.dispatch(recipesActions.announceError(recipe.error));
-        throw json({message: recipe.error.message}, {status: recipe.error.status});
+        throw recipe.error.message;
     }
+
+    store.dispatch(recipesActions.saveRecipeInCache({recipe, id}));
 
     return recipe;
 }

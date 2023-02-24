@@ -11,7 +11,7 @@ const RecipeItem = (props) => {
             <div className="row g-1 flex-nowrap align-items-center">
                 <div className="card-body col-8">
                     <h4 className="card-title">{ recipe.name }</h4>
-                    <div className="card-text">{ recipe.description }</div>
+                    <div className="card-text">{ recipe.description.length > 110 ? recipe.description.slice(0, 100) + '...' : recipe.description }</div>
                 </div>
                 <div className="col-4 d-flex justify-content-end">
                     <img src={recipe.imagePath} className="img-fluid img-mini" />

@@ -13,9 +13,9 @@ import Alert from '../../components/Alert';
 import './Recipes.css';
 
 const RecipesPage = () => {
+    console.log('Recipe Page');
     const { recipesFetched } = useLoaderData();
-    const error = useSelector(state => state.recipes.error);
-    const isSubmitting = useSelector(state => state.recipes.isSubmitting);
+    const error = null;
 
     const [filterString, setFilterString] = useState('');
     const handleFilterChange = useCallback((e) => {
@@ -31,7 +31,7 @@ const RecipesPage = () => {
                 <div className="fadeIn">
                     <div className="row">
                         <div className="col-auto">
-                            <NavLink to="new" className="btn btn-success mb-2">New Recipe</NavLink>
+                            <NavLink to="/recipes/new" className="btn btn-success mb-2">New Recipe</NavLink>
                         </div>
                         <div className="col input-cont">
                             <input type="text" className="form-control" value={filterString} onChange={handleFilterChange} placeholder="Type for a recipe..." />
@@ -51,7 +51,6 @@ const RecipesPage = () => {
                         </div>
                     </div>
                 </div>
-                {isSubmitting && <Spinner />}
             </Await>
         </Suspense>
     )
@@ -66,6 +65,7 @@ export function loader() {
 }
 
 async function initializeRecipes() {
+    console.log('initializing recipes');
     const state = store.getState().recipes;
 
     if (state.isInitialized) {

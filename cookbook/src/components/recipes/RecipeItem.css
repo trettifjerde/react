@@ -18,6 +18,8 @@
 
 .card-text {
     font-size: 0.8rem;
+    overflow: hidden;
+    max-height: 4.5rem;
 }
 
 .card img {

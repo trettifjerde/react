@@ -1,19 +1,14 @@
 import './RecipeDetails.css';
-import { useRouteError } from 'react-router-dom';
+import { useAsyncError, useRouteError } from 'react-router-dom';
 import EmptyComponent from '../../components/Empty';
 
 const RecipeErrorPage = () => {
-    const error = useRouteError();
-
-    let message = 'Something went wrong';
-    
-    if (error.message){
-        message = error.message;
-    }
+    const error = useAsyncError();
+    console.log(error);
 
     return (
         <div className="fadeIn empty">
-            <EmptyComponent message={message} />
+            <EmptyComponent message={error} />
         </div>
     )
 }
