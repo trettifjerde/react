@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+const emptyItem = {name: '', amount: '', unit: '', id: null}
+
 const initialState = {
-    ingredients: [],
+    items: [],
+    selectedItem: {...emptyItem},
     isInitialized: false
 }
 
@@ -9,9 +12,23 @@ const slice = createSlice({
     name: 'shoppingList',
     initialState,
     reducers: {
-        initializeIngredients(state, action) {
-            state.ingredients = action.payload;
+        initializeItems(state, action) {
+            state.items = action.payload;
             state.isInitialized = true;
+        },
+        selectItem(state, action) {
+            state.selectedItem = action.payload;
+        },
+        clearItem(state) {
+            state.selectedItem = {...emptyItem};
+        },
+        updateItem(state, action) {
+            const item = action.payload;
+            state.items = [...state.items.filter(i => i.id !== item.id), item];
+            state.selectedItem = {...emptyItem};
+        },
+        deleteItem(state, action) {
+            state.items = state.items.filter(i => i.id !== action.payload);
         }
     }
 });

@@ -6,6 +6,8 @@ const makeUrl = (path) => {
     return `https://academind34-default-rtdb.europe-west1.firebasedatabase.app/recipes${path ? '/' + path : ''}.json`;
 }
 
+const makeIngredsUrl = (path) => (`https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list${path ? '/' + path : ''}.json`)
+
 const makeError = (error) => {
     console.log('Error caught inside make Error', error);
     return {error: {message: error.message, status: error.cause}};
@@ -74,11 +76,36 @@ export async function deleteRecipe(id) {
 }
 
 export async function fetchIngredients() {
-    return fetch(`https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list.json`)
+    return fetch(makeIngredsUrl())
         .then(res => {
             if (!res.ok) throw new Error('Failed to fetch ingredients', {cause: res.status})
             else return res.json()
         })
         .then(data => transformFirebaseIngredientsToList(data))
+        .catch(makeError)
+}
+
+export async function addIngredient(item, id) {
+    const config = [makeIngredsUrl(id), {
+        method: id ? 'PATCH' : 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(item)
+    }];
+
+    return fetch(...config)
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to send item to shopping list', {cause: res.status})
+            else return res.json()
+        })
+        .then(data => (id ? {...item, id: id} : {...item, id: data.name}))
+        .catch(makeError)
+}
+
+export async function deleteIngredient(id) {
+    return fetch(makeIngredsUrl(id), {method: 'DELETE'})
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to delete ingredient', {cause: res.status})
+            else return {};
+        })
         .catch(makeError)
 }

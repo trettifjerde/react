@@ -8,8 +8,7 @@ import { fetchIngredients } from "../helpers/dataService";
 import EmptyComponent from "../components/Empty";
 import Spinner from "../components/Spinner";
 import ShoppingList from "../components/shopping/ShoppingList";
-
-
+import ShoppingListForm from "../components/shopping/ShoppintListForm";
 
 const ShoppingListPage = () => {
 
@@ -18,6 +17,7 @@ const ShoppingListPage = () => {
     return (
         <div className="row mb-4 fadeIn">
             <div className="col-xs-10">
+                <ShoppingListForm />
                 <hr/>
                 <Suspense fallback={<Spinner />}>
                     <Await resolve={shoppingList} errorElement={<EmptyComponent message="Failed to load your shopping list"/>}>
@@ -40,7 +40,7 @@ async function loadShoppingList() {
     const state = store.getState().shoppingList;
 
     if (state.isInitialized) {
-        return state.ingredients;
+        return state.items;
     }
 
     const response = await fetchIngredients();
@@ -50,6 +50,6 @@ async function loadShoppingList() {
         console.log(response);
         throw 'error';
     }
-    store.dispatch(shoppingListActions.initializeIngredients(response));
+    store.dispatch(shoppingListActions.initializeItems(response));
     return response;
 }

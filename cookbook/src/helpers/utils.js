@@ -45,8 +45,8 @@ export function makeRecipe(recipeData, id) {
 
 export function transformFirebaseIngredientsToList(data) {
     return Object.entries(data).map(([id, ing]) => ({
-        amount: ing.amount || null,
-        unit: ing.unit || null,
+        amount: ing.amount || '',
+        unit: ing.unit || '',
         name: ing.name,
         id: id
     }));
