@@ -46,12 +46,9 @@ async function loadShoppingList() {
     }
 
     const response = await fetchIngredients();
-    console.log(response);
 
-    if ('error' in response) {
-        console.log(response);
-        throw new Error();
-    }
+    if ('error' in response) throw new Error();
+
     store.dispatch(shoppingListActions.initializeItems(response));
     return response;
 }

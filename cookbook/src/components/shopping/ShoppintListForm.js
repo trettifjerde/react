@@ -88,7 +88,7 @@ const ShoppingListForm = () => {
                         </div>
                         <div className="col-2 form-group">
                             <label htmlFor="amount">Amount</label>
-                            <input type="text" id="amount" name="amount" className={`form-control ${errors.amount ? 'invalid' : ''}`} />
+                            <input type="number" id="amount" name="amount" className={`form-control ${errors.amount ? 'invalid' : ''}`} />
                         </div>
                         <div className="col-2 form-group">
                             <label htmlFor="unit">Units</label>

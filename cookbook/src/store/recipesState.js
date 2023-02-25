@@ -39,7 +39,7 @@ const recipesSlice = createSlice({
             delete state.cache[id];
         },
         saveRecipeInCache(state, action) {
-            state.cache[action.payload.id] = action.payload.recipe;
+            state.cache[action.payload.id] = action.payload;
         }
     }
 });

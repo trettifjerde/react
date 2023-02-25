@@ -51,7 +51,6 @@ const RecipeFormPage = () => {
         <Suspense fallback={<Spinner />}>  
             <Await resolve={recipe} errorElement={<RecipeErrorPage />}>
                 {loadedRecipe => <div className="fadeIn">
-                    <h3>{ params.id ? 'Edit recipe' : 'Add recipe'}</h3>
                     <RecipeForm recipe={loadedRecipe} onSubmitForm={onSubmitForm} onCancelSubmit={onCancelSubmit} />
                 </div>}
             </Await>
