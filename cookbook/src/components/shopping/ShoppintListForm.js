@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { shoppingListActions } from "../../store/shoppingListState";
-import { generalActions } from "../../store/store";
+import { generalActions } from "../../store/generalState";
 import { addIngredient } from "../../helpers/dataService";
 
 const ShoppingListForm = () => {
@@ -52,11 +52,14 @@ const ShoppingListForm = () => {
             data.unit = formData.get('unit').trim();
         };
 
+        dispatch(generalActions.setSubmitting(true));
+
         const response = await addIngredient(data, id);
         if ('error' in response)
             dispatch(generalActions.announceError(response.error));
         else {
             dispatch(shoppingListActions.updateItem(response));
+            dispatch(generalActions.setSubmitting(false));
             formEl.current.reset();
             setTimeout(() => window.scrollTo({top: document.getElementById('root').offsetHeight}), 300);    
         }    

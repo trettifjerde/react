@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 
-import { generalActions } from '../../store/store';
+import { generalActions } from "../../store/generalState";
 import { shoppingListActions } from '../../store/shoppingListState';
 import { deleteIngredient } from '../../helpers/dataService';
 
@@ -19,11 +19,15 @@ const ShoppingList = () => {
     const deleteItem = useCallback(async id => {
         const isConfirmed = window.confirm('Delete item?');
         if (isConfirmed) {
+            dispatch(generalActions.setSubmitting(true));
+
             const response = await deleteIngredient(id);
             if ('error' in response) {
                 dispatch(generalActions.announceError(response.error));
-            }
+            };
+
             dispatch(shoppingListActions.deleteItem(id));
+            dispatch(generalActions.setSubmitting(false));
         }
     }, [dispatch]);
 

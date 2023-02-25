@@ -8,7 +8,7 @@ const makeUrl = (path) => {
 
 const makeIngredsUrl = (path) => (`https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list${path ? '/' + path : ''}.json`)
 
-const makeError = (error) => {
+export const makeError = (error) => {
     console.log('Error caught inside make Error', error);
     return {error: {message: error.message, status: error.cause}};
 }

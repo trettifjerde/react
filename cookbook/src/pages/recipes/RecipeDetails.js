@@ -1,7 +1,8 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useLoaderData, NavLink, json, defer, Await, useParams, useNavigate } from 'react-router-dom';
 
-import  { generalActions, store } from '../../store/store';
+import  { store } from '../../store/store';
+import { generalActions } from "../../store/generalState";
 import { recipesActions } from '../../store/recipesState';
 import { fetchRecipe, deleteRecipe } from '../../helpers/dataService';
 

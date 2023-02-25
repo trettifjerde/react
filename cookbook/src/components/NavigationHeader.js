@@ -1,11 +1,16 @@
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
+import { registerLogOut } from '../store/generalState';
+
 const NavigationHeader = () => {
-    const user = false;
+    const user = useSelector(state => state.general.user);
+    const dispatch = useDispatch();
 
-    const logout = () => {
-
-    }
+    const logout = useCallback(() => {
+        dispatch(registerLogOut(user.timer));
+    }, [dispatch, user]);
 
     return (
         <nav className="navbar navbar-expand p-3">
@@ -17,14 +22,14 @@ const NavigationHeader = () => {
                     <li className="nav-item">
                         <NavLink className="nav-link" to="/recipes">Recipes</NavLink>
                     </li>
-                    <li className="nav-item">
+                    { user && <li className="nav-item">
                         <NavLink className="nav-link" to="/list">Shopping List</NavLink>
-                    </li>
+                    </li>}
                 </ul>
                 <ul className="nav nav-tabs">
                     <li className="nav-item">
                         {! user && <NavLink className="nav-link" to="/login">Sign in</NavLink>}
-                        {user && <NavLink className="nav-link" style={() => ({cursor: 'pointer'})} onClick={logout}>Log out</NavLink> }
+                        {user && <button className="nav-link" onClick={logout}>Log out</button> }
                     </li>
                 </ul>
             </div>

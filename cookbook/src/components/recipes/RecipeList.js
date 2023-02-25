@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchRecipes } from "../../helpers/dataService";
 import { recipesActions } from "../../store/recipesState";
 import Spinner from '../../components/Spinner';
-import { generalActions } from "../../store/store";
+import { generalActions } from "../../store/generalState";
 
 const RecipeList = (props) => {
     const recipes = useSelector(state => state.recipes.recipes);

@@ -9,6 +9,8 @@ import RecipesPage, {loader as recipesLoader} from "./pages/recipes/Recipes";
 import RecipeDetailsPage, { recipeLoader } from "./pages/recipes/RecipeDetails";
 import RecipeFormPage, {loader as recipeFormLoader } from "./pages/recipes/RecipeForm";
 import ShoppingListPage, {loader as shoppingListLoader } from "./pages/Shopping";
+import AuthPage, {loginAction, signUpAction} from "./pages/Auth";
+
 
 const router = createBrowserRouter([
     { 
@@ -31,8 +33,7 @@ const router = createBrowserRouter([
                     { 
                         path: 'new', 
                         element: <RecipeFormPage />, 
-                        loader: recipeFormLoader,
-                        shouldRevalidate: () => false
+                        loader: recipeFormLoader
                     },
                     { 
                         path: ':id',
@@ -57,12 +58,20 @@ const router = createBrowserRouter([
                 element: <ShoppingListPage />,
                 loader: shoppingListLoader
             },
-            {path: 'login'},
+            {
+                path: 'login',
+                element: <AuthPage mode="login" />,
+                action: loginAction
+            },
+            {
+                path: 'signup',
+                element: <AuthPage mode="signup" />,
+                action: signUpAction
+            }
         ]}
 ]);
 
 const App = () => {
-    console.log('App');
     return (
         <Provider store={store}>
             <RouterProvider router={router}/>

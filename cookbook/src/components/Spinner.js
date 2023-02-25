@@ -1,8 +1,8 @@
 import './Spinner.css';
 
-const Spinner = () => {
+const Spinner = (props) => {
     return (
-        <div className='spinner-cont'>
+        <div className={`spinner-cont ${props.className ? props.className : ''}`}>
             <div className="lds-roller">
                 <div></div>
                 <div></div>

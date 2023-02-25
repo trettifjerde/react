@@ -5,7 +5,6 @@ const initialState = {
     recipes: [],
     cache: {},
     isInitialized: false,
-    isSubmitting: false
 };
 
 const recipesSlice = createSlice({
