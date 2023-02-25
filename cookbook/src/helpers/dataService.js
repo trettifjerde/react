@@ -63,7 +63,8 @@ export async function sendRecipe(recipe, id) {
             }
         })
         .then(res => {
-            if (!res.ok) throw new Error('Failed to send recipe', {cause: res.status})
+            if (res.status === 401) throw Error('Your authentication token is invalid. Try logging out and in again.', {cause: res.status});
+            else if (!res.ok) throw new Error('Failed to send recipe', {cause: res.status});
             else return res.json();
         })
         .catch(makeError);
@@ -71,7 +72,11 @@ export async function sendRecipe(recipe, id) {
 
 export async function deleteRecipe(id) {
     return fetch(makeUrl(id), {method: 'DELETE'})
-        .then(res => ({}))
+        .then(res => {
+            if (res.status === 401) throw Error('Your authentication token is invalid. Try logging out and in again.', {cause: res.status});
+            else if (!res.ok) throw new Error('Failed to delete recipe', {cause: res.status});
+            else return {};
+        })
         .catch(makeError)
 }
 
@@ -94,7 +99,8 @@ export async function addIngredient(item, id) {
 
     return fetch(...config)
         .then(res => {
-            if (!res.ok) throw new Error('Failed to send item to shopping list', {cause: res.status})
+            if (res.status === 401) throw Error('Your authentication token is invalid. Try logging out and in again.', {cause: res.status});
+            else if (!res.ok) throw new Error('Failed to send item to shopping list', {cause: res.status})
             else return res.json()
         })
         .then(data => (id ? {...item, id: id} : {...item, id: data.name}))
@@ -104,7 +110,8 @@ export async function addIngredient(item, id) {
 export async function deleteIngredient(id) {
     return fetch(makeIngredsUrl(id), {method: 'DELETE'})
         .then(res => {
-            if (!res.ok) throw new Error('Failed to delete ingredient', {cause: res.status})
+            if (res.status === 401) throw Error('Your authentication token is invalid. Try logging out and in again.', {cause: res.status});
+            else if (!res.ok) throw new Error('Failed to delete ingredient', {cause: res.status})
             else return {};
         })
         .catch(makeError)

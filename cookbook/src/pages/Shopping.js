@@ -1,26 +1,22 @@
-import { Suspense, useEffect } from "react";
-import { Await, defer, useLoaderData, useNavigate } from "react-router-dom";
+import { Suspense } from "react";
+import { Await, defer, useLoaderData } from "react-router-dom";
 
 import { store } from '../store/store';
 import { shoppingListActions } from "../store/shoppingListState";
 import { fetchIngredients } from "../helpers/dataService";
+import { authGuard } from "../helpers/authService";
+import useAutoLogout from "../helpers/useRedirectOnLogout";
 
 import EmptyComponent from "../components/Empty";
 import Spinner from "../components/Spinner";
 import ShoppingList from "../components/shopping/ShoppingList";
 import ShoppingListForm from "../components/shopping/ShoppintListForm";
-import { authGuard } from "../helpers/authService";
-import { useSelector } from "react-redux";
 
 const ShoppingListPage = () => {
 
+    console.log('Shopping List Page');
     const {shoppingList} = useLoaderData();
-    const user = useSelector(state => state.general.user);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!user) navigate('/recipes');
-    }, [user, navigate]);
+    useAutoLogout();
 
     return (
         <div className="row mb-4 fadeIn">

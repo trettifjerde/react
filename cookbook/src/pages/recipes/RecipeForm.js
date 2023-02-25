@@ -1,6 +1,6 @@
-import { Suspense, useCallback, useEffect } from "react";
+import { Suspense, useCallback } from "react";
 import { Await, defer, useLoaderData, json, useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { makeRecipe } from "../../helpers/utils";
 import { loadRecipe } from "./RecipeDetails";
@@ -12,16 +12,18 @@ import { authGuard } from "../../helpers/authService";
 import RecipeForm from "../../components/recipes/RecipeForm";
 import Spinner from "../../components/Spinner";
 import RecipeErrorPage from "./RecipeError";
+import useRedirectOnLogout from "../../helpers/useRedirectOnLogout";
 
 
 const RecipeFormPage = () => {
     console.log('recipe form page');
 
-    const user = useSelector(state => state.general.user);
-    const dispatch = useDispatch();
     const params = useParams();
-    const navigate = useNavigate();
     const {recipe} = useLoaderData();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useRedirectOnLogout();
 
     const onSubmitForm = useCallback(async data => {
         const response = await sendRecipe(data, params.id);
@@ -44,10 +46,6 @@ const RecipeFormPage = () => {
     }, [dispatch, params, navigate]);
 
     const onCancelSubmit = useCallback(() => navigate('../'), [navigate]);
-
-    useEffect(() => {
-        if (!user) navigate('/recipes');
-    }, [user, navigate]);
 
     return (       
         <Suspense fallback={<Spinner />}>  
