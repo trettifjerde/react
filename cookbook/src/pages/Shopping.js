@@ -5,7 +5,7 @@ import { store } from '../store/store';
 import { shoppingListActions } from "../store/shoppingListState";
 import { fetchIngredients } from "../helpers/dataService";
 import { authGuard } from "../helpers/authService";
-import useAutoLogout from "../helpers/useRedirectOnLogout";
+import useRedirectOnLogout from "../helpers/useRedirectOnLogout";
 
 import EmptyComponent from "../components/Empty";
 import Spinner from "../components/Spinner";
@@ -16,7 +16,7 @@ const ShoppingListPage = () => {
 
     console.log('Shopping List Page');
     const {shoppingList} = useLoaderData();
-    useAutoLogout();
+    useRedirectOnLogout();
 
     return (
         <div className="row mb-4 fadeIn">
