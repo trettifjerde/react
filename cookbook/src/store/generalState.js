@@ -37,7 +37,6 @@ export function registerLogIn(tokenInfo) {
     return (dispatch) => {
         const expiresIn = tokenInfo.expires - new Date().getTime();
         const timer = setTimeout(() => {
-            console.log('timer fired!');
             dispatch(registerLogOut(timer));
         }, expiresIn);
         dispatch(generalActions.logIn({...tokenInfo, timer}))

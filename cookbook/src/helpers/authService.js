@@ -58,9 +58,7 @@ export function removeToken() {
 }
 
 export function authGuard() {
-    console.log('inside auth guard');
     const token = getToken();
-    console.log(token);
     if (!token)
         return redirect('/login');
     return null;

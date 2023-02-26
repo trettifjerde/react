@@ -207,7 +207,5 @@ function transformToRequestData(f) {
         ingredients,
         steps
     };
-
-    console.log(data);
     return data;
 }

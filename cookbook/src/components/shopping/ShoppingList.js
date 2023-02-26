@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useRef } from "react";
+import { Fragment, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 
 import { generalActions } from "../../store/generalState";
@@ -44,7 +44,7 @@ const ShoppingList = () => {
                      />))}
             </div>}
 
-            { items.length === 0 && <div>No items in the list</div>}
+            { items.length === 0 && <div className="text-center">No items in the list</div>}
         </Fragment>
     )
 }

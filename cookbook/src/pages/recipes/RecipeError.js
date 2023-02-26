@@ -3,7 +3,6 @@ import EmptyComponent from '../../components/Empty';
 
 const RecipeErrorPage = () => {
     const error = useAsyncError();
-    console.log(error);
 
     return (
         <div className="fadeIn empty">

@@ -44,10 +44,14 @@ export function makeRecipe(recipeData, id) {
 }
 
 export function transformFirebaseIngredientsToList(data) {
-    return Object.entries(data).map(([id, ing]) => ({
-        amount: ing.amount || '',
-        unit: ing.unit || '',
-        name: ing.name,
-        id: id
-    }));
+    return data ? Object.entries(data).map(([id, ing]) => (transformFirebaseIngredientToClientObject(id, ing))) : [];
+}
+
+export function transformFirebaseIngredientToClientObject(id, data) {
+    return {
+        id: id,
+        name: data.name,
+        amount: data.amount ? +data.amount : 0,
+        unit: data.unit || ''
+    }
 }

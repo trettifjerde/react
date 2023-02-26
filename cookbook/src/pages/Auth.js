@@ -29,8 +29,8 @@ const AuthPage = (props) => {
                 errs[key] = 'r';
             }
         }
-        console.log(errs);
         setErrors(errs);
+        
         return Object.keys(errs).length === 0;
     }, [setErrors]);
 

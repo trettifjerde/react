@@ -10,25 +10,21 @@ import Spinner from '../../components/Spinner';
 import Dropdown from '../../components/Dropdown';
 import RecipeErrorPage from './RecipeError';
 import { useDispatch, useSelector } from 'react-redux';
+import { addRecipeToShoppingList } from '../../store/shoppingListState';
 
 
 const RecipeDetailsPage = () => {
-    console.log('Recipe Details Page');
     const {recipe} = useLoaderData();
     const user = useSelector(state => state.general.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const top = useRef();
     const ddBtnRef = useRef();
-
     const [isDropdownVisible, setDropdownVisible] = useState(false);
 
-    useEffect(() => {
-        if (top.current) top.current.scrollIntoView();
-    }, [recipe]);
+    const toggleDropdown = useCallback(() => setDropdownVisible((prevState) => (!prevState)), [setDropdownVisible]);
+    const toShoppingList = useCallback(ingreds => dispatch(addRecipeToShoppingList(ingreds)), [dispatch]);
 
-    const toggleDropdown = useCallback(() => setDropdownVisible((prevState) => (!prevState)), []);
-    const toShoppingList = () => {};
     const onDeleteRecipe = useCallback(async id => {
         const isConfirmed = window.confirm('Delete recipe?');
         if (isConfirmed) {
@@ -48,6 +44,10 @@ const RecipeDetailsPage = () => {
         }
     }, [navigate, dispatch]);
 
+    useEffect(() => {
+        if (top.current) top.current.scrollIntoView();
+    }, [recipe]);
+
     return (
         <Suspense fallback={<Spinner />}>
             <Await resolve={recipe} errorElement={<RecipeErrorPage />}>
@@ -66,7 +66,7 @@ const RecipeDetailsPage = () => {
                                             Manage
                                         </button>
                                         <Dropdown btn={ddBtnRef} isVisible={isDropdownVisible} onBgClick={toggleDropdown}>
-                                            <div className='dropdown-item' onClick={toShoppingList}>To Shopping List</div>
+                                            <div className='dropdown-item' onClick={toShoppingList.bind(null, loadedRecipe.ingredients)}>To Shopping List</div>
                                             <NavLink className='dropdown-item' to="edit">Edit Recipe</NavLink>
                                             <div className='dropdown-item' onClick={onDeleteRecipe.bind(null, loadedRecipe.id)}>Delete Recipe</div>
                                         </Dropdown>

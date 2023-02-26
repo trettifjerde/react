@@ -61,7 +61,6 @@ export function loader() {
 }
 
 async function initializeRecipes() {
-    console.log('initializing recipes');
     const state = store.getState().recipes;
 
     if (state.isInitialized) {
@@ -71,7 +70,6 @@ async function initializeRecipes() {
         const recipes = await fetchRecipes();
 
         if ('error' in recipes) {
-            console.log(recipes.error);
             store.dispatch(generalActions.flashToast({text: recipes.error.message, isError: true}));
             return true;
         }

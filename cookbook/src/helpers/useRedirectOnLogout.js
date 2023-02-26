@@ -8,7 +8,6 @@ export const useRedirectOnLogout = () => {
     const [hasBeenAuthed, setHasBeenAuthed] = useState(!!user);
 
     useEffect(() => {
-        console.log('inside auto logout');
         if (user && !hasBeenAuthed) 
             setHasBeenAuthed(true);
         else if (!user && hasBeenAuthed)

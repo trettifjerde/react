@@ -100,7 +100,7 @@ export async function addIngredient(item, id) {
         id ? 'PATCH' : 'POST',
         item,
         'Failed to send item to shopping list',
-        (data => (id ? {...item, id: id} : {...item, id: data.name}))
+        (data => (id ? {...data, id: id} : {...item, id: data.name}))
     )
 }
 

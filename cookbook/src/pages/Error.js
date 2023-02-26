@@ -4,8 +4,7 @@ import NavigationHeader from '../components/NavigationHeader';
 import { useRouteError } from 'react-router-dom';
 
 const ErrorPage = () => {
-    const error = useRouteError();
-    console.log(error);    
+    const error = useRouteError();   
     
     let title = 'An error has occurred';
     let message = 'Something went wrong';

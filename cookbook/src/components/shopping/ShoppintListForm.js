@@ -17,40 +17,14 @@ const ShoppingListForm = () => {
     const saveIngredient = useCallback(async event => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const errors = {};
-
-        for (const [key, value] of formData.entries()) {
-            if (key === 'name') {
-                if (!value.trim()) {
-                    errors[key] = 'Name is required';
-                }
-            }
-            else if (key === 'amount') {
-                if (value.trim() && isNaN(value)) {
-                    errors[key] = 'Invalid amount';
-                }
-            }
-            else if (key === 'unit') {
-                if (value.trim() && (!formData.get('amount') || isNaN(formData.get('amount')))) {
-                    errors[key] = 'Cannot enter units without specifying amount'
-                }
-            }
-        }
+        const errors = ingredErrors(formData);
 
         if (Object.keys(errors).length > 0) {
             setErrors(errors);
             return;
         }
 
-        const data = {
-            name: formData.get('name').trim()
-        }
-        if (formData.get('amount')) {
-            data.amount = +formData.get('amount');
-        }
-        if (formData.get('unit')) {
-            data.unit = formData.get('unit').trim();
-        };
+        const data = makeClientIngredFromFormData(formData);
 
         dispatch(generalActions.setSubmitting(true));
 
@@ -58,6 +32,7 @@ const ShoppingListForm = () => {
         if ('error' in response)
             dispatch(generalActions.flashToast({text: response.error.message, isError: true}));
         else {
+
             dispatch(shoppingListActions.updateItem(response));
             formEl.current.reset();
             setErrors({});   
@@ -75,6 +50,7 @@ const ShoppingListForm = () => {
             formEl.current['name'].value = item.name;
             formEl.current['amount'].value = item.amount;
             formEl.current['unit'].value = item.unit;
+            formEl.current['name'].focus();
         }
     }, [item, formEl]);
 
@@ -111,3 +87,34 @@ const ShoppingListForm = () => {
     )
 }
 export default ShoppingListForm;
+
+function ingredErrors(formData) {
+    const errors = {};
+    for (const [key, value] of formData.entries()) {
+        if (key === 'name') {
+            if (!value.trim()) {
+                errors[key] = 'Name is required';
+            }
+        }
+        else if (key === 'amount') {
+            if (value.trim() && isNaN(value)) {
+                errors[key] = 'Invalid amount';
+            }
+        }
+        else if (key === 'unit') {
+            if (value.trim() && (!formData.get('amount') || isNaN(formData.get('amount')))) {
+                errors[key] = 'Cannot enter units without specifying amount'
+            }
+        }
+    }
+    return errors;
+}
+
+function makeClientIngredFromFormData(formData) {
+    const data = {
+        name: formData.get('name').trim(),
+        amount: formData.get('amount') ? +formData.get('amount') : 0,
+        unit: formData.get('unit') || '',
+    };
+    return data;
+}
