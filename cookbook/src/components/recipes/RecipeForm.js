@@ -196,6 +196,9 @@ function transformToRequestData(f) {
         }
     };
     ingredients = Object.values(ingredients);
+    ingredients.forEach(ing => {
+        if (ing.unit && !ing.amount) ing.amount = 1;
+    })
 
     const data = {
         name: f.get('name'),

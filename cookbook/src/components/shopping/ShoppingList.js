@@ -23,11 +23,11 @@ const ShoppingList = () => {
 
             const response = await deleteIngredient(id);
             if ('error' in response) {
-                dispatch(generalActions.announceError(response.error));
+                dispatch(generalActions.flashToast({text: response.error.message, isError: true}));
             };
 
             dispatch(shoppingListActions.deleteItem(id));
-            dispatch(generalActions.setSubmitting(false));
+            dispatch(generalActions.flashToast({text: 'Item removed', isError: false}));
         }
     }, [dispatch]);
 

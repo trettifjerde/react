@@ -29,10 +29,9 @@ const RecipeList = (props) => {
         const newRecipes = await fetchRecipes(recipes[recipes.length - 1].id);
         
         if ("error" in newRecipes) 
-            dispatch(generalActions.announceError(newRecipes.error));
+            dispatch(generalActions.flashToast({text: newRecipes.error.message, isError: true}));
         else if (newRecipes.length > 0) {
             dispatch(recipesActions.setFetchedRecipes(newRecipes));
-            dispatch(generalActions.announceError(null));
         }
         else 
             setFetchBtnText('No more recipes to load');

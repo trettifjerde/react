@@ -3,7 +3,7 @@ import { removeToken } from "../helpers/authService";
 
 const initialState = {
     isSubmitting: false,
-    error: null,
+    message: null, // or {text: string, isError: boolean}
     user: null // or {token: string, expires: number, timer: number}
 };
 
@@ -11,21 +11,20 @@ const general = createSlice({
     name: 'general',
     initialState,
     reducers: {
-        announceError(state, action) {
-            state.error = action.payload;
+        flashToast(state, action) {
+            state.message = action.payload;
             state.isSubmitting = false;
         },
         logIn(state, action) {
             state.user = action.payload; // {token: string, timer: number, expires: number}
-            state.error = null;
+            state.message = null;
             state.isSubmitting = false;
         },
         logOut(state) {
             state.user = null;
-            state.error = null;
+            state.message = {text: "You've been logged out", isError: false};
         },
         setSubmitting(state, action) {
-            console.log(action.payload);
             state.isSubmitting = action.payload;
         }
     }

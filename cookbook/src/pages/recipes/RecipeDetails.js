@@ -9,7 +9,7 @@ import { fetchRecipe, deleteRecipe } from '../../helpers/dataService';
 import Spinner from '../../components/Spinner';
 import Dropdown from '../../components/Dropdown';
 import RecipeErrorPage from './RecipeError';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const RecipeDetailsPage = () => {
@@ -17,6 +17,7 @@ const RecipeDetailsPage = () => {
     const {recipe} = useLoaderData();
     const user = useSelector(state => state.general.user);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const top = useRef();
     const ddBtnRef = useRef();
 
@@ -31,18 +32,21 @@ const RecipeDetailsPage = () => {
     const onDeleteRecipe = useCallback(async id => {
         const isConfirmed = window.confirm('Delete recipe?');
         if (isConfirmed) {
+
+            dispatch(generalActions.setSubmitting(true));
+            
             const response = await deleteRecipe(id);
 
             if ('error' in response) {
-                store.dispatch(generalActions.announceError(response.error));
+                dispatch(generalActions.flashToast({text: response.error.message, isError: true}));
                 throw json({message: response.error.message}, {status: response.error.status});
             }
 
             store.dispatch(recipesActions.deleteRecipe(id));
-            store.dispatch(generalActions.announceError(null));
+            store.dispatch(generalActions.flashToast({text: 'Recipe deleted', isError: false}));
             navigate('/recipes');
         }
-    }, [navigate]);
+    }, [navigate, dispatch]);
 
     return (
         <Suspense fallback={<Spinner />}>
@@ -111,7 +115,6 @@ export async function loadRecipe(id) {
     }
 
     store.dispatch(recipesActions.saveRecipeInCache(recipe));
-    store.dispatch(generalActions.announceError(null));
 
     return recipe;
 }

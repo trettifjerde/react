@@ -18,7 +18,6 @@ async function authenticate(url, form) {
     .catch(makeError);
 }
 
-
 export async function logIn(data) {
     return authenticate(signInUrl, data);
 }
@@ -28,12 +27,12 @@ export async function signUp(data) {
 }
 
 export function getToken() {
-    const token = localStorage.getItem('cbToken');
-    const expires = localStorage.getItem('cbTokenExpires');
+    const tokenInfo = localStorage.getItem('cbToken');
 
-    if (!token || !expires) {
+    if (!tokenInfo) {
         return null;
     }
+    const [token, expires] = JSON.parse(tokenInfo);
 
     const expirationDate = new Date(expires);
     if (new Date() > expirationDate) {
@@ -49,15 +48,13 @@ export function setToken(token) {
     expiration.setHours(expiration.getHours() + 1);
     const expires = expiration.getTime();
 
-    localStorage.setItem('cbToken', token);
-    localStorage.setItem('cbTokenExpires', expires);
+    localStorage.setItem('cbToken', JSON.stringify([token, expires]));
 
     return {token, expires}; //expires: expiration date in milliseconds
 }
 
 export function removeToken() {
     localStorage.removeItem('cbToken');
-    localStorage.removeItem('cbTokenExpires');
 }
 
 export function authGuard() {

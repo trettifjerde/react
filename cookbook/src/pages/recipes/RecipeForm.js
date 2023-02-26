@@ -26,21 +26,24 @@ const RecipeFormPage = () => {
     useRedirectOnLogout();
 
     const onSubmitForm = useCallback(async data => {
+        
+        dispatch(generalActions.setSubmitting(true));
+
         const response = await sendRecipe(data, params.id);
             
         if ('error' in response) {
-            dispatch(generalActions.announceError(response.error));
+            dispatch(generalActions.flashToast({text: response.error.message, isError: true}));
             throw json({message: response.error.message}, {status: response.error.status});
         }
 
         if (params.id) {
             dispatch(recipesActions.updateRecipe({...data, id: params.id}));
-            dispatch(generalActions.announceError(null));
+            dispatch(generalActions.flashToast({text: 'Recipe updated', isError: false}));
             navigate('/recipes/' + params.id);
         }
         else {
             dispatch(recipesActions.addRecipe({...data, id: response.name}));
-            dispatch(generalActions.announceError(null));
+            dispatch(generalActions.flashToast({text: 'Recipe added', isError: false}));
             navigate('/recipes/' + response.name);
         }
     }, [dispatch, params, navigate]);

@@ -13,18 +13,24 @@ const slice = createSlice({
     initialState,
     reducers: {
         initializeItems(state, action) {
-            state.items = action.payload;
+            state.items = action.payload.reverse();
             state.isInitialized = true;
         },
         selectItem(state, action) {
-            state.selectedItem = action.payload;
+            const item = action.payload;
+            state.selectedItem = {
+                name: item.name,
+                id: item.id,
+                amount: item.amount || '',
+                unit: item.unit || ''
+            };
         },
         clearItem(state) {
             state.selectedItem = {...emptyItem};
         },
         updateItem(state, action) {
             const item = action.payload;
-            state.items = [...state.items.filter(i => i.id !== item.id), item];
+            state.items = [item, ...state.items.filter(i => i.id !== item.id)];
             state.selectedItem = {...emptyItem};
         },
         deleteItem(state, action) {

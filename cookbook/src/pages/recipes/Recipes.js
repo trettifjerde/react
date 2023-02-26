@@ -72,12 +72,11 @@ async function initializeRecipes() {
 
         if ('error' in recipes) {
             console.log(recipes.error);
-            store.dispatch(generalActions.announceError(recipes.error));
+            store.dispatch(generalActions.flashToast({text: recipes.error.message, isError: true}));
             return true;
         }
 
         store.dispatch(recipesActions.setInitialRecipes(recipes));
-        store.dispatch(generalActions.announceError(null));
         return true;
     }
 }

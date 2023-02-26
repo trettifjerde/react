@@ -42,7 +42,7 @@ const AuthPage = (props) => {
 
     useEffect(() => {
         if (actionData)
-            dispatch(generalActions.announceError({message: 'Invalid email or password', status: 400}))
+            dispatch(generalActions.flashToast({text: 'Invalid email or password', isError: true}))
     }, [actionData, dispatch]);
 
     useEffect(() => {
@@ -123,7 +123,7 @@ async function action(request, isSignUpMode) {
     const response = await fetchFunc(data);
 
     if ('error' in response) {
-        store.dispatch(generalActions.announceError(response.error))
+        store.dispatch(generalActions.flashToast({text: response.error.message, isError: true}))
         return null;
     }
     else if (response.status === 400) {
@@ -138,7 +138,7 @@ async function action(request, isSignUpMode) {
         return redirect('/recipes');
     }
     catch (error) {
-        store.dispatch(generalActions.announceError({message: error.message, status: 500}));
+        store.dispatch(generalActions.flashToast({text: error.message, isError: true}));
         return null;
     }    
 }

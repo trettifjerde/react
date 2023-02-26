@@ -56,12 +56,14 @@ const ShoppingListForm = () => {
 
         const response = await addIngredient(data, id);
         if ('error' in response)
-            dispatch(generalActions.announceError(response.error));
+            dispatch(generalActions.flashToast({text: response.error.message, isError: true}));
         else {
             dispatch(shoppingListActions.updateItem(response));
-            dispatch(generalActions.setSubmitting(false));
             formEl.current.reset();
-            setTimeout(() => window.scrollTo({top: document.getElementById('root').offsetHeight}), 300);    
+            setErrors({});   
+
+            if (id) dispatch(generalActions.flashToast({text: 'Item updated', isError: false}));
+            else dispatch(generalActions.flashToast({text: 'Item added', isError: false}));
         }    
 
     }, [setErrors, dispatch, id]);
@@ -69,7 +71,6 @@ const ShoppingListForm = () => {
     const clearForm = useCallback(() => dispatch(shoppingListActions.clearItem()), [dispatch]);
 
     useEffect(() => {
-        console.log('inside use effect', item, formEl)
         if (formEl.current) {
             formEl.current['name'].value = item.name;
             formEl.current['amount'].value = item.amount;
