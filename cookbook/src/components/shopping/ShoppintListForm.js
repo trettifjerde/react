@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { shoppingListActions } from "../../store/shoppingListState";
 import { generalActions } from "../../store/generalState";
 import { addIngredient } from "../../helpers/dataService";
+import { makeDBItemFromFormData } from "../../helpers/utils";
 
 const ShoppingListForm = () => {
 
@@ -24,7 +25,7 @@ const ShoppingListForm = () => {
             return;
         }
 
-        const data = makeClientIngredFromFormData(formData);
+        const data = makeDBItemFromFormData(formData);
 
         dispatch(generalActions.setSubmitting(true));
 
@@ -97,24 +98,15 @@ function ingredErrors(formData) {
             }
         }
         else if (key === 'amount') {
-            if (value.trim() && isNaN(value)) {
+            if (value.trim() && (isNaN(value) || +value < 0.01)) {
                 errors[key] = 'Invalid amount';
             }
         }
         else if (key === 'unit') {
-            if (value.trim() && (!formData.get('amount') || isNaN(formData.get('amount')))) {
+            if (value.trim() && (!formData.get('amount') || isNaN(formData.get('amount')) || +formData.get('amount') < 0.01)) {
                 errors[key] = 'Cannot enter units without specifying amount'
             }
         }
     }
     return errors;
-}
-
-function makeClientIngredFromFormData(formData) {
-    const data = {
-        name: formData.get('name').trim(),
-        amount: formData.get('amount') ? +formData.get('amount') : 0,
-        unit: formData.get('unit') || '',
-    };
-    return data;
 }

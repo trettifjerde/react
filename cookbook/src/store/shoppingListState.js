@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { addIngredient } from "../helpers/dataService";
+import { makeDBItemFromShoppingListIngred } from "../helpers/utils";
 import { generalActions } from "./generalState";
 import { store } from "./store";
 
@@ -62,15 +63,12 @@ export function addRecipeToShoppingList(items) {
         const itemsToUpdate = [];
 
         items.forEach(item => {
-            console.log(item);
             const existingItem = shoppingList.find(i => i.name === item.name && i.unit === item.unit);
             if (existingItem)
                 itemsToUpdate.push({...existingItem, amount: (+existingItem.amount) + (+item.amount)});
             else 
-                itemsToAdd.push({...item, id: null});
+                itemsToAdd.push({...makeDBItemFromShoppingListIngred(item), id: null});
         });
-
-        console.log(itemsToAdd, itemsToUpdate);
 
         for (const item of itemsToUpdate) {
             const {id, ...ingred} = item;
@@ -88,7 +86,7 @@ export function addRecipeToShoppingList(items) {
                 dispatch(generalActions.flashToast({text: res.error.message, isError: true}));
                 break;
             }
-            itemsToAdd[i].id = res.id;
+            itemsToAdd[i].id = res.name;
         }
         
 

@@ -1,16 +1,18 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom";
+import { Provider } from "react-redux";
 import EmptyComponent from "./components/Empty";
 import ErrorPage from "./pages/Error";
 import Root from "./pages/Root";
-import { Provider } from "react-redux";
 import { store } from "./store/store";
 
 import RecipesPage, {loader as recipesLoader} from "./pages/recipes/Recipes";
 import RecipeDetailsPage, { recipeLoader } from "./pages/recipes/RecipeDetails";
 import RecipeFormPage, {loader as recipeFormLoader } from "./pages/recipes/RecipeForm";
-import ShoppingListPage, {loader as shoppingListLoader } from "./pages/Shopping";
 import AuthPage, {loginAction, signUpAction} from "./pages/Auth";
+import Spinner from "./components/Spinner";
 
+const ShoppingListPage = lazy(() => import('./pages/Shopping'));
 
 const router = createBrowserRouter([
     { 
@@ -55,8 +57,8 @@ const router = createBrowserRouter([
             },
             {
                 path: 'list',
-                element: <ShoppingListPage />,
-                loader: shoppingListLoader
+                element: <Suspense fallback={<Spinner/>}><ShoppingListPage /></Suspense>,
+                loader: (args) => import ('./pages/Shopping').then(module => module.loader(args))
             },
             {
                 path: 'login',

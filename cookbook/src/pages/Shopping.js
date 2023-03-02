@@ -40,6 +40,7 @@ export async function loader({request, params}) {
 
 async function loadShoppingList() {
     const state = store.getState().shoppingList;
+    console.log(state);
 
     if (state.isInitialized) {
         return state.items;

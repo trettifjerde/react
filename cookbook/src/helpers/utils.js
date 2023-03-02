@@ -55,3 +55,26 @@ export function transformFirebaseIngredientToClientObject(id, data) {
         unit: data.unit || ''
     }
 }
+
+export function makeDBItemFromFormData(formData) {
+    const name = formData.get('name').trim();
+    const amount = formData.get('amount');
+    const unit = formData.get('unit').trim();
+    return {
+        name,
+        amount: amount || null,
+        unit: unit || null,
+    };
+}
+
+export function makeDBItemFromShoppingListIngred(ingred) {
+    console.log(ingred);
+    const name = ingred.name.trim();
+    const amount = ingred.amount;
+    const unit = ingred.unit.trim();
+    return {
+        name,
+        amount: amount || null,
+        unit: unit || null
+    }
+}
