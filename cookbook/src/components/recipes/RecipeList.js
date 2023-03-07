@@ -1,10 +1,14 @@
-import RecipeItem from "./RecipeItem";
 import { Fragment, useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
+import {TransitionGroup, CSSTransition} from 'react-transition-group';
+
 import { fetchRecipes } from "../../helpers/dataService";
 import { recipesActions } from "../../store/recipesState";
-import Spinner from '../../components/Spinner';
 import { generalActions } from "../../store/generalState";
+
+import Spinner from '../../components/Spinner';
+import RecipeItem from "./RecipeItem";
+
 
 const RecipeList = (props) => {
     const recipes = useSelector(state => state.recipes.recipes);
@@ -62,14 +66,19 @@ const RecipeList = (props) => {
 
     return (
         <Fragment>
-            { filteredRecipes.length > 0 && <div className="recipes-c">
-                    {filteredRecipes.map(r => <RecipeItem key={r.id} recipe={r} />) }
+            <div className="recipes-c">
+                <TransitionGroup className="recipes-c">
+                    {filteredRecipes.map(r => <CSSTransition key={r.id} classNames="recipe-item" timeout={300}>
+                        <RecipeItem recipe={r} />
+                    </CSSTransition>) }
+                    {filteredRecipes.length === 0 && <CSSTransition key="recipes-btn" classNames="recipe-item" timeout={300}>
+                        <div className="empty">No recipes found</div>
+                    </CSSTransition>}
+                </TransitionGroup>
+                                    
+                <button ref={loadBtn} type="button" className="btn btn-success" onClick={onLoadMoreRecipes}>{fetchBtnText}</button>  
+            </div>
 
-                    <button ref={loadBtn} type="button" className="btn btn-success" onClick={onLoadMoreRecipes}>{fetchBtnText}</button>
-                    
-                </div>
-            }
-            { filteredRecipes.length === 0 && <div className="empty">No recipes found</div>}
             { isSpinnerVisible && <Spinner /> }
         </Fragment>
     )

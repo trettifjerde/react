@@ -236,6 +236,13 @@ textarea.form-control.larger {
     gap: 0.5rem;
 }
 
+.recipes-c .empty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
 .spinner-c {
     position: absolute;
     top: 0;
@@ -343,11 +350,11 @@ h5 {
 .main-content {
     overflow: auto;
     height: 100%;
+    padding-inline: 0.5rem;
 }
 
-.side-content,
-.main-content {
-    padding-inline: 0.5rem;
+.side-content {
+    position: relative;
 }
 
 @media (max-width: 760px) {
@@ -426,4 +433,33 @@ h5 {
 
 .dd-exit .dropdown-menu-inner  {
     animation: ddSlide .15s ease-in-out reverse forwards;
+}
+
+.recipe-item-enter {
+    animation: listItem .3s;
+}
+
+.recipe-item-exit {
+    animation: listItem .3s reverse forwards;
+}
+.recipe-item-exit-done {
+    visibility: hidden;
+}
+
+.empty-enter {
+    animation: listItem .5s forwards;
+}
+.empty-exit {
+    display: none;
+}
+
+@keyframes listItem {
+    0% {
+        opacity: 0;
+        transform: scale(0.8)
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
