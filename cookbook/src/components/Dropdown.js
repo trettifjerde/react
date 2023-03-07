@@ -15,7 +15,11 @@ const Dropdown = (props) => {
     }, [isVisible, onBgClick, btn]);
 
     return (
-        <CSSTransition in={isVisible} classNames="dd-trans" timeout={150}>
+        <CSSTransition in={isVisible} classNames={{
+            enter: 'dd-enter',
+            exit: 'dd-exit',
+            enterDone: 'dd-open'
+        }} timeout={150}>
             <div className="dropdown-menu">
                 <div className="dropdown-menu-inner">{props.children}</div>
             </div>

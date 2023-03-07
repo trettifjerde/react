@@ -405,27 +405,25 @@ h5 {
     background-color: white;
 }
 
-.dd-trans-enter, .dd-trans-enter-done, .dd-trans-exit {
+@keyframes ddSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+
+.dd-enter, .dd-open, .dd-exit {
     display: block;
 }
 
-.dd-trans-enter .dropdown-menu-inner {
-    transform: translateY(-100%);
-    opacity: 0;
-}
-.dd-trans-enter-active .dropdown-menu-inner  {
-    transform: translateY(0%);
-    opacity: 1;
-    transition: transform .15s ease-in-out, opacity .15s ease-in-out;
+.dd-enter .dropdown-menu-inner {
+    animation: ddSlide .15s ease-in-out forwards;
 }
 
-.dd-trans-exit .dropdown-menu-inner  {
-    transform: translateY(0%);
-    opacity: 1;
-}
-
-.dd-trans-exit-active .dropdown-menu-inner  {
-    transform: translateY(-100%);
-    opacity: 0;
-    transition: transform .15s ease-in-out, opacity .15s ease-in-out;
+.dd-exit .dropdown-menu-inner  {
+    animation: ddSlide .15s ease-in-out reverse forwards;
 }
