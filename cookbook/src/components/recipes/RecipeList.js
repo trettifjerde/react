@@ -66,7 +66,6 @@ const RecipeList = (props) => {
                     {filteredRecipes.map(r => <RecipeItem key={r.id} recipe={r} />) }
 
                     <button ref={loadBtn} type="button" className="btn btn-success" onClick={onLoadMoreRecipes}>{fetchBtnText}</button>
-
                     
                 </div>
             }

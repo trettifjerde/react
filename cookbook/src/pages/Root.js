@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import Spinner from '../components/Spinner';
 
 const Root = () => {
     const isSubmitting = useSelector(state => state.general.isSubmitting);
+    const [isSpinnerVisible, setSpinnerVisible] = useState(null);
     const dispatch = useDispatch();
 
     //autologin if token in storage
@@ -18,6 +19,14 @@ const Root = () => {
         const tokenInfo = getToken();
         if (tokenInfo) dispatch(registerLogIn(tokenInfo));
     }, [dispatch]);
+
+    useEffect(() => {
+        if (isSubmitting) {
+            const timer = setTimeout(() => setSpinnerVisible(true), 200);
+            return () => clearTimeout(timer);
+        }
+        else setSpinnerVisible(false);
+    }, [isSubmitting, setSpinnerVisible]);
     
     return (
         <Fragment>
@@ -26,7 +35,7 @@ const Root = () => {
                 <Outlet />
             </main>
             <Alert />
-            {isSubmitting && <Spinner className="root"/>}
+            {isSpinnerVisible && <Spinner className="root"/>}
         </Fragment>
     )
 }

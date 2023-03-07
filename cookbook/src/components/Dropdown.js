@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { CSSTransition } from 'react-transition-group';
 
 const Dropdown = (props) => {
     const {isVisible, onBgClick, btn} = props;
@@ -14,9 +15,11 @@ const Dropdown = (props) => {
     }, [isVisible, onBgClick, btn]);
 
     return (
-        <div className={`dropdown-menu ${isVisible ? 'show' : ''}`}>
-            {props.children}
-        </div>
+        <CSSTransition in={isVisible} classNames="dd-trans" timeout={150}>
+            <div className="dropdown-menu">
+                <div className="dropdown-menu-inner">{props.children}</div>
+            </div>
+        </CSSTransition>
     )
 }
 export default Dropdown;

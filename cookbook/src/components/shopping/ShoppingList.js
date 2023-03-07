@@ -7,10 +7,15 @@ import { deleteIngredient } from '../../helpers/dataService';
 
 import ShoppingListItem from "./ShoppingListItem";
 import ConfirmationModal from "../ConfirmationModal";
+import '../../components/Modal.css';
 
 const ShoppingList = () => {
     const {items} = useSelector(state => state.shoppingList);
-    const [itemToDeleteInfo, setItemToDeleteInfo] = useState(null); // or {question: string, bold: string, onConfirm: function(id: string) => void}
+    const [itemToDeleteInfo, setItemToDeleteInfo] = useState({
+        visible: false, 
+        name: '', 
+        id: null
+    }); 
     const dispatch = useDispatch();
 
     const editItem = useCallback(item => {
@@ -18,8 +23,13 @@ const ShoppingList = () => {
         window.scrollTo({top: 0, behavior: 'smooth'});
     }, [dispatch]);
 
-    const closeModal = useCallback(() => setItemToDeleteInfo(null), [setItemToDeleteInfo]);
+    const askDeleteConfirm = useCallback((name, id) => setItemToDeleteInfo({visible: true, name, id}), [setItemToDeleteInfo]);
+
+    const closeModal = useCallback(() => setItemToDeleteInfo(prev => ({...prev, visible: false})), [setItemToDeleteInfo]);
+
     const deleteItem = useCallback(async id => {
+        closeModal();
+
         dispatch(generalActions.setSubmitting(true));
 
         const response = await deleteIngredient(id);
@@ -29,14 +39,7 @@ const ShoppingList = () => {
 
         dispatch(shoppingListActions.deleteItem(id));
         dispatch(generalActions.flashToast({text: 'Item removed', isError: false}));
-    }, [dispatch]);
-
-    const askDeleteConfirm = useCallback((name, id) => setItemToDeleteInfo({
-        question: 'Delete item', 
-        bold: name,
-        onConfirm: deleteItem.bind(null, id)
-    }), [setItemToDeleteInfo, deleteItem]);
-
+    }, [dispatch, closeModal]);
 
     return (
         <Fragment>
@@ -51,11 +54,12 @@ const ShoppingList = () => {
                                 onDelete={askDeleteConfirm}
                             />))
                     }
-                    { itemToDeleteInfo && <ConfirmationModal onClose={closeModal} confirmInfo={itemToDeleteInfo}/>}
-                </div>
+                </div> 
             }
 
             { items.length === 0 && <div className="text-center">No items in the list</div>}
+
+            <ConfirmationModal question="Delete item" info={itemToDeleteInfo} onClose={closeModal} onConfirm={deleteItem}  />
         </Fragment>
     )
 }

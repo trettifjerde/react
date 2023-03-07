@@ -22,13 +22,18 @@ const RecipeDetailsPage = () => {
     const top = useRef();
     const ddBtnRef = useRef();
     const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const [modalInfo, setModalInfo] = useState(null);
+    const [modalInfo, setModalInfo] = useState({
+        visible: false, 
+        name: '', 
+        id: null
+    });
 
     const toggleDropdown = useCallback(() => setDropdownVisible((prevState) => (!prevState)), [setDropdownVisible]);
     const toShoppingList = useCallback(ingreds => dispatch(addRecipeToShoppingList(ingreds)), [dispatch]);
-    const closeDeleteRecipeConfirm = useCallback(() => setModalInfo(null), [setModalInfo]);
+    const closeDeleteRecipeConfirm = useCallback(() => setModalInfo(prev => ({...prev, visible: false})), [setModalInfo]);
 
     const onDeleteRecipe = useCallback(async id => {
+        closeDeleteRecipeConfirm();
         dispatch(generalActions.setSubmitting(true));
         
         const response = await deleteRecipe(id);
@@ -41,13 +46,13 @@ const RecipeDetailsPage = () => {
         store.dispatch(recipesActions.deleteRecipe(id));
         store.dispatch(generalActions.flashToast({text: 'Recipe deleted', isError: false}));
         navigate('/recipes');
-    }, [navigate, dispatch]);
+    }, [closeDeleteRecipeConfirm, navigate, dispatch]);
 
     const askDeleteRecipeConfirm = useCallback(recipe => setModalInfo({
-        question: 'Delete recipe',
-        bold: recipe.name,
-        onConfirm: onDeleteRecipe.bind(null, recipe.id)
-    }), [setModalInfo, onDeleteRecipe]);
+        visible: true,
+        name: recipe.name,
+        id: recipe.id
+    }), [setModalInfo]);
 
     useEffect(() => {
         if (top.current) top.current.scrollIntoView();
@@ -97,7 +102,7 @@ const RecipeDetailsPage = () => {
                                 </ol>
                             </div>
 
-                            { modalInfo && <ConfirmationModal onClose={closeDeleteRecipeConfirm} confirmInfo={modalInfo} />}
+                            <ConfirmationModal question="Delete recipe" info={modalInfo} onClose={closeDeleteRecipeConfirm} onConfirm={onDeleteRecipe} />
                         </div>
 
             }</Await>
