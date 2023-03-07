@@ -428,29 +428,22 @@ h5 {
 }
 
 .dd-enter .dropdown-menu-inner {
-    animation: ddSlide .15s ease-in-out forwards;
+    animation: ddSlide .15s ease-out forwards;
 }
 
 .dd-exit .dropdown-menu-inner  {
-    animation: ddSlide .15s ease-in-out reverse forwards;
+    animation: ddSlide .15s ease-in reverse forwards;
 }
 
 .recipe-item-enter {
-    animation: listItem .3s;
+    animation: listItem .4s;
 }
 
 .recipe-item-exit {
-    animation: listItem .3s reverse forwards;
+    animation: listItem .4s reverse forwards;
 }
 .recipe-item-exit-done {
     visibility: hidden;
-}
-
-.empty-enter {
-    animation: listItem .5s forwards;
-}
-.empty-exit {
-    display: none;
 }
 
 @keyframes listItem {

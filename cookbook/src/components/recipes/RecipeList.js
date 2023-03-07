@@ -68,10 +68,10 @@ const RecipeList = (props) => {
         <Fragment>
             <div className="recipes-c">
                 <TransitionGroup className="recipes-c">
-                    {filteredRecipes.map(r => <CSSTransition key={r.id} classNames="recipe-item" timeout={300}>
+                    {filteredRecipes.map(r => <CSSTransition key={r.id} classNames="recipe-item" timeout={400}>
                         <RecipeItem recipe={r} />
                     </CSSTransition>) }
-                    {filteredRecipes.length === 0 && <CSSTransition key="recipes-btn" classNames="recipe-item" timeout={300}>
+                    {filteredRecipes.length === 0 && <CSSTransition key="recipes-btn" classNames="recipe-item" timeout={400}>
                         <div className="empty">No recipes found</div>
                     </CSSTransition>}
                 </TransitionGroup>
