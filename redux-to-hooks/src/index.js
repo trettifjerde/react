@@ -1,19 +1,14 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { combineReducers, createStore } from 'redux';
 
 import './index.css';
-import productReducer from './store/reducers/products';
 import App from './App';
 import ProductsPage from './containers/Products';
 import FavoritesPage from './containers/Favorites';
 
-const rootReducer = combineReducers({
-  shop: productReducer
-});
+import configureProductsStore from './hooksstore/products-store';
 
-const store = createStore(rootReducer);
+configureProductsStore();
 
 const routes = createBrowserRouter([
   { path: '/', element: <App />, children: [
@@ -23,8 +18,4 @@ const routes = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <Provider store={store}>
-    <RouterProvider router={routes} />
-</Provider>
-);
+root.render(<RouterProvider router={routes}/>);
