@@ -36,14 +36,10 @@ const RecipesPage = () => {
                     </div>
                     <div className="row mb-3">
                         <div className="col-md-5 side">
-                            <div className="side-content">
-                                <RecipeList filterString={filterString} />
-                            </div>
+                            <RecipeList filterString={filterString} />
                         </div>
                         <div className="col-md-7 main">
-                            <div className="main-content">
-                                <Outlet />
-                            </div>
+                            <Outlet />
                         </div>
                     </div>
                 </div>

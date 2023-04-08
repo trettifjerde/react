@@ -27,34 +27,31 @@ export async function signUp(data) {
 }
 
 export function getToken() {
-    const tokenInfo = localStorage.getItem('cbToken');
+    const tokenInfo = localStorage.getItem('userData');
 
     if (!tokenInfo) {
         return null;
     }
-    const [token, expires] = JSON.parse(tokenInfo);
+    const token = JSON.parse(tokenInfo);
 
-    const expirationDate = new Date(expires);
-    if (new Date() > expirationDate) {
+    if (new Date() > new Date(token.expirationDate)) {
         removeToken();
         return null;
     }
 
-    return {token, expires: +expires};
+    return token;
 }
 
-export function setToken(token) {
-    const expiration = new Date();
-    expiration.setHours(expiration.getHours() + 1);
-    const expires = expiration.getTime();
-
-    localStorage.setItem('cbToken', JSON.stringify([token, expires]));
-
-    return {token, expires}; //expires: expiration date in milliseconds
+export function setToken(res) {
+    const expiresIn = +res.expiresIn * 1000;
+    const expirationDate = new Date(new Date().getTime() + expiresIn).toISOString();
+    const user = {email: res.email, id: res.localId, token: res.idToken, expirationDate: expirationDate};
+    localStorage.setItem('userData', JSON.stringify(user));
+    return user;
 }
 
 export function removeToken() {
-    localStorage.removeItem('cbToken');
+    localStorage.removeItem('userData');
 }
 
 export function authGuard() {

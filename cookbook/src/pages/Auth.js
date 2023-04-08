@@ -133,8 +133,8 @@ async function action(request, isSignUpMode) {
     
     try {
         const data = await response.json();
-        const tokenInfo = setToken(data.idToken);
-        store.dispatch(registerLogIn(tokenInfo));
+        const token = setToken(data);
+        store.dispatch(registerLogIn(token));
         return redirect('/recipes');
     }
     catch (error) {

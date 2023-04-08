@@ -7,7 +7,15 @@ const makeUrl = (path) => {
     return `https://academind34-default-rtdb.europe-west1.firebasedatabase.app/recipes${path ? '/' + path : ''}.json`;
 }
 
-const makeIngredsUrl = (path) => (`https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list${path ? '/' + path : ''}.json`);
+const makeIngredsUrl = (path) => {
+    try {
+        const token = getToken();
+        return `https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list/${token.id}/${path ? '/' + path : ''}.json`;
+    }
+    catch {
+        return `https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list/666/${path ? '/' + path : ''}.json`;
+    }
+}
 
 const addAuth = (url) => {
     const tokenInfo = getToken();
@@ -87,8 +95,10 @@ export async function deleteRecipe(id) {
 }
 
 export async function fetchIngredients() {
-    return publicFetch(
+    return privateFetch(
         makeIngredsUrl(), 
+        'GET',
+        null,
         'Failed to fetch ingredients', 
         transformFirebaseIngredientsToList
     );

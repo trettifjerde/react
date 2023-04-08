@@ -202,29 +202,46 @@ textarea.form-control.larger {
     transition: background-color .2s ease-in-out;
     color: black;
 }
-
 .card:hover {
     background-color: rgba(191, 255, 176, 0.351);
     color: black;
 }
 
-.card.active,
-.card.active:hover {
+.card.active, .card.active:hover {
     background-color: #40e96f17;
     border-color: var(--primary);
     color: var(--primary);
     cursor: default;
 }
 
-.card-text {
-    font-size: 0.8rem;
-    overflow: hidden;
-    max-height: 4.5rem;
+.card-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 0.5rem;
+    align-items: center;
 }
 
-.card img {
-    border-radius: 3px;
+.card-body {
+    min-width: 66%;
 }
+
+.card-text {
+    font-size: 0.8rem;
+}
+
+@media (min-width: 768px) and (max-width: 990px) {
+    .card-wrapper {
+        display: block;
+    }
+}
+
+@media (max-width: 430px) {
+    .card-wrapper {
+        display: block;
+    }
+}
+
+.c {text-align: center !important;}
 
 .img-mini {
     max-height: 150px;
@@ -340,17 +357,11 @@ h5 {
 .main {
     height: calc(100vh - 10rem);
     position: relative;
+    overflow: auto;
 }
 
 .search-bar {
     height: 4rem;
-}
-
-.side-content,
-.main-content {
-    overflow: auto;
-    height: 100%;
-    padding-inline: 0.5rem;
 }
 
 .side-content {

@@ -4,7 +4,7 @@ import { removeToken } from "../helpers/authService";
 const initialState = {
     isSubmitting: false,
     message: null, // or {text: string, isError: boolean}
-    user: null // or {token: string, expires: number, timer: number}
+    user: null // or {token: string, id: string, expirationDate: isostring, email: string, timer: number}
 };
 
 const general = createSlice({
@@ -33,13 +33,14 @@ const general = createSlice({
 export const generalReducer = general.reducer;
 export const generalActions = general.actions;
 
-export function registerLogIn(tokenInfo) {
+export function registerLogIn(token) {
     return (dispatch) => {
-        const expiresIn = tokenInfo.expires - new Date().getTime();
+        const expiresIn = new Date(token.expirationDate).getTime() - new Date().getTime();
+        console.log(expiresIn);
         const timer = setTimeout(() => {
             dispatch(registerLogOut(timer));
         }, expiresIn);
-        dispatch(generalActions.logIn({...tokenInfo, timer}))
+        dispatch(generalActions.logIn({...token, timer}))
     }
 }
 
