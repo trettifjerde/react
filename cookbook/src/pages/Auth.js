@@ -4,7 +4,8 @@ import { Form, redirect, useActionData, Link } from 'react-router-dom';
 
 import { logIn, setToken, signUp } from '../helpers/authService';
 import { store } from '../store/store';
-import { generalActions, registerLogIn } from '../store/generalState';
+import { generalActions } from '../store/generalState';
+import { registerLogIn } from '../store/complexActions';
 
 const AuthPage = (props) => {
 

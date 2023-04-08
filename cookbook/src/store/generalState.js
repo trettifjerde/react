@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { removeToken } from "../helpers/authService";
 
 const initialState = {
     isSubmitting: false,
@@ -32,22 +31,3 @@ const general = createSlice({
 
 export const generalReducer = general.reducer;
 export const generalActions = general.actions;
-
-export function registerLogIn(token) {
-    return (dispatch) => {
-        const expiresIn = new Date(token.expirationDate).getTime() - new Date().getTime();
-        console.log(expiresIn);
-        const timer = setTimeout(() => {
-            dispatch(registerLogOut(timer));
-        }, expiresIn);
-        dispatch(generalActions.logIn({...token, timer}))
-    }
-}
-
-export function registerLogOut(timer) {
-    return (dispatch) => {
-        clearTimeout(timer);
-        removeToken();
-        dispatch(generalActions.logOut());
-    }
-}

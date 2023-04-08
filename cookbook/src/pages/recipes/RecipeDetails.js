@@ -10,7 +10,7 @@ import Spinner from '../../components/Spinner';
 import Dropdown from '../../components/Dropdown';
 import RecipeErrorPage from './RecipeError';
 import { useDispatch, useSelector } from 'react-redux';
-import { addRecipeToShoppingList } from '../../store/shoppingListState';
+import { addRecipeToShoppingList } from '../../store/complexActions';
 import ConfirmationModal from '../../components/ConfirmationModal';
 
 

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
 import { getToken } from '../helpers/authService';
-import { registerLogIn } from "../store/generalState";
+import { registerLogIn } from "../store/complexActions";
 
 import NavigationHeader from '../components/NavigationHeader';
 import Alert from '../components/Alert';

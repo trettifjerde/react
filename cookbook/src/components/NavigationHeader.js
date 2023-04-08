@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
-import { registerLogOut } from '../store/generalState';
+import { registerLogOut } from '../store/complexActions';
 
 const NavigationHeader = () => {
     const user = useSelector(state => state.general.user);
