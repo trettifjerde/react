@@ -1,0 +1,34 @@
+.app {
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+}
+
+.light {
+    background-color: white;
+    color: black;
+}
+
+.dark {
+    background-color: #3c3c3c;
+    color: white;
+}
+
+button {
+    font: inherit;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.light button {
+    background-color: #ebb002;
+    border: 1px solid #ebb002;
+    color: #201d0f;
+}
+
+.dark button {
+    background-color: #854899;
+    border: 1px solid #854899;
+    color: white;
+}

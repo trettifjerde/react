@@ -1,0 +1,18 @@
+.todos {
+    list-style: none;
+    margin: 2rem auto;
+    padding: 0;
+    width: 40rem;
+  }
+
+.light li {
+  background-color: #f7f5ef;
+  color: black;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark li {
+  background-color: #854899;
+  color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
