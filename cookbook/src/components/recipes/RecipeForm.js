@@ -1,4 +1,6 @@
 import { useCallback, useState, useRef, Fragment } from "react";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import './RecipeForm.css';
 
 const RecipeForm = (props) => {
     console.log('Recipe Form Comp');
@@ -72,22 +74,26 @@ const RecipeForm = (props) => {
                             Ingredients are required
                         </p>}
                     </div>
-                    { ings.map(ing => (
-                        <div key={ing.id} className="row row-cols-auto align-items-center g-2 flex-nowrap ingred-cont">
-                            <div className="col flex-shrink-1">
-                                <input type="number" className={`form-control ${errors[ing.id + '-amount'] ? 'invalid' : ''}`} defaultValue={ing.amount} name={`${ing.id}-amount`} placeholder="amount" />
-                            </div>
-                            <div className="col flex-shrink-1">
-                                <input type="text" className="form-control" defaultValue={ing.unit} name={`${ing.id}-unit`} placeholder="unit" />
-                            </div>
-                            <div className="col flex-grow-1">
-                                <input type="text" className={`form-control ${errors[ing.id + '-name'] ? 'invalid' : ''}`} defaultValue={ing.name} name={`${ing.id}-name`} placeholder="name" />
-                            </div>
-                            <div className="col flex-shrink-1">
-                                <button className="btn btn-outline-danger" type="button" onClick={removeIng.bind(null, ing.id)}>X</button>
-                            </div>            
-                        </div>
-                    )) }
+                    <TransitionGroup>
+                        { ings.map(ing => (
+                            <CSSTransition key={ing.id} timeout={300} classNames='list-item'>
+                                <div className="row row-cols-auto align-items-center g-2 flex-nowrap ingred-cont">
+                                    <div className="col flex-shrink-1">
+                                        <input type="number" className={`form-control ${errors[ing.id + '-amount'] ? 'invalid' : ''}`} defaultValue={ing.amount} name={`${ing.id}-amount`} placeholder="amount" />
+                                    </div>
+                                    <div className="col flex-shrink-1">
+                                        <input type="text" className="form-control" defaultValue={ing.unit} name={`${ing.id}-unit`} placeholder="unit" />
+                                    </div>
+                                    <div className="col flex-grow-1">
+                                        <input type="text" className={`form-control ${errors[ing.id + '-name'] ? 'invalid' : ''}`} defaultValue={ing.name} name={`${ing.id}-name`} placeholder="name" />
+                                    </div>
+                                    <div className="col flex-shrink-1">
+                                        <button className="btn btn-outline-danger" type="button" onClick={removeIng.bind(null, ing.id)}>X</button>
+                                    </div>            
+                                </div>
+                            </CSSTransition>
+                        )) }
+                    </TransitionGroup>
                     <button type="button" className="btn btn-outline-success mt-2" onClick={addNewIngredient}>
                         Add new ingredient
                     </button>
@@ -100,16 +106,18 @@ const RecipeForm = (props) => {
                             Steps cannot be empty or longer than 1000 characters each
                         </p>}
                     </div>
-                    <ol className="list-group list-group-flush list-group-numbered">
-                        { steps.map(step => <li key={step.id} className="list-group-item d-flex row align-items-center justify-content-between p-1 m-1">
-                            <div className="col-md-8 flex-grow-1">
-                                <textarea className={`form-control ${errors[step.id] ? 'invalid' : ''}`} name={step.id} defaultValue={step.step}></textarea>
-                            </div>
-                            <div className="col-auto g-0">
-                                <button className="btn btn-outline-danger" type="button" onClick={removeStep.bind(null, step.id)}>X</button>      
-                            </div>
-                        </li>)}     
-                    </ol>
+                    <TransitionGroup component="ol" className="list-group list-group-flush list-group-numbered">
+                        { steps.map(step => <CSSTransition key={step.id} timeout={300} classNames="list-item">
+                            <li className="list-group-item d-flex row align-items-center justify-content-between p-1 m-1">
+                                <div className="col-md-8 flex-grow-1">
+                                    <textarea className={`form-control ${errors[step.id] ? 'invalid' : ''}`} name={step.id} defaultValue={step.step}></textarea>
+                                </div>
+                                <div className="col-auto g-0">
+                                    <button className="btn btn-outline-danger" type="button" onClick={removeStep.bind(null, step.id)}>X</button>      
+                                </div>
+                            </li>
+                        </CSSTransition>)}     
+                    </TransitionGroup>
                     <button type="button" className="btn btn-outline-success" onClick={addNewStep}>
                         Add new step
                     </button>
