@@ -1,0 +1,1 @@
+export type SuggestionWord = {id: number, word: string, selected: boolean};
