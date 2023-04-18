@@ -1,5 +1,5 @@
-import { Suspense, useCallback, useState } from 'react';
-import { Outlet, NavLink, defer, useLoaderData, Await } from "react-router-dom";
+import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Outlet, NavLink, defer, useLoaderData, Await, useLocation } from "react-router-dom";
 
 import { store } from "../../store/store";
 import { generalActions } from "../../store/generalState";
@@ -13,6 +13,8 @@ import Spinner from '../../components/Spinner';
 const RecipesPage = () => {
     console.log('Recipe Page');
     const { recipesFetched } = useLoaderData();
+    const location = useLocation();
+    const [isMobileVisible, setMobileVisible] = useState(true);
 
     const [filterString, setFilterString] = useState('');
     const handleFilterChange = useCallback((e) => {
@@ -21,10 +23,19 @@ const RecipesPage = () => {
     }, []);
     const clearFilter = useCallback(() => setFilterString(''), []);
 
+    const toggleMobileRecipes = useCallback(() => setMobileVisible(prev => (!prev)), [setMobileVisible]);
+
+    useEffect(() => {
+        if (! location.pathname.endsWith('recipes')) 
+            setMobileVisible(false);
+        else 
+            setMobileVisible(true);
+    }, [location, setMobileVisible]);
+
     return (
         <Suspense fallback={<Spinner />}>
             <Await resolve={recipesFetched}>
-                <div className="fadeIn">
+                <div className={`fadeIn ${isMobileVisible ? 'open' : ''}`}>
                     <div className="row align-items-center search-bar">
                         <div className="col-auto">
                             <NavLink to="/recipes/new" className="btn btn-success">New Recipe</NavLink>
@@ -34,14 +45,17 @@ const RecipesPage = () => {
                             <button type="button" className="btn btn-danger" onClick={clearFilter}>X</button>
                         </div>
                     </div>
-                    <div className="row mb-3">
+                    <div className="show-recipes-btn mb-2">
+                        <button type="button" className={`btn w-100 ${isMobileVisible ? 'btn-danger' : 'btn-success'}`} onClick={toggleMobileRecipes}>{ isMobileVisible ? 'Hide recipes' : 'Show recipes'}</button>
+                    </div>
+                    <main className="row mb-3">
                         <div className="col-md-5 side">
                             <RecipeList filterString={filterString} />
                         </div>
                         <div className="col-md-7 main">
                             <Outlet />
                         </div>
-                    </div>
+                    </main>
                 </div>
             </Await>
         </Suspense>

@@ -11,6 +11,8 @@ const RecipeForm = (props) => {
     const [steps, setSteps] = useState(makeInitSteps(recipe.steps));
     const [errors, setErrors] = useState({});
 
+    console.log(steps);
+
     const contTop = useRef();
 
     const addNewIngredient = useCallback(() => setIngs(prev => ([...prev, makeNewIng()])), [setIngs]);
@@ -18,6 +20,14 @@ const RecipeForm = (props) => {
 
     const removeIng = useCallback(id => setIngs(prev => prev.filter(ing => ing.id !== id)), [setIngs]);
     const removeStep = useCallback(id => setSteps(prev => prev.filter(step => step.id !== id)), [setSteps]);
+
+    const moveStep = useCallback((id, adjust) => setSteps((prevSteps) => {
+        const i = prevSteps.findIndex(step => step.id === id);
+        let filteredSteps = [...prevSteps];
+        const splicedSteps = filteredSteps.splice(i, 1);
+        filteredSteps.splice(i + adjust, 0, splicedSteps[0]);
+        return filteredSteps;
+    }), [setSteps]);
 
     const submitForm = useCallback((e) => {
         e.preventDefault()
@@ -106,14 +116,19 @@ const RecipeForm = (props) => {
                             Steps cannot be empty or longer than 1000 characters each
                         </p>}
                     </div>
-                    <TransitionGroup component="ol" className="list-group list-group-flush list-group-numbered">
+                    <TransitionGroup component="ol" className="list-group list-group-flush steps">
                         { steps.map(step => <CSSTransition key={step.id} timeout={300} classNames="list-item">
-                            <li className="list-group-item d-flex row align-items-center justify-content-between p-1 m-1">
-                                <div className="col-md-8 flex-grow-1">
+                            <li className="list-group-item row step">
+                                <div className="col-auto step-num-n-del">
+                                    <div className="btn order-btn"></div>
+                                    <button className="btn btn-outline-danger" type="button" onClick={removeStep.bind(null, step.id)}>X</button>      
+                                </div>
+                                <div className="col-md-8 step-area">
                                     <textarea className={`form-control ${errors[step.id] ? 'invalid' : ''}`} name={step.id} defaultValue={step.step}></textarea>
                                 </div>
-                                <div className="col-auto g-0">
-                                    <button className="btn btn-outline-danger" type="button" onClick={removeStep.bind(null, step.id)}>X</button>      
+                                <div className="col-auto step-move-btns">
+                                    <button className="btn btn-outline-success" type="button" onClick={moveStep.bind(null, step.id, -1)}>🡅</button>
+                                    <button className="btn btn-outline-success" type="button" onClick={moveStep.bind(null, step.id, 1)}>🡇</button>      
                                 </div>
                             </li>
                         </CSSTransition>)}     
@@ -123,7 +138,7 @@ const RecipeForm = (props) => {
                     </button>
                 </div>
                 <hr/>
-                <div className="row justify-content-evenly g-0">
+                <div className="row justify-content-between g-0">
                     <button className="btn btn-success col-5" type="submit" disabled={false}>Submit</button>
                     <button className="btn btn-outline-success col-5" type="button" onClick={cancelSubmit}>Cancel</button>
                 </div>

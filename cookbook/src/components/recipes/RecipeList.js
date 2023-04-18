@@ -66,7 +66,7 @@ const RecipeList = (props) => {
 
     return (
         <Fragment>
-            <div className="recipes-c">
+            <div className="recipes-c fadeIn">
                 <TransitionGroup className="recipes-c">
                     {filteredRecipes.map(r => <CSSTransition key={r.id} classNames="recipe-item" timeout={400}>
                         <RecipeItem recipe={r} />
