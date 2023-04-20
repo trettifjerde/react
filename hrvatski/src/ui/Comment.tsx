@@ -15,11 +15,11 @@ export const StyledComment = styled.div`
     padding-inline: 2rem;
     background-color: white;
 
-    & h3, & div { margin-block: 2rem;}
+    & h3 { margin-block: 2rem;}
     & .btn { margin: 0.5rem;}
 
     &.m { 
-        position: static;
+        bottom: unset;
         padding: 2rem;
     }
 
@@ -27,9 +27,20 @@ export const StyledComment = styled.div`
         & h3 {color: var(--primary-color);}
     }
 
+    &.m h3 {
+        font-size: 2rem;
+        margin-block: 1rem 4rem;
+    }
+
     &.enter { animation: jumpUp .3s forwards; }
     &.exit { animation: slideDown .3s forwards; }
 `;
+
+export const ScoreHeader = styled.div`
+    font-size: 1.3rem;
+    margin-block: 2rem;
+`;
+
 
 export type CommentType = 'success' | 'fail' | 'main';
 
@@ -39,7 +50,6 @@ const Comment : React.FC<{visible: boolean, type: CommentType, children?: ReactN
             <StyledComment className={type === 'fail' ? 'f' : type === 'main' ? 'm' : ''}>
                 { type === 'success' && <H3>{pickRandom(SUCCESS)}</H3> }
                 { type === 'fail' && <H3>{pickRandom(FAIL)}</H3> }
-                { type === 'main' && <Sentence>Your score is</Sentence>}
                 { children }
             </StyledComment>
         </CSSTransition>

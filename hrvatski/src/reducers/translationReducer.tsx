@@ -11,6 +11,7 @@ export type TranslationState = {
     complete: boolean,
     score: number,
     feedback: Feedback,
+    lives: number
 }
 
 const translationStateReducer = (state: TranslationState, action: a.TranslationAction) => {
@@ -22,8 +23,12 @@ const translationStateReducer = (state: TranslationState, action: a.TranslationA
         return {
             ...state,
             feedback: feedback,
-            score: feedback ? state.score + 1 : state.score
+            score: feedback ? state.score + 1 : state.score,
+            lives: feedback ? state.lives : state.lives - 1
         }
+    }
+    if (action instanceof a.TransFail) {
+        return {...state, complete: true};
     }
     if (action instanceof a.TransSelect)
         return {...state, answers: [...state.answers, action.wordId]}
@@ -43,7 +48,8 @@ export function makeInitTransState(targetLang: Language, maxQ: number=sentences.
         complete: false,
         score: 0,
         feedback: null,
-        tasks: makeTranslationTasks(targetLang, maxQ)
+        tasks: makeTranslationTasks(targetLang, maxQ),
+        lives: 3
     }
 }
 

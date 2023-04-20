@@ -38,7 +38,7 @@ export const hrvExtras : {[key: string] : string[]} = {
 }
 
 export const enExtras: {[key: string] : string[]} = {
-    'good day': ['hi', 'hello'],
+    'good day': ['hi', 'hello', 'good afternoon'],
     'good evening': ['evening', 'hi', 'hello'],
     'good morning': ['morning', 'hi', 'hello'],
     'thank you': ['thanks'],

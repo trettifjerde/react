@@ -27,4 +27,8 @@ export class TransComplete {
     readonly type = 'TRANS_COMPLETE';
 }
 
-export type TranslationAction = TransInitAction | TransCheckAnswer | TransSelect | TransUnselect | TransNextQuestion | TransComplete;
+export class TransFail {
+    readonly type = 'TRANS_FAIL';
+}
+
+export type TranslationAction = TransInitAction | TransCheckAnswer | TransSelect | TransUnselect | TransNextQuestion | TransComplete | TransFail;

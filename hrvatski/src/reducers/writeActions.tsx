@@ -18,5 +18,9 @@ export class WriteCompleteAction {
     readonly type = 'WRITE_COMPLETE';
 }
 
+export class WriteFailAction {
+    readonly type = 'WRITE_FAIL';
+}
 
-export type WriteAction = WriteInitAction | WriteNextAction | WriteCompleteAction | WriteCheckAction;
+
+export type WriteAction = WriteInitAction | WriteNextAction | WriteCompleteAction | WriteCheckAction | WriteFailAction;

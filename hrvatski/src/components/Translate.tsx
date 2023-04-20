@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useCallback, useReducer } from "react";
+import React, { Fragment, Suspense, useCallback, useEffect, useReducer } from "react";
 import { Await, NavLink, useLoaderData } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
@@ -6,11 +6,12 @@ import { Language } from "../types";
 import { sentences } from "../data/translateData";
 import translationStateReducer, { makeInitTransState } from "../reducers/translationReducer";
 import * as actions from '../reducers/translationActions';
-import { H3, H5, WordSet, Word, Sentence, Task, TaskContainer } from '../styles/styledComponents';
+import { H3, H5, WordSet, Word, Sentence, Task, TaskContainer, TaskText, Lives, TaskHeader, Mini } from '../styles/styledComponents';
 
 import ErrorComponent from "./ErrorComponent";
 import Comment from "../ui/Comment";
 import TaskControl from "../ui/TaskControl";
+import Score from "../ui/Score";
 
 const MAXQ = sentences.length;
 
@@ -18,12 +19,9 @@ const Translate : React.FC = () => {
 
     const targetLang = useLoaderData() as Language;
     const [state, dispatchAction] = useReducer(translationStateReducer, makeInitTransState(targetLang, MAXQ));
-    const {answers, score, complete, feedback, i} = state;
+    const {answers, score, complete, feedback, i, lives} = state;
     const {source, suggestions, target} = state.tasks[i];
-
-    console.log(state);
-
-    
+   
     const selectWord = (id: number) => {
         if (feedback === null && !answers.includes(id)) dispatchAction(new actions.TransSelect(id));
     };
@@ -33,11 +31,13 @@ const Translate : React.FC = () => {
 
     const checkAnswer = useCallback(() => dispatchAction(new actions.TransCheckAnswer()), [dispatchAction]);
     const nextTask = useCallback(() => {
-        if (i === MAXQ - 1) 
+        if (lives < 0) 
+            dispatchAction(new actions.TransFail());
+        else if (i === MAXQ - 1) 
             dispatchAction(new actions.TransComplete())
         else 
             dispatchAction(new actions.TransNextQuestion())
-    }, [dispatchAction, i]);
+    }, [dispatchAction, i, lives]);
 
     const retry = useCallback(() => dispatchAction(new actions.TransInitAction(targetLang, MAXQ)), [dispatchAction, targetLang]);
 
@@ -47,8 +47,15 @@ const Translate : React.FC = () => {
                 <TaskContainer>
                     {! complete && <Fragment>
                         <Task>
-                            <H3>Score: {score}/{MAXQ}</H3>
-                            <Sentence>{source}</Sentence>
+                            <TaskHeader>
+                                <Sentence>{i + 1}/{MAXQ}</Sentence>
+                                <Lives>
+                                    <i className={lives < 3 ? 'f' : ''}/>
+                                    <i className={lives < 2 ? 'f' : ''}/>
+                                    <i className={lives < 1 ? 'f' : ''}/>
+                                </Lives>
+                            </TaskHeader>
+                            <TaskText>{source}</TaskText>
                             <TransitionGroup component={WordSet} className="selected">
                                 {answers.map(id => <CSSTransition timeout={200} key={id}>
                                     <Word onClick={unselectWord.bind(null, id)}>{suggestions[id].word}</Word>
@@ -76,11 +83,10 @@ const Translate : React.FC = () => {
                     </Fragment>
                     }
 
-                    <Comment visible={complete} type="main">
-                        <Sentence><H3>{score}/{MAXQ}</H3></Sentence>
+                    <Score visible={complete} lives={lives} maxQ={MAXQ} score={score}>
                         <button className="btn" type="button" onClick={retry}>Retry</button>
                         <NavLink className="btn outline" to="/translate">Back to Translations</NavLink>
-                    </Comment>
+                    </Score>
                 </TaskContainer>
             </Await>
         </Suspense>

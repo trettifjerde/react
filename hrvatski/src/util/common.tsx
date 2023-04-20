@@ -30,5 +30,5 @@ export function makeTasks(targetLang: Language, maxQ: number) {
     return tasks;
 }
 
-export const SUCCESS = ['Correct!', 'Right you are!', 'Splendid!', 'Good job!'];
-export const FAIL = ['Oh, no!', 'Wrong!', 'Nope!'];
+export const SUCCESS = ['Correct!', 'Right you are!', 'Splendid!', 'Good job!', 'Fantastic!', 'Odlično!', 'Tako je!', 'Točno!', 'Upravo tako!'];
+export const FAIL = ['Oh, no!', 'Wrong!', 'Nije baš tako!', 'Nope!', 'Joj, pazi!', 'Oops!', 'Ajme meni!'];

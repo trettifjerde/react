@@ -1,13 +1,14 @@
 import { Feedback, Language, CommonTask } from "../types";
 import { makeTasks } from "../util/common";
-import { WriteAction, WriteCheckAction, WriteCompleteAction, WriteInitAction, WriteNextAction } from "./writeActions";
+import { WriteAction, WriteCheckAction, WriteCompleteAction, WriteFailAction, WriteInitAction, WriteNextAction } from "./writeActions";
 
 export type WriteState = {
     i: number,
     complete: boolean,
     score: number,
     tasks: CommonTask[],
-    feedback: Feedback
+    feedback: Feedback,
+    lives: number
 }
 
 export function writeReducer(state: WriteState, action: WriteAction) {
@@ -16,13 +17,15 @@ export function writeReducer(state: WriteState, action: WriteAction) {
     }
     if (action instanceof WriteCheckAction) {
         const feedback = checkTranslation(action.input, state.tasks[state.i]);
-        console.log(state.tasks[state.i].target, action.input);
-        return {...state, feedback: feedback, score: feedback ? state.score + 1 : state.score}
+        return {...state, feedback: feedback, score: feedback ? state.score + 1 : state.score, lives: feedback ? state.lives : state.lives - 1}
     }
     if (action instanceof WriteNextAction) {
         return {...state, i: state.i + 1, feedback: null}
     }
     if (action instanceof WriteCompleteAction) {
+        return {...state, complete: true}
+    }
+    if (action instanceof WriteFailAction) {
         return {...state, complete: true}
     }
     return state;
@@ -34,7 +37,8 @@ export function makeInitWriteState(targetLang: Language, maxQ: number) : WriteSt
         complete: false,
         score: 0,
         feedback: null,
-        tasks: makeTasks(targetLang, maxQ)
+        tasks: makeTasks(targetLang, maxQ),
+        lives: 3
     }
 }
 
