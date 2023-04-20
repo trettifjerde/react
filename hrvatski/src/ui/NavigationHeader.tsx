@@ -13,6 +13,9 @@ const Nav = styled.nav`
     margin: 0;
     padding: 0;
     font-weight: 600;
+    position: sticky;
+    top: 0;
+    background-color: var(--secondary-color);
 `;
 
 const NavigationHeader = () => {

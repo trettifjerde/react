@@ -1,8 +1,11 @@
 :root {
   --primary-color: #cf2ccf;
   --secondary-color: #2e2e2e;
-  --secondary-ligher: #3b3b3b;
+  --secondary-lighter: #4d4d4d;
   --font-size: 18px;
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
 }
 
 * {
@@ -13,9 +16,7 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--secondary-color);
@@ -26,11 +27,41 @@ body {
 #root {
   width: 100%;
   height: 100vh;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 a { 
   text-decoration: none;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 5px;
+  outline: none;
+  color: white;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  background-color: transparent;
+  color: var(--secondary-lighter);
+  border-color: var(--secondary-color);
+}
+
+.btn.outline {
+  background-color: white;
+  color: var(--primary-color);
+}
+
+.btn.large {
+  padding: 1.5rem 2rem;
 }
 
 @keyframes popOut {
@@ -54,11 +85,43 @@ a {
     color: transparent;
   }
   60% {
-    transform: scale(1.1);
+    transform: scale(1.15);
     color: white;
   }
   100% {
     transform: scale(1);
     color: white;
   }
+}
+
+@keyframes fadeIn {
+  0% { transform: scale(0.95); opacity: 0;}
+  100% { transform: scale(1); opacity: 1;}
+}
+
+@keyframes fadeOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes jumpUp {
+  0% {opacity: 0; transform: translateY(100%)}
+  50% {opacity: 0.7; transform: translateY(-10%)}
+  100% {opacity: 1; transform: translateY(0%)}
+}
+
+@keyframes slideDown {
+  0% {transform: translateY(0); opacity: 1;}
+  100% {transform: translateY(100%); opacity: 0;}
+}
+
+@keyframes swipeLeft {
+  0% {transform: translateX(100%); opacity: 0;}
+  100% {transform: translateX(0); opacity: 1;}
 }
