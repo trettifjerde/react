@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Feedback } from "../types";
+import { Feedback } from "../../types";
 
 const StyledTaskControl = styled.div`
     position: absolute;

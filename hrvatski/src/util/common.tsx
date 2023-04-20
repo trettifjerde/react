@@ -1,5 +1,5 @@
 import { enExtras, hrvExtras, sentences } from "../data/translateData";
-import { Language, CommonTask } from "../types";
+import { Language, CommonTask, TranslationTask } from "../types";
 
 export function shuffle(words: string[]) {
     const newWords = [...words];
@@ -28,6 +28,10 @@ export function makeTasks(targetLang: Language, maxQ: number) {
         tasks.push(task);
     }
     return tasks;
+}
+
+export function makeAnswerString(task: CommonTask | TranslationTask) {
+    return `${task.source} = ${task.target}`
 }
 
 export const SUCCESS = ['Correct!', 'Right you are!', 'Splendid!', 'Good job!', 'Fantastic!', 'Odlično!', 'Tako je!', 'Točno!', 'Upravo tako!'];

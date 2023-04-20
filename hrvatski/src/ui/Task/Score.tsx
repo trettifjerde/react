@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react"
 import Comment, { ScoreHeader } from "./Comment";
-import { Mini } from "../styles/styledComponents";
+import { Mini } from "../../styles/styledComponents";
 
 const Score: React.FC<{
     visible: boolean, 

@@ -23,10 +23,14 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <Home /> },
             { path: 'signin', element: <SignIn />},
-            { path: 'translate', element: <ChooseLanguagePage /> },
-            { path: 'translate/:targetLang', element: <Translate />, loader: targetLanguageLoader},
-            { path: 'write', element: <ChooseLanguagePage />},
-            { path: 'write/:targetLang', element: <Write />, loader: targetLanguageLoader},
+            { path: 'translate', children: [
+                {index: true, element: <ChooseLanguagePage /> },
+                {path: ':targetLang', element: <Translate />, loader: targetLanguageLoader}
+            ] },
+            { path: 'write', children: [
+                {index: true, element: <ChooseLanguagePage />},
+                { path: ':targetLang', element: <Write />, loader: targetLanguageLoader}
+            ]},
         ]},
 ])
 

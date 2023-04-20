@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { CSSTransition } from "react-transition-group";
 import React, { ReactNode } from "react";
-import { H3, Sentence } from "../styles/styledComponents";
-import { FAIL, SUCCESS, pickRandom } from "../util/common";
+import { H3 } from "../../styles/styledComponents";
+import { FAIL, SUCCESS, pickRandom } from "../../util/common";
 
 export const StyledComment = styled.div`
     position: absolute;

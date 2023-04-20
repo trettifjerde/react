@@ -1,16 +1,16 @@
-import React, { Fragment, Suspense, useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { Await, NavLink, useLoaderData } from "react-router-dom";
+import React, { Suspense, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { Await, useLoaderData } from "react-router-dom";
 
 import { sentences } from "../data/translateData";
 import { makeInitWriteState, writeReducer } from "../reducers/writeReducer";
 import { Language } from "../types";
-import { H3, H5, Lives, Sentence, Task, TaskContainer, TaskHeader, TaskText, Textarea } from "../styles/styledComponents";
 
-import Comment from "../ui/Comment";
 import ErrorComponent from "./ErrorComponent";
-import TaskControl from "../ui/TaskControl";
 import { WriteCheckAction, WriteCompleteAction, WriteFailAction, WriteInitAction, WriteNextAction } from "../reducers/writeActions";
-import Score from "../ui/Score";
+import Task from "../ui/Task/Task";
+import { TaskText } from "../ui/Task/taskStyles";
+import { Textarea } from "../styles/styledComponents";
+import { makeAnswerString } from "../util/common";
 
 const MAXQ = sentences.length;
 
@@ -20,10 +20,10 @@ const Write : React.FC = () => {
     const [state, dispatchAction] = useReducer(writeReducer, makeInitWriteState(targetLang, MAXQ));
     const {score, feedback, complete, i, lives } = state;
     const task = state.tasks[i];
-    const {source, target} = task;
+    const {source} = task;
     const ta = useRef<HTMLTextAreaElement>(null);
 
-    console.log(task);
+    console.log('Write component');
 
     const nextTask = useCallback(() => {
         if (lives < 0) dispatchAction(new WriteFailAction());
@@ -61,35 +61,18 @@ const Write : React.FC = () => {
     return (
         <Suspense>
             <Await resolve={targetLang} errorElement={<ErrorComponent />}>
-                <TaskContainer>
-                    {!complete && <Fragment>
-                        <Task>
-                            <TaskHeader>
-                                <Sentence>{i + 1}/{MAXQ}</Sentence>
-                                <Lives>
-                                    <i className={lives < 3 ? 'f' : ''}/>
-                                    <i className={lives < 2 ? 'f' : ''}/>
-                                    <i className={lives < 1 ? 'f' : ''}/>
-                                </Lives>
-                            </TaskHeader>
-                            <TaskText>{source}</TaskText>
-                            <Textarea ref={ta} onChange={updateDisabled} onKeyDown={handleKeyDown}></Textarea>
-                        </Task>
-                        <TaskControl disabled={disabled} feedback={feedback} check={checkAnswer} next={nextTask}></TaskControl>
-
-                        <Comment visible={feedback === true} type="success"></Comment>
-                        <Comment visible={feedback === false} type="fail">
-                            <div><H5>{source} = {target}</H5></div>
-                        </Comment>
-                    </Fragment>}
-
-                    {complete && <Score visible={complete} lives={lives} maxQ={MAXQ} score={score}>
-                        <button className="btn" type="button" onClick={retry}>Retry</button>
-                        <NavLink className="btn outline" to="/write">Back to Write</NavLink>
-                    </Score>}
-                </TaskContainer>
+                <Task 
+                    complete={complete} feedback={feedback} 
+                    score={score} i={i} maxQ={MAXQ} lives={lives}
+                    check={checkAnswer} retry={retry} next={nextTask} 
+                    answer={makeAnswerString(task)} disabled={disabled}
+                >
+                    <TaskText>{source}</TaskText>
+                    <Textarea ref={ta} onChange={updateDisabled} onKeyDown={handleKeyDown}></Textarea>
+                </Task>
             </Await>
         </Suspense>
     )
 };
 export default Write;
+
