@@ -1,5 +1,6 @@
 import { sentences } from "../data/translateData";
-import { Language, TranslationFeedback, TranslationTask } from "../types";
+import { Language, Feedback, TranslationTask } from "../types";
+import { makeTasks } from "../util/common";
 import { makeSuggestionWords } from "../util/translate";
 import * as a from "./translationActions";
 
@@ -9,16 +10,7 @@ export type TranslationState = {
     i: number,
     complete: boolean,
     score: number,
-    feedback: TranslationFeedback,
-}
-
-export const initialTranslationState: TranslationState = {
-    tasks: [{source: '', target: '', suggestions: [{id: 0, word: ''}]}],
-    answers: [],
-    i: 0,
-    complete: false,
-    score: 0,
-    feedback: null
+    feedback: Feedback,
 }
 
 const translationStateReducer = (state: TranslationState, action: a.TranslationAction) => {
@@ -26,7 +18,7 @@ const translationStateReducer = (state: TranslationState, action: a.TranslationA
         return makeInitTransState(action.lang, action.maxQ);
     if (action instanceof a.TransCheckAnswer) {
         const task = state.tasks[state.i];
-        const feedback = task.target === state.answers.map(i => task.suggestions[i].word).join(' ');
+        const feedback = checkTranslationTask(task, state.answers);
         return {
             ...state,
             feedback: feedback,
@@ -51,24 +43,17 @@ export function makeInitTransState(targetLang: Language, maxQ: number=sentences.
         complete: false,
         score: 0,
         feedback: null,
-        tasks: makeTasks(targetLang, maxQ)
+        tasks: makeTranslationTasks(targetLang, maxQ)
     }
 }
 
-function makeTasks(targetLang: Language, maxQ: number) {
-    const sourceLang = targetLang === 'hrv' ? 'en' : 'hrv';
-    let data = [...sentences];
-    let tasks = [];
+function makeTranslationTasks(targetLang: Language, maxQ: number): TranslationTask[] {
+    return makeTasks(targetLang, maxQ).map(task => ({...task, suggestions: makeSuggestionWords(task.target, targetLang, 4)}));
+}
 
-    while(tasks.length < maxQ) {
-        const i = Math.floor(Math.random() * data.length);
-        const pair = data.splice(i, 1);
-        const source = pair[0][sourceLang];
-        const target = pair[0][targetLang];
-        const suggestions = makeSuggestionWords(target, targetLang);
-        tasks.push({source: source, target: target, suggestions: suggestions.map((s, i) => ({id: i, word: s}))});
-    }
-    return tasks;
+function checkTranslationTask(task: TranslationTask, answers: number[]) {
+    const answer = answers.map(i => task.suggestions[i].word).join(' ');
+    return answer === task.target || task.extras.includes(answer);
 }
 
 export default translationStateReducer;

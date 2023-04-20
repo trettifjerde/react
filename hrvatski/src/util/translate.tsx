@@ -1,8 +1,8 @@
 import { english, croatian} from '../data/translateData';
-import { Language } from '../types';
+import { Language, SuggestionWord } from '../types';
 import { shuffle } from './common';
 
-export function makeSuggestionWords(phrase: string, targetLang: Language, maxWords=4) {
+export function makeSuggestionWords(phrase: string, targetLang: Language, maxWords=4): SuggestionWord[] {
     const targetDict = targetLang === 'hrv' ? croatian : english;
     const words = [...phrase.split(' ')];
     
@@ -13,5 +13,5 @@ export function makeSuggestionWords(phrase: string, targetLang: Language, maxWor
     
     const extraWords = shuffle(words);
 
-    return extraWords;
+    return extraWords.map((word, i) => ({id: i, word: word}));
 }

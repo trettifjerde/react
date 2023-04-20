@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { CSSTransition } from "react-transition-group";
 import React, { ReactNode } from "react";
+import { H3, Sentence } from "../styles/styledComponents";
+import { FAIL, SUCCESS, pickRandom } from "../util/common";
 
 export const StyledComment = styled.div`
     position: absolute;
@@ -16,12 +18,12 @@ export const StyledComment = styled.div`
     & h3, & div { margin-block: 2rem;}
     & .btn { margin: 0.5rem;}
 
-    &.main { 
+    &.m { 
         position: static;
         padding: 2rem;
     }
 
-    &.main, &.f { 
+    &.m, &.f { 
         & h3 {color: var(--primary-color);}
     }
 
@@ -29,12 +31,16 @@ export const StyledComment = styled.div`
     &.exit { animation: slideDown .3s forwards; }
 `;
 
-const Comment : React.FC<{children: ReactNode, visible: boolean, className?: string}> = ({children, visible, className}) => {
-    console.log(visible, className, children);
+export type CommentType = 'success' | 'fail' | 'main';
+
+const Comment : React.FC<{visible: boolean, type: CommentType, children?: ReactNode }> = ({children, visible, type}) => {
     return (
         <CSSTransition in={visible} timeout={300} classNames={{enter: 'enter', exit: 'exit'}} mountOnEnter unmountOnExit>
-            <StyledComment className={className}>
-                {children}
+            <StyledComment className={type === 'fail' ? 'f' : type === 'main' ? 'm' : ''}>
+                { type === 'success' && <H3>{pickRandom(SUCCESS)}</H3> }
+                { type === 'fail' && <H3>{pickRandom(FAIL)}</H3> }
+                { type === 'main' && <Sentence>Your score is</Sentence>}
+                { children }
             </StyledComment>
         </CSSTransition>
     )

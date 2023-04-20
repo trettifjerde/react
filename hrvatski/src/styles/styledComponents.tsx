@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const TranslateTask = styled.div`
+export const TaskContainer = styled.div`
     animation: fadeIn .3s;
     max-width: 800px;
     margin: auto;
@@ -19,16 +19,6 @@ export const Task = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-`;
-
-export const TaskControl = styled.div`
-    position: absolute;
-    width: 100%;
-    bottom: 5rem;
-    overflow: hidden;
-    z-index: 5;
-
-    &.main { position: static;}
 `;
 
 export const H3 = styled.h3`
@@ -106,6 +96,29 @@ export const Grid = styled.div`
         &:hover {
             background-color: var(--primary-color);
         }
+    }
+`;
+
+export const Textarea = styled.textarea`
+    height: 20vh;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background-color: var(--secondary-lighter);
+    resize: none;
+    outline: none;
+    transition: border-color .3s;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    font-size: 18px;
+    padding: 3rem;
+    line-height: 3rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 6rem;
+
+    &:focus {
+        border-color: var(--primary-color);
     }
 `;
 
