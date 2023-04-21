@@ -8,12 +8,19 @@ import Write from "./components/Write";
 import MainErrorPage from "./pages/MainErrorPage";
 import { Language } from "./types";
 import Grammar from "./components/Grammar";
+import ChooseTaskPage from "./pages/ChoseTask";
 
 const targetLanguageLoader: (l: LoaderArgs) => Language | Response = ({params}) => {
     if (params.targetLang === 'hrv' || params.targetLang === 'en')
         return params.targetLang as Language;
     else 
         return redirect('/translate');
+}
+
+const grammarTaskLoader: (l: LoaderArgs) => string | Response = ({params}) => {
+    if (params.task === 'biti' || params.task === 'random' || params.task === 'prezent') 
+        return params.task;
+    else return redirect('/grammar');
 }
 
 const router = createBrowserRouter([
@@ -32,7 +39,10 @@ const router = createBrowserRouter([
                 {index: true, element: <ChooseLanguagePage />},
                 { path: ':targetLang', element: <Write />, loader: targetLanguageLoader}
             ]},
-            {path: 'grammar', element: <Grammar />}
+            {path: 'grammar', children: [
+                {index: true, element: < ChooseTaskPage />},
+                {path: ':task', element: <Grammar />, loader: grammarTaskLoader}
+            ]}
         ]},
 ])
 

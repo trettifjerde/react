@@ -1,25 +1,27 @@
-import { FC, Fragment, useCallback, useEffect, useReducer, useState} from 'react';
+import { FC, Fragment, Suspense, useCallback, useReducer, useState} from 'react';
 import Task from '../ui/Task/Task';
 import { Feedback, GrammarTask as GT } from '../types';
-import { VERB_TASKS_PRESENT, makeGrammarTasks } from '../data/grammarData';
+import { makeGrammarTasks } from '../data/grammarData';
 import { ActionType, initStore, makeInitState } from '../reducers/taskStore';
 import { Purple } from '../styles/styledComponents';
 import GrammarTask from '../ui/GrammarTask';
+import { Await, useLoaderData } from 'react-router-dom';
+import ErrorComponent from './ErrorComponent';
 
-const getInitGrammarState = () => {
-    return makeInitState<GT>(makeGrammarTasks);
+const getInitGrammarState = (task: string) => {
+    return makeInitState<GT>(makeGrammarTasks.bind(null, task));
 }
 const checkGrammarTask: (task: GT, answer: string) => Feedback = (task, answer) => {
     console.log(task.form, answer);
     return task.form === answer;
 };
 
-const emptyWord = '___';
-
-const maxQ = VERB_TASKS_PRESENT.length;
+const maxQ = 10;
 
 const Grammar: FC = () => {
-    const [state, dispatch] = useReducer(...initStore<GT>(getInitGrammarState(), checkGrammarTask));
+    const taskName = useLoaderData() as string;
+
+    const [state, dispatch] = useReducer(...initStore<GT>(getInitGrammarState(taskName), checkGrammarTask));
     const [answer, setAnswer] = useState('');
     const {i, complete, lives, feedback, tasks, score} = state;
     const task = tasks[i];
@@ -43,13 +45,17 @@ const Grammar: FC = () => {
     }, []);
 
     return (
-        <Task 
-            i={i} complete={complete} score={score} maxQ={maxQ}
-            feedback={feedback} answer={getAnswerComment(task)} lives={lives} disabled={!answer}
-            retry={retry} check={check} next={next}
-        >
-            <GrammarTask task={task} selectWord={selectAnswer} />
-        </Task>
+        <Suspense>
+            <Await resolve={taskName} errorElement={<ErrorComponent />}>
+                <Task 
+                    i={i} complete={complete} score={score} maxQ={maxQ}
+                    feedback={feedback} answer={getAnswerComment(task)} lives={lives} disabled={!answer}
+                    retry={retry} check={check} next={next}
+                >
+                    <GrammarTask task={task} selectWord={selectAnswer} />
+                </Task>
+            </Await>
+        </Suspense>
     )
 }
 

@@ -13,7 +13,11 @@ export function shuffle<T>(words: T[]) {
 }
 
 export function pickRandom(words: string[]) {
-    return words[Math.floor(Math.random() * words.length)];
+    return words[pickRandomIndex(words.length)];
+}
+
+export function pickRandomIndex(maxLength: number) {
+    return Math.floor(Math.random() * maxLength);
 }
 
 export function makeTasks(targetLang: Language, maxQ: number) {

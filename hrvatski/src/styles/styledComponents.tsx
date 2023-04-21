@@ -47,8 +47,8 @@ export const Word = styled.div`
     .selected &, &.off:hover, &.g-s { background-color: var(--primary-color); }
     .selected &:hover { background-color: transparent;}
 
-    .selected &.enter { animation: popIn .2s forwards;}
-    .selected &.exit { animation: fadeOut .2s forwards;}
+    .selected &.enter { animation: popIn .15s forwards;}
+    .selected &.exit { animation: fadeOut .15s forwards;}
 
     &.off { 
         animation: popIn .2s forwards;

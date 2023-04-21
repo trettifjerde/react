@@ -5,6 +5,7 @@ import { GrammarTask as GT, SuggestionWord } from "../types";
 import { CSSTransition } from "react-transition-group";
 
 const emptyWord = {word: '___'};
+const animationTimeout = 150;
 
 const GrammarTask: FC<{
     task: GT,
@@ -22,7 +23,7 @@ const GrammarTask: FC<{
             setAnswer({word: s, id: i});
             setAnswerVisible(true);
             selectWord(s);
-        }, 200);
+        }, animationTimeout);
     }, [setAnswerVisible, setAnswer, selectWord]);
 
     const handleUnselect = useCallback(() => {
@@ -31,7 +32,7 @@ const GrammarTask: FC<{
             setAnswer(emptyWord);
             setAnswerVisible(true);
             selectWord('');
-        }, 200);
+        }, animationTimeout);
     }, [selectWord, setAnswer, setAnswerVisible]);
 
     useEffect(() => {
@@ -44,7 +45,7 @@ const GrammarTask: FC<{
             <TaskText>
                 <WordSet className="selected">
                     <span>{taskText[0]}</span>
-                    <CSSTransition in={answerVisible} timeout={200}>
+                    <CSSTransition in={answerVisible} timeout={animationTimeout}>
                         <Word className="s" onClick={handleUnselect}>{answer.word}</Word>
                     </CSSTransition>
                     <span>{taskText[1]}</span>
