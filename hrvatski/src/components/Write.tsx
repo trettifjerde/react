@@ -2,42 +2,44 @@ import React, { Suspense, useCallback, useEffect, useReducer, useRef, useState }
 import { Await, useLoaderData } from "react-router-dom";
 
 import { sentences } from "../data/translateData";
-import { makeInitWriteState, writeReducer } from "../reducers/writeReducer";
-import { Language } from "../types";
+import { CommonTask, Feedback, Language } from "../types";
+import { Textarea } from "../styles/styledComponents";
+import { TaskText } from "../ui/Task/taskStyles";
+import { makeAnswerString, makeTasks } from "../util/common";
 
 import ErrorComponent from "./ErrorComponent";
-import { WriteCheckAction, WriteCompleteAction, WriteFailAction, WriteInitAction, WriteNextAction } from "../reducers/writeActions";
 import Task from "../ui/Task/Task";
-import { TaskText } from "../ui/Task/taskStyles";
-import { Textarea } from "../styles/styledComponents";
-import { makeAnswerString } from "../util/common";
+import { initStore, makeInitState, ActionType } from "../reducers/taskStore";
 
 const MAXQ = sentences.length;
+
+const getInitWriteState = (targetLang: Language) => {
+    return makeInitState<CommonTask>(makeTasks.bind(null, targetLang, MAXQ));
+}
+const checkWriteTask: (target: CommonTask, answer: string) => Feedback = (task, answer) => {
+    return task.target.toLowerCase() === answer.toLowerCase() || task.extras.includes(answer.toLowerCase());
+};
 
 const Write : React.FC = () => {
     const targetLang = useLoaderData() as Language;
     const [disabled, setDisabled] = useState(true);
-    const [state, dispatchAction] = useReducer(writeReducer, makeInitWriteState(targetLang, MAXQ));
+    const [state, dispatchAction] = useReducer(...initStore<CommonTask>(getInitWriteState(targetLang), checkWriteTask));
     const {score, feedback, complete, i, lives } = state;
     const task = state.tasks[i];
     const {source} = task;
     const ta = useRef<HTMLTextAreaElement>(null);
-
-    console.log('Write component');
-
+    
+    const checkAnswer = useCallback(() => dispatchAction({type: ActionType.CHECK, payload: ta.current!.value.trim()}), [ta, dispatchAction]);
+    const retry = useCallback(() => dispatchAction({type: ActionType.INIT}), [dispatchAction]);
     const nextTask = useCallback(() => {
-        if (lives < 0) dispatchAction(new WriteFailAction());
-        else if (i === MAXQ - 1) dispatchAction(new WriteCompleteAction());
-        else dispatchAction(new WriteNextAction())
+        if (lives < 0) dispatchAction({type: ActionType.FAIL});
+        else if (i === MAXQ - 1) dispatchAction({type: ActionType.SUCCESS});
+        else dispatchAction({type: ActionType.NEXT})
     }, [lives, i, dispatchAction]);
-    const checkAnswer = useCallback(() => dispatchAction(new WriteCheckAction(ta.current!.value.trim())), [ta, dispatchAction]);
-    const retry = useCallback(() => dispatchAction(new WriteInitAction(targetLang, MAXQ)), [targetLang, dispatchAction]);
 
     const updateDisabled = useCallback((e : React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (e.target.value.trim()) 
-            setDisabled(false)
-        else 
-            setDisabled(true);
+        if (e.target.value.trim()) setDisabled(false)
+        else setDisabled(true);
     }, [setDisabled]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -48,7 +50,7 @@ const Write : React.FC = () => {
                 else nextTask();
             }
         }
-    }, [feedback, disabled, checkAnswer]);
+    }, [feedback, disabled, checkAnswer, nextTask]);
 
     useEffect(() => {
         if (ta.current) {

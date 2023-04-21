@@ -1,46 +1,65 @@
-import React, { Suspense, useCallback, useReducer } from "react";
+import React, { Suspense, useCallback, useEffect, useReducer, useState } from "react";
 import { Await, useLoaderData } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { Language } from "../types";
+import { Feedback, Language, TranslationTask } from "../types";
 import { sentences } from "../data/translateData";
-import translationStateReducer, { makeInitTransState } from "../reducers/translationReducer";
-import * as actions from '../reducers/translationActions';
+import { makeAnswerString, makeTasks } from "../util/common";
 import { WordSet, Word } from '../styles/styledComponents';
+import { TaskText } from "../ui/Task/taskStyles";
+
+import { initStore, makeInitState, ActionType } from "../reducers/taskStore";
 
 import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
-import { makeAnswerString } from "../util/common";
-import { TaskText } from "../ui/Task/taskStyles";
+import { makeSuggestionWords } from "../util/translate";
+
 
 const MAXQ = sentences.length;
+function makeTranslationTasks(targetLang: Language, maxQ: number): TranslationTask[] {
+    const tasks = makeTasks(targetLang, maxQ).map(task => ({...task, suggestions: makeSuggestionWords(task.target, targetLang, 4)}));
+    return tasks;
+}
+const getInitTranslationState = (targetLang: Language) => {
+    return makeInitState<TranslationTask>(makeTranslationTasks.bind(null, targetLang, MAXQ));
+}
+const checkTranslationTask: (target: TranslationTask, answer: string) => Feedback = (task, answer) => {
+    return answer === task.target || task.extras.includes(answer);
+};
 
 const Translate : React.FC = () => {
-
     const targetLang = useLoaderData() as Language;
-    const [state, dispatchAction] = useReducer(translationStateReducer, makeInitTransState(targetLang, MAXQ));
-    const {answers, score, complete, feedback, i, lives} = state;
+    const [state, dispatchAction] = useReducer(...initStore<TranslationTask>(getInitTranslationState(targetLang), checkTranslationTask));
+    const [answers, setAnswers] = useState<number[]>([]);
+    const {score, complete, feedback, i, lives} = state;
     const task = state.tasks[i];
     const suggestions = task.suggestions;
    
     const selectWord = (id: number) => {
-        if (feedback === null && !answers.includes(id)) dispatchAction(new actions.TransSelect(id));
+        if (feedback === null && !answers.includes(id)) setAnswers(prev => ([...prev, id]));
     };
     const unselectWord = (id: number) => {
-        if (feedback === null) dispatchAction(new actions.TransUnselect(id))
+        if (feedback === null) setAnswers(prev => prev.filter(i => i !== id));
     };
 
-    const checkAnswer = useCallback(() => dispatchAction(new actions.TransCheckAnswer()), [dispatchAction]);
+    const checkAnswer = useCallback(() => 
+        dispatchAction({type: ActionType.CHECK, payload: answers.map(i => suggestions[i].word).join(' ')}
+    ), [answers, suggestions, dispatchAction]);
+
     const nextTask = useCallback(() => {
         if (lives < 0) 
-            dispatchAction(new actions.TransFail());
+            dispatchAction({type: ActionType.FAIL});
         else if (i === MAXQ - 1) 
-            dispatchAction(new actions.TransComplete())
+            dispatchAction({type: ActionType.SUCCESS})
         else 
-            dispatchAction(new actions.TransNextQuestion())
+            dispatchAction({type: ActionType.NEXT})
     }, [dispatchAction, i, lives]);
 
-    const retry = useCallback(() => dispatchAction(new actions.TransInitAction(targetLang, MAXQ)), [dispatchAction, targetLang]);
+    const retry = useCallback(() => dispatchAction({type: ActionType.INIT}), [dispatchAction]);
+
+    useEffect(() => {
+        setAnswers([]);
+    }, [i]);
 
     return (
         <Suspense>

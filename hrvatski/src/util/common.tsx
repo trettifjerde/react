@@ -1,7 +1,7 @@
 import { enExtras, hrvExtras, sentences } from "../data/translateData";
-import { Language, CommonTask, TranslationTask } from "../types";
+import { Language, CommonTask } from "../types";
 
-export function shuffle(words: string[]) {
+export function shuffle<T>(words: T[]) {
     const newWords = [...words];
     for (let i = 0; i < newWords.length; i++) {
         const buffer = newWords[i];
@@ -30,7 +30,7 @@ export function makeTasks(targetLang: Language, maxQ: number) {
     return tasks;
 }
 
-export function makeAnswerString(task: CommonTask | TranslationTask) {
+export function makeAnswerString<T extends CommonTask>(task: T) {
     return `${task.source} = ${task.target}`
 }
 

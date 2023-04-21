@@ -8,6 +8,7 @@ const Home = () => {
             <Grid>
                 <NavLink to="translate">Translate</NavLink>
                 <NavLink to="write">Write</NavLink>
+                <NavLink to="grammar">Grammar</NavLink>
             </Grid>
         </Fragment>
     )
