@@ -106,3 +106,9 @@ export const Textarea = styled.textarea`
     }
 `;
 
+export const Purple = styled.span`
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-inline: 0.4rem;
+    text-decoration: underline;
+`

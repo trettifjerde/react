@@ -17,7 +17,7 @@ export const Task = styled.div`
 `;
 
 export const TaskText = styled.div`
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin-block: 2rem;
 `;
 

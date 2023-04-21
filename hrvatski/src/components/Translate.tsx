@@ -30,21 +30,22 @@ const checkTranslationTask: (target: TranslationTask, answer: string) => Feedbac
 const Translate : React.FC = () => {
     const targetLang = useLoaderData() as Language;
     const [state, dispatchAction] = useReducer(...initStore<TranslationTask>(getInitTranslationState(targetLang), checkTranslationTask));
-    const [answers, setAnswers] = useState<number[]>([]);
+    const [answers, setAnswers] = useState<{word: string, id: number}[]>([]);
     const {score, complete, feedback, i, lives} = state;
     const task = state.tasks[i];
     const suggestions = task.suggestions;
    
     const selectWord = (id: number) => {
-        if (feedback === null && !answers.includes(id)) setAnswers(prev => ([...prev, id]));
+        if (feedback === null && !answers.find(a => a.id === id))
+            setAnswers(prev => ([...prev, {id: id, word: suggestions[id].word}]));
     };
     const unselectWord = (id: number) => {
-        if (feedback === null) setAnswers(prev => prev.filter(i => i !== id));
+        if (feedback === null) setAnswers(prev => prev.filter(w => w.id != id));
     };
 
     const checkAnswer = useCallback(() => 
-        dispatchAction({type: ActionType.CHECK, payload: answers.map(i => suggestions[i].word).join(' ')}
-    ), [answers, suggestions, dispatchAction]);
+        dispatchAction({type: ActionType.CHECK, payload: answers.map(a => a.word).join(' ')}
+    ), [answers, dispatchAction]);
 
     const nextTask = useCallback(() => {
         if (lives < 0) 
@@ -72,13 +73,13 @@ const Translate : React.FC = () => {
                 >
                     <TaskText>{task.source}</TaskText>
                     <TransitionGroup component={WordSet} className="selected">
-                        {answers.map(id => <CSSTransition timeout={200} key={id}>
-                            <Word onClick={unselectWord.bind(null, id)}>{suggestions[id].word}</Word>
+                        {answers.map(({id, word}) => <CSSTransition timeout={200} key={id}>
+                            <Word onClick={unselectWord.bind(null, id)}>{word}</Word>
                         </CSSTransition>)}
                     </TransitionGroup>
                     <WordSet className="all">
                         {suggestions.map(word => (
-                            <Word key={word.id} className={answers.includes(word.id) ? 'on' : 'off'}
+                            <Word key={word.id} className={answers.find(a => a.id === word.id) ? 'on' : 'off'}
                             onClick={selectWord.bind(null, word.id)}>{word.word}</Word>)
                         )}
                     </WordSet>

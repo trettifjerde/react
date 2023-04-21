@@ -15,7 +15,7 @@ const Task: React.FC<{
     children: ReactNode,
     disabled: boolean,
     feedback: Feedback,
-    answer: string,
+    answer: string | ReactNode,
     score: number,
     next: () => void,
     check: () => void,

@@ -28,19 +28,19 @@ export type GrammarTaskDict = VerbTaskPresent;
 export const VERB_TASKS_PRESENT : VerbTaskPresent[] = [
     {start: 'ja ne', end: 'engleski', word: 'govoriti', form: 0},
     {start: 'on', end: 'iz Splita', word: 'biti', form: 2},
-    {start: 'odakle', end: 'ti', word: 'biti', form: 1},
+    {start: 'odakle', end: 'ti?', word: 'biti', form: 1},
     {start: 'oni', end: 'iz Zagreba', word: 'biti', form: 5},
-    {start: 'Ivan i Marija dobro', end: 'hrvatski jezik', word: 'govoriti', form: 5},
+    {start: 'Ivan i Marija dobro', end: 'hrvatski', word: 'govoriti', form: 5},
     {start: 'mi', end: 'u školi', word: 'biti', form: 3},
-    {start: 'kasno idem u krevet, tako da ujutro obično dugo', end: '', word: 'spavati', form: 0},
-    {start: 'svaku nedjelju', end: 'zajedno na kavu', word: 'ići', form: 5},
-    {start: 'mi', end: 'samo hrvatska jela', word: 'jesti', form: 4}
+    {start: 'ja obično dugo', end: 'ujutro', word: 'spavati', form: 0},
+    {start: 'prijatelji', end: 'zajedno na kavu', word: 'ići', form: 5},
+    {start: 'mi', end: 'samo hrvatska jela', word: 'jesti', form: 3}
 ];
 
 export const VERB_FORMS: FormsDict = {
     'biti': {
         aspect: 'n',
-        pres: ['sam','si','je','smo','ste','su', 'jesam', 'jesi', 'je', 'jesmo', 'jeste', 'jesu'],
+        pres: ['sam','si','je','smo','ste','su'],
         past: ['bio', 'bila', 'bilo', 'bili', 'bile', 'bila'],
         gerund: ['budući'],
         imperative: ['budi', 'budite']
