@@ -44,11 +44,11 @@ export const Word = styled.div`
     transition: background-color .2s;
     cursor: pointer;
 
-    .selected &, &.off:hover { background-color: var(--primary-color); }
-    .selected &:hover {background-color: transparent;}
+    .selected &, &.off:hover, &.g-s { background-color: var(--primary-color); }
+    .selected &:hover { background-color: transparent;}
 
     .selected &.enter { animation: popIn .2s forwards;}
-    .selected &.exit {animation: fadeOut .2s forwards;}
+    .selected &.exit { animation: fadeOut .2s forwards;}
 
     &.off { 
         animation: popIn .2s forwards;
@@ -56,7 +56,7 @@ export const Word = styled.div`
     &.on { 
         animation: popOut .2s forwards;
         cursor: default;
-     }
+    }
 `;
 
 export const Grid = styled.div`
@@ -112,3 +112,7 @@ export const Purple = styled.span`
     margin-inline: 0.4rem;
     text-decoration: underline;
 `
+
+export const WordContainer = styled.div`
+
+`;

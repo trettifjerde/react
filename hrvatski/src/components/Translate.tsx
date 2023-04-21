@@ -40,7 +40,7 @@ const Translate : React.FC = () => {
             setAnswers(prev => ([...prev, {id: id, word: suggestions[id].word}]));
     };
     const unselectWord = (id: number) => {
-        if (feedback === null) setAnswers(prev => prev.filter(w => w.id != id));
+        if (feedback === null) setAnswers(prev => prev.filter(w => w.id !== id));
     };
 
     const checkAnswer = useCallback(() => 
