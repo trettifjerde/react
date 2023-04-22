@@ -122,10 +122,25 @@ a {
   100% {transform: translateY(100%); opacity: 0;}
 }
 
-@keyframes swipeLeft {
+@keyframes appearFromRight {
   0% {transform: translateX(100%); opacity: 0;}
   100% {transform: translateX(0); opacity: 1;}
 }
 
-.fadeout {animation: fadeOut .3s ease-in-out; }
-.fadein {animation: fadeIn .3s ease-in-out forwards;}
+@keyframes appearFromLeft {
+  0% {transform: translateX(-100%); opacity: 0;}
+  100% {transform: translateX(0); opacity: 1;}
+}
+
+@keyframes swipeLeft {
+  from {transform: translateX(0); opacity: 1;}
+  to {transform: translateX(-100%); opacity: 0;}
+}
+
+.swipe {
+  opacity: 0;
+  &.enter {animation: appearFromRight .2s ease-in-out forwards;}
+  &.exit {animation: swipeLeft .2s ease-in-out forwards;}
+  &.enter-done {opacity: 1;}
+  &.exit-done {opacity: 0;}
+}

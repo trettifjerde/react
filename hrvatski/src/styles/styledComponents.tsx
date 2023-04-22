@@ -67,7 +67,6 @@ export const Grid = styled.div`
     justify-content: center;
     align-content: center;
     gap: 1.5rem;
-    animation: swipeLeft .2s ease-out;
 
     a {
         display: block;
@@ -80,6 +79,17 @@ export const Grid = styled.div`
         &:hover {
             background-color: var(--primary-color);
         }
+    }
+`;
+
+export const GridItem = styled.div<{duration: number, index: number, name: string}>`
+
+    opacity: 0;
+    &.appear, &.appear-done {
+        animation-name: ${props => props.name}; 
+        animation-duration: ${props => props.duration}ms;
+        animation-delay: ${props => props.index * 100}ms;
+        animation-fill-mode: forwards;
     }
 `;
 

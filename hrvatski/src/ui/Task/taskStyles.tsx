@@ -12,7 +12,8 @@ export const TaskContainer = styled.div`
 `;
 
 export const Task = styled.div`
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     min-height: 60vh;
 `;
 

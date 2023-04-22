@@ -14,6 +14,7 @@ const GrammarTask: FC<{
 
     const { suggestions } = task;
     const [taskText, setTaskText] = useState([task.start, task.end]);
+    const [taskVisible, setTaskVisible] = useState(false);
     const [answerVisible, setAnswerVisible] = useState(true);
     const [answer, setAnswer] = useState<{word: string, id?: number}>(emptyWord);
 
@@ -36,20 +37,26 @@ const GrammarTask: FC<{
     }, [selectWord, setAnswer, setAnswerVisible]);
 
     useEffect(() => {
-        setTaskText([task.start, task.end]);
-        setAnswer(emptyWord);
+        setTaskVisible(false);
+        setTimeout(() => {
+            setTaskText([task.start, task.end]);
+            setTaskVisible(true);
+            setAnswer(emptyWord);
+        }, 250);
     }, [task]);
 
     return (
         <Fragment>
             <TaskText>
-                <WordSet className="selected">
-                    <span>{taskText[0]}</span>
-                    <CSSTransition in={answerVisible} timeout={animationTimeout}>
-                        <Word className="s" onClick={handleUnselect}>{answer.word}</Word>
-                    </CSSTransition>
-                    <span>{taskText[1]}</span>
-                </WordSet>
+                <CSSTransition in={taskVisible} timeout={200} className="selected swipe">
+                    <WordSet>
+                        <span>{taskText[0]}</span>
+                        <CSSTransition in={answerVisible} timeout={animationTimeout}>
+                            <Word className="s" onClick={handleUnselect}>{answer.word}</Word>
+                        </CSSTransition>
+                        <span>{taskText[1]}</span>
+                    </WordSet>
+                </CSSTransition>
             </TaskText>
             <WordSet className="all">
                 {suggestions.map((s, i) => (

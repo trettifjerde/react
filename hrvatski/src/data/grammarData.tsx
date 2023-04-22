@@ -3,7 +3,10 @@ import { pickRandom, pickRandomIndex, shuffle } from "../util/common";
 
 
 type VerbAspect = 'n' | 's';
+type VerbGroup = 'i' | 'e' | 'a';
+type VerbForm = 'present' | 'imperative';
 export type VerbFormKey = 'pres' | 'past' | 'passive' | 'gerund' | 'imperative';
+
 
 type VerbTaskPresent = {
     start: string,
@@ -25,9 +28,43 @@ export type FormsDict = {
 };
 export type GrammarTaskDict = VerbTaskPresent;
 
-type Adverbials = 'whereAt' | 'whereFrom' | 'whatAbout' | 'whomWith' | 'whereTo' | 'whenPresent';
-type Objects = 'food' | 'people';
+type Adverbials = 'whereAt' | 'whereFrom' | 'whatAbout' | 'whomWith' | 'whereTo' | 'whenPresent' | 'whomTo' | 'whom';
+type Objects = 'food' | 'people' | 'occupation';
 type Extras = Adverbials | Objects;
+
+function getForm(verb: string, form: VerbForm = 'present') {
+    const stem = verb.slice(0, -3);
+    const group = verb.slice(-3, -2) as VerbGroup;
+    let e;
+    switch (group) {
+        case 'a':
+            e = form === 'imperative' ? 'aj' : 'aju';
+            break;
+        case 'e':
+            e = form === 'imperative' ? 'i' : 'u';
+            break;
+        case 'i':
+            e = form === 'imperative' ? 'i' : 'e';
+            break;
+    }
+    return stem + e;
+}
+function makePresentForms(verb: string) {
+    const stem = verb.slice(0, -2);
+    const forms = ['m', 'š', '', 'mo', 'te'].map(e => stem + e);
+    forms.push(getForm(verb));
+    return forms;
+}
+
+function makePastForms(verb: string, extraA=false) {
+    const stem = verb.slice(0, -2);
+    return [extraA? 'ao' : 'o', 'la', 'lo', 'li', 'le', 'la'].map(e => stem + e);
+}
+
+function makeImperatives(verb: string) {
+    const form = getForm(verb, 'imperative');
+    return [form, form + 'te'];
+}
 
 export const VERB_FORMS: FormsDict = {
     'biti': {
@@ -36,57 +73,105 @@ export const VERB_FORMS: FormsDict = {
         past: ['bio', 'bila', 'bilo', 'bili', 'bile', 'bila'],
         gerund: ['budući'],
         imperative: ['budi', 'budite'],
-        extras: ['whereFrom', 'whereAt']
+        extras: ['whereFrom', 'whereAt', 'whomWith']
     },
     'govoriti': {
         aspect: 'n',
-        pres: ['govorim','govoriš','govori','govorimo','govorite','govore'],
-        past: ['govorio', 'govorila', 'govorilo', 'govorili', 'govorile', 'govorila'],
+        pres: makePresentForms('govoriti'),
+        past: makePastForms('govoriti'),
         passive: ['govoren'],
         gerund: ['govoreći'],
-        imperative: ['govori', 'govorite'],
+        imperative: makeImperatives('govoriti'),
         extras: ['whatAbout', 'whomWith', 'whereAt']
     },
     'jesti': {
         aspect: 'n',
         pres: ['jedem','jedeš','jede','jedemo','jedete','jedu'],
-        past: ['jeo', 'jela', 'jelo', 'jeli', 'jele', 'jela'],
+        past: makePastForms('jeti'),
         passive: ['jeden'],
         gerund: ['jedući'],
         imperative: ['jedi', 'jedite'],
-        extras: ['food', 'people', 'whenPresent']
+        extras: ['food', 'people', 'whenPresent', 'whomWith']
     },
     'spavati': {
         aspect: 'n',
-        pres: ['spavam','spavaš','spava','spavamo','spavate','spavaju'],
-        past: ['spavao', 'spavala', 'spavalo', 'spavali', 'spavale', 'spavala'],
+        pres: makePresentForms('spavati'),
+        past: makePastForms('spavati'),
         gerund: ['spavajući'],
-        imperative: ['spavaj', 'spavajte'],
-        extras: ['whereAt', 'whenPresent']
+        imperative: makeImperatives('spavati'),
+        extras: ['whereAt', 'whenPresent', 'whomWith']
     },
     'ići': {
         aspect: 'n',
-        pres: ['idem','ideš','ide','idemo','idete','idu'],
+        pres: makePresentForms('ideti'),
         past: ['išao', 'išla', 'išlo', 'išli', 'išle', 'išla'],
         gerund: ['idući'],
         imperative: ['idi', 'idite'],
-        extras: ['whereFrom', 'whereTo']
+        extras: ['whereFrom', 'whereTo', 'whomWith']
     },
     'raditi': {
         aspect: 'n',
-        pres: ['radim','radiš','radi','radimo','radite','rade'],
-        past: ['radio', 'radila', 'radilo', 'radili', 'radile', 'radila'],
+        pres: makePresentForms('raditi'),
+        past: makePastForms('raditi'),
         gerund: ['radeći'],
-        imperative: ['radi', 'radite'],
-        extras: ['whereAt', 'whenPresent']
+        imperative: makeImperatives('raditi'),
+        extras: ['whereAt', 'whenPresent', 'whomWith']
     },
     'znati': {
         aspect: 'n',
-        pres: ['znam','znaš','zna','znamo','znate','znaju'],
-        past: ['znao', 'znala', 'znalo', 'znali', 'znale', 'znala'],
+        pres: makePresentForms('znati'),
+        past: makePastForms('znati'),
         gerund: ['znajući'],
-        imperative: ['znaj', 'znajte'],
+        imperative: makeImperatives('znati'),
         extras: ['people']
+    },
+    'misliti': {
+        aspect: 'n',
+        pres: makePresentForms('misliti'),
+        past: makePastForms('misliti'),
+        imperative: makeImperatives('misliti'),
+        gerund: ['misleći'],
+        extras: ['whatAbout']
+    },
+    'imati': {
+        aspect: 'n',
+        pres: makePresentForms('imati'),
+        past: makePastForms('imati'),
+        imperative: makeImperatives('imati'),
+        gerund: ['imajući'],
+        extras: ['food', 'people']
+    },
+    'pomoći': {
+        aspect: 's',
+        pres: makePresentForms('pomogneti'),
+        past: makePastForms('pomogti', true),
+        imperative: ['pomozi', 'pomozite'],
+        gerund: ['pomogavši'],
+        extras: ['whomTo']
+    },
+    'pomagati': {
+        aspect: 'n',
+        pres: makePresentForms('pomažeti'),
+        past: makePastForms('pomagati'),
+        imperative: ['pomaži', 'pomažite'],
+        gerund: ['pomažuči'],
+        extras: ['whomTo']
+    },
+    'pitati': {
+        aspect: 'n',
+        pres: makePresentForms('pitati'),
+        past: makePastForms('pitati'),
+        imperative: makeImperatives('pitati'),
+        gerund: ['pitajući'],
+        extras: ['whom']
+    },
+    'odgovoriti': {
+        aspect: 's',
+        pres: makePresentForms('odgovoriti'),
+        past: makePastForms('odgovoriti'),
+        imperative: makeImperatives('odgovoriti'),
+        gerund: ['odgovorivši'],
+        extras: ['whomTo']
     }
 }
 
@@ -133,9 +218,11 @@ function makeOneVerbTasks(verb: string) : GrammarTask[]{
 function makeShuffledVerbsTask() : GrammarTask[] {
     const tasks: GrammarTask[] = [];
     const endings: {[key: string] : string[]} = {};
+    const nVerbs = Object.entries(VERB_FORMS).filter(([verb, info]) => info.aspect === 'n').map(([verb, info]) => verb);
+    console.log(nVerbs);
 
     for (let i = 0; i < 11; i++) {
-        const verb = pickRandom(Object.keys(VERB_FORMS));
+        const verb = pickRandom(nVerbs);
         const forms = VERB_FORMS[verb].pres;
         if (!(verb in endings)) {
             const opts = VERB_FORMS[verb].extras.reduce((acc, v) => {
@@ -181,12 +268,15 @@ const subjects = {
 };
 
 const extrasDict = {
-    whereAt: ['u školi', 'u dućanu', 'na poslu', 'vani', 'kod kuće', 'u kafiću'],
+    whereAt: ['u školi', 'u dućanu', 'na poslu', 'vani', 'kod kuće', 'u kafiću', 'u gradu'],
     whereFrom: ['iz Zadra', 'iz Zagreba', 'iz Splita', 'iz Hrvatske', 'iz Rusije'],
-    whatAbout: ['o poslu', 'o moru', 'o životu', 'o vremenu', 'o jeziku'],
+    whatAbout: ['o poslu', 'o moru', 'o životu', 'o vremenu', 'o jeziku', 'o tebi', 'o nama'],
     whomWith: ['s prijateljem', 's majkom', 's Kesakom', 's mačkom', 'sa psom'],
     whereTo: ['na posao', 'u školu', 'kući', 'u grad', 'u kafić'],
+    whomTo: ['prijatelju', 'meni', 'tebi', 'nama', 'mački', 'curi', 'momku', 'majci', 'prijateljici'],
     food: ['jabuku', 'juhu', 'krušku', 'meso', 'ribu', 'hrvatska jela'],
     people: ['prijatelja', 'Kesaka', 'misku', 'dijete'],
-    whenPresent: ['ujutro', 'navečer', 'po podne', 'poslije podne', 'noću']
+    whenPresent: ['ujutro', 'navečer', 'po podne', 'poslije podne', 'noću'],
+    occupation: ['nastava', 'sastanak', 'tečaj hrvatskog jezika', 'doručak'],
+    whom: []
 }
