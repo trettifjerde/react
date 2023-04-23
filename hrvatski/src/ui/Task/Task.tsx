@@ -28,7 +28,7 @@ const Task: React.FC<{
         <TaskContainer>
             <Score visible={complete} lives={lives} maxQ={maxQ} score={score}>
                 <button className="btn" type="button" onClick={retry}>Retry</button>
-                <NavLink className="btn outline" to="../">Back to other tasks</NavLink>
+                <NavLink className="btn outline" to="../../">Back to other tasks</NavLink>
             </Score>
 
             {! complete && <Fragment>

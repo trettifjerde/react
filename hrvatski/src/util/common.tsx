@@ -20,10 +20,12 @@ export function pickRandomIndex(maxLength: number) {
     return Math.floor(Math.random() * maxLength);
 }
 
-export function makeTasks(targetLang: Language, maxQ: number) {
+export function makeTasks(targetLang: Language, path: string) {
     const sourceLang = targetLang === 'hrv' ? 'en' : 'hrv';
     const extras = targetLang === 'hrv' ? hrvExtras : enExtras;
-    let data = [...sentences.map((pair, i) => ({source: pair[sourceLang], target: pair[targetLang], extras: extras[pair[targetLang]]}))];
+    const block = sentences.find(b => b.path === path)!;
+    const maxQ = block.tasks.length;
+    let data = block.tasks.map(task => ({source: task[sourceLang], target: task[targetLang], extras: extras[task[targetLang]] ? extras[task[targetLang]] : []}));
     let tasks: CommonTask[] = [];
 
     while(tasks.length < maxQ) {

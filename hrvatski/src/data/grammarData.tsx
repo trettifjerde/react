@@ -280,3 +280,9 @@ const extrasDict = {
     occupation: ['nastava', 'sastanak', 'tečaj hrvatskog jezika', 'doručak'],
     whom: []
 }
+
+export const grammarTaskPaths = [
+    {path: 'biti', name: '"biti"'},
+    {path: 'random', name: 'One random verb'},
+    {path: 'prezent', name: 'Random verbs'}
+]

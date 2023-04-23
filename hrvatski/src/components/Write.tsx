@@ -1,7 +1,6 @@
 import React, { Suspense, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Await, useLoaderData } from "react-router-dom";
 
-import { sentences } from "../data/translateData";
 import { CommonTask, Feedback, Language } from "../types";
 import { Textarea } from "../styles/styledComponents";
 import { TaskText } from "../ui/Task/taskStyles";
@@ -11,21 +10,19 @@ import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
 import { initStore, makeInitState, ActionType } from "../reducers/taskStore";
 
-const MAXQ = sentences.length;
-
-const getInitWriteState = (targetLang: Language) => {
-    return makeInitState<CommonTask>(makeTasks.bind(null, targetLang, MAXQ));
+const getInitWriteState = (targetLang: Language, path: string) => {
+    return makeInitState<CommonTask>(makeTasks.bind(null, targetLang, path));
 }
 const checkWriteTask: (target: CommonTask, answer: string) => Feedback = (task, answer) => {
     return task.target.toLowerCase() === answer.toLowerCase() || task.extras.includes(answer.toLowerCase());
 };
 
 const Write : React.FC = () => {
-    const targetLang = useLoaderData() as Language;
+    const {targetLang, path} = useLoaderData() as {targetLang: Language, path: string};
     const [disabled, setDisabled] = useState(true);
-    const [state, dispatchAction] = useReducer(...initStore<CommonTask>(getInitWriteState(targetLang), checkWriteTask));
-    const {score, feedback, complete, i, lives } = state;
-    const task = state.tasks[i];
+    const [state, dispatchAction] = useReducer(...initStore<CommonTask>(getInitWriteState(targetLang, path), checkWriteTask));
+    const {score, feedback, complete, i, lives, tasks } = state;
+    const task = tasks[i];
     const {source} = task;
     const ta = useRef<HTMLTextAreaElement>(null);
     
@@ -33,9 +30,9 @@ const Write : React.FC = () => {
     const retry = useCallback(() => dispatchAction({type: ActionType.INIT}), [dispatchAction]);
     const nextTask = useCallback(() => {
         if (lives < 0) dispatchAction({type: ActionType.FAIL});
-        else if (i === MAXQ - 1) dispatchAction({type: ActionType.SUCCESS});
+        else if (i === tasks.length - 1) dispatchAction({type: ActionType.SUCCESS});
         else dispatchAction({type: ActionType.NEXT})
-    }, [lives, i, dispatchAction]);
+    }, [lives, i, tasks, dispatchAction]);
 
     const updateDisabled = useCallback((e : React.ChangeEvent<HTMLTextAreaElement>) => {
         if (e.target.value.trim()) setDisabled(false)
@@ -65,7 +62,7 @@ const Write : React.FC = () => {
             <Await resolve={targetLang} errorElement={<ErrorComponent />}>
                 <Task 
                     complete={complete} feedback={feedback} 
-                    score={score} i={i} maxQ={MAXQ} lives={lives}
+                    score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 
                     answer={makeAnswerString(task)} disabled={disabled}
                 >

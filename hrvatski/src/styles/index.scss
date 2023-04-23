@@ -35,6 +35,13 @@ a {
   text-decoration: none;
 }
 
+a.b-link {
+  position: fixed;
+  bottom: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .btn {
   display: inline-block;
   padding: 0.5rem 1rem;

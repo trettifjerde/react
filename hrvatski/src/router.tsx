@@ -3,18 +3,30 @@ import App from "./App";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import Translate from "./components/Translate";
-import ChooseLanguagePage from "./pages/ChooseLanguagePage";
 import Write from "./components/Write";
 import MainErrorPage from "./pages/MainErrorPage";
 import { Language } from "./types";
 import Grammar from "./components/Grammar";
-import ChooseTaskPage from "./pages/ChoseTask";
+import { sentences, taskPaths } from "./data/translateData";
+import ChoosePage from "./pages/ChoosePage";
+import { grammarTaskPaths } from "./data/grammarData";
 
-const targetLanguageLoader: (l: LoaderArgs) => Language | Response = ({params}) => {
-    if (params.targetLang === 'hrv' || params.targetLang === 'en')
-        return params.targetLang as Language;
+const targetLanguageLoader: (l: LoaderArgs) => {targetLang: Language, path: string} | Response = ({params}) => {
+    const {targetLang, path} = params;
+    if (path && targetLang && (targetLang === 'hrv' || targetLang === 'en') &&taskPaths.includes(path)) {
+        return {targetLang, path};
+    }
     else 
-        return redirect('/translate');
+        return redirect('/');
+}
+
+const translationTaskLoader: (l: LoaderArgs) => string | Response = ({params}) => {
+    const path = params.path;
+    if (path && taskPaths.includes(path)) {
+        return path;
+    }
+    else 
+        return redirect('/')
 }
 
 const grammarTaskLoader: (l: LoaderArgs) => string | Response = ({params}) => {
@@ -32,15 +44,29 @@ const router = createBrowserRouter([
             { index: true, element: <Home /> },
             { path: 'signin', element: <SignIn />},
             { path: 'translate', children: [
-                {index: true, element: <ChooseLanguagePage /> },
-                {path: ':targetLang', element: <Translate />, loader: targetLanguageLoader}
+                {index: true, element: <ChoosePage animationName="appearFromLeft" paths={sentences} />},
+                {path: ':path', loader: translationTaskLoader, children: [
+                    { index: true, element: <ChoosePage animationName="appearFromRight" 
+                    paths={[
+                        {path: 'hrv', name: 'English to Croatian'},
+                        {path: 'en', name: 'Croatian to English'}
+                    ]} />},
+                    {path: ':targetLang', id: 'targetLang', element: <Translate />, loader: targetLanguageLoader}
+                ]}
             ] },
             { path: 'write', children: [
-                {index: true, element: <ChooseLanguagePage />},
-                { path: ':targetLang', element: <Write />, loader: targetLanguageLoader}
+                {index: true, element: <ChoosePage animationName="appearFromLeft" paths={sentences} />},
+                {path: ':path', loader: translationTaskLoader, children: [
+                    { index: true, element: <ChoosePage animationName="appearFromRight" 
+                        paths={[
+                            {path: 'hrv', name: 'English to Croatian'},
+                            {path: 'en', name: 'Croatian to English'}
+                        ]} />},
+                    { path: ':targetLang', element: <Write />, loader: targetLanguageLoader}
+                ]}
             ]},
             {path: 'grammar', children: [
-                {index: true, element: < ChooseTaskPage />},
+                {index: true, element: < ChoosePage paths={grammarTaskPaths} animationName="appearFromRight" />},
                 {path: ':task', element: <Grammar />, loader: grammarTaskLoader}
             ]}
         ]},
