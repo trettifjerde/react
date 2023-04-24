@@ -1,7 +1,6 @@
 import { GrammarTask } from "../types";
 import { pickRandom, pickRandomIndex, shuffle } from "../util/common";
 
-
 type VerbAspect = 'n' | 's';
 type VerbGroup = 'i' | 'e' | 'a';
 type VerbForm = 'present' | 'imperative';
@@ -23,7 +22,8 @@ export type FormsDict = {
         passive?: string[],
         gerund: string [],
         imperative: string[],
-        extras: Extras[]
+        extras: Extras[],
+        neg?: string[]
     };
 };
 export type GrammarTaskDict = VerbTaskPresent;
@@ -70,6 +70,7 @@ export const VERB_FORMS: FormsDict = {
     'biti': {
         aspect: 'n',
         pres: ['sam','si','je','smo','ste','su'],
+        neg: ['nisam', 'nisi', 'nije', 'nismo', 'niste', 'nisu'],
         past: ['bio', 'bila', 'bilo', 'bili', 'bile', 'bila'],
         gerund: ['budući'],
         imperative: ['budi', 'budite'],
@@ -138,6 +139,7 @@ export const VERB_FORMS: FormsDict = {
         pres: makePresentForms('imati'),
         past: makePastForms('imati'),
         imperative: makeImperatives('imati'),
+        neg: ['nemam', 'nemaš', 'nema', 'nemamo', 'nemate', 'nemaju'],
         gerund: ['imajući'],
         extras: ['food', 'people']
     },

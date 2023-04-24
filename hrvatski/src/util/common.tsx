@@ -1,4 +1,4 @@
-import { enExtras, hrvExtras, sentences } from "../data/translateData";
+import { enExtras, hrvExtras, berlitz } from "../data/translateData";
 import { Language, CommonTask } from "../types";
 
 export function shuffle<T>(words: T[]) {
@@ -20,12 +20,12 @@ export function pickRandomIndex(maxLength: number) {
     return Math.floor(Math.random() * maxLength);
 }
 
-export function makeTasks(targetLang: Language, path: string) {
+export function makeTasks(targetLang: Language, taskId: string) {
     const sourceLang = targetLang === 'hrv' ? 'en' : 'hrv';
     const extras = targetLang === 'hrv' ? hrvExtras : enExtras;
-    const block = sentences.find(b => b.path === path)!;
+    const block = berlitz.find(b => b.path === taskId)!;
     const maxQ = block.tasks.length;
-    let data = block.tasks.map(task => ({source: task[sourceLang], target: task[targetLang], extras: extras[task[targetLang]] ? extras[task[targetLang]] : []}));
+    let data = block.tasks.map(task => ({source: task[sourceLang], target: task[targetLang], extras: extras[task[targetLang].toLowerCase()] ? extras[task[targetLang].toLowerCase()] : []}));
     let tasks: CommonTask[] = [];
 
     while(tasks.length < maxQ) {

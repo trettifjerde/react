@@ -69,9 +69,14 @@ export const Grid = styled.div`
     gap: 1.5rem;
 
     a {
-        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+        height: 12rem;
+        width: 12rem;
         color: white;
-        padding: 5rem;
         background-color: var(--secondary-lighter);
         transition: background-color .3s;
         border-radius: 5px;
@@ -85,11 +90,14 @@ export const Grid = styled.div`
 export const GridItem = styled.div<{duration: number, index: number, name: string}>`
 
     opacity: 0;
-    &.appear, &.appear-done {
+    &.appear, &.appear-done, &.enter, &.enter-done, &.exit, &.exit-done {
         animation-name: ${props => props.name}; 
         animation-duration: ${props => props.duration}ms;
         animation-delay: ${props => props.index * 100}ms;
         animation-fill-mode: forwards;
+    }
+    &.exit, &.exit-done {
+        animation-direction: reverse;
     }
 `;
 

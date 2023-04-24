@@ -1,4 +1,8 @@
-import { Feedback } from "../types";
+import { json } from "react-router-dom";
+import { isValidBerlitzTaskParams } from "../data/translateData";
+import { CommonTask, Feedback, Language, LoaderArgs, TranslationTask } from "../types";
+import { makeTasks } from "../util/common";
+import { makeSuggestionWords } from "../util/translate";
 
 export type TaskState<Task> = {
     i: number,
@@ -22,6 +26,8 @@ export type TaskAction = {
     payload?: any
 }
 
+export type TaskStateInitConfig<T> = [(state: TaskState<T>, action: TaskAction) => TaskState<T>, TaskState<T>];
+
 export const makeInitState: 
     <T>(makeTasks: () => T[]) => () => TaskState<T> = 
     (makeTasks) => {
@@ -38,7 +44,7 @@ export const initStore : <T>
     (
         getInitState: () => TaskState<T>,
         checkTask: (task: T, answer: string) => Feedback
-    ) => [(state: TaskState<T>, action: TaskAction) => TaskState<T>, TaskState<T>] = 
+    ) => TaskStateInitConfig<T> = 
     
     (getInitState, checkTask) => {
         return [(state, action) => {
@@ -63,4 +69,34 @@ export const initStore : <T>
                     return state;
             }
         }, getInitState()];
+}
+
+export const translateTaskLoader : (l: LoaderArgs) => TaskStateInitConfig<TranslationTask> | Response = ({request, params}) => {
+    const targetLang = params.targetLang as Language;
+    const task = params.task;
+    if (targetLang && task && isValidBerlitzTaskParams(targetLang, task)) {
+        const stateConfig = initStore(
+            makeInitState(
+            () => makeTasks(targetLang, task).map(task => ({...task, suggestions: makeSuggestionWords(task.target, targetLang, 4)}))),
+            (task: TranslationTask, answer: string) => {
+                return answer === task.target || task.extras.includes(answer.toLowerCase());
+            }
+        );
+        return stateConfig;
+    }
+    throw json(404);
+}
+
+export const writeTaskLoader: (l: LoaderArgs) => TaskStateInitConfig<CommonTask> | Response = ({request, params}) => {
+    const {targetLang, task} = params;
+    if (targetLang && task && isValidBerlitzTaskParams(targetLang as Language, task)) {
+        const stateConfig = initStore(
+            makeInitState(() => makeTasks(targetLang as Language, task)),
+            (task: CommonTask, answer: string) => {
+                return answer === task.target || task.extras.includes(answer.toLowerCase());
+            }
+        );
+        return stateConfig;
+    }
+    throw json(404);
 }

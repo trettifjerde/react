@@ -2,35 +2,22 @@ import React, { Suspense, useCallback, useEffect, useReducer, useState } from "r
 import { Await, useLoaderData } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { Feedback, Language, TranslationTask } from "../types";
-import { makeAnswerString, makeTasks } from "../util/common";
+import { TranslationTask } from "../types";
+import { makeAnswerString } from "../util/common";
 import { WordSet, Word } from '../styles/styledComponents';
 import { TaskText } from "../ui/Task/taskStyles";
 
-import { initStore, makeInitState, ActionType } from "../reducers/taskStore";
+import { ActionType, TaskStateInitConfig } from "../reducers/taskStore";
 
 import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
-import { makeSuggestionWords } from "../util/translate";
-
-function makeTranslationTasks(targetLang: Language, path: string): TranslationTask[] {
-    const tasks = makeTasks(targetLang, path).map(task => ({...task, suggestions: makeSuggestionWords(task.target, targetLang, 4)}));
-    return tasks;
-}
-const getInitTranslationState = (targetLang: Language, path: string) => {
-    return makeInitState<TranslationTask>(makeTranslationTasks.bind(null, targetLang, path));
-}
-const checkTranslationTask: (target: TranslationTask, answer: string) => Feedback = (task, answer) => {
-    return answer === task.target || task.extras.includes(answer);
-};
 
 const Translate : React.FC = () => {
-    const {targetLang, path} = useLoaderData() as {targetLang: Language, path: string};
-    const [state, dispatchAction] = useReducer(...initStore<TranslationTask>(getInitTranslationState(targetLang, path), checkTranslationTask));
+    const [reducer, initState] = useLoaderData() as TaskStateInitConfig<TranslationTask>;
+    const [state, dispatchAction] = useReducer(reducer, initState);
     const [answers, setAnswers] = useState<{word: string, id: number}[]>([]);
     const {score, complete, feedback, i, lives, tasks} = state;
-    const task = tasks[i];
-    const suggestions = task.suggestions;
+    const suggestions = tasks[i].suggestions;
    
     const selectWord = (id: number) => {
         if (feedback === null && !answers.find(a => a.id === id))
@@ -61,14 +48,14 @@ const Translate : React.FC = () => {
 
     return (
         <Suspense>
-            <Await resolve={targetLang} errorElement={<ErrorComponent />}>
+            <Await resolve={reducer} errorElement={<ErrorComponent />}>
                 <Task 
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 
-                    answer={makeAnswerString(task)} disabled={answers.length === 0}
+                    answer={makeAnswerString(tasks[i])} disabled={answers.length === 0}
                 >
-                    <TaskText>{task.source}</TaskText>
+                    <TaskText>{tasks[i].source}</TaskText>
                     <TransitionGroup component={WordSet} className="selected">
                         {answers.map(({id, word}) => <CSSTransition timeout={200} key={id}>
                             <Word onClick={unselectWord.bind(null, id)}>{word}</Word>

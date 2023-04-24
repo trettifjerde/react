@@ -1,26 +1,19 @@
 import React, { Suspense, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Await, useLoaderData } from "react-router-dom";
 
-import { CommonTask, Feedback, Language } from "../types";
+import { TranslationTask } from "../types";
 import { Textarea } from "../styles/styledComponents";
 import { TaskText } from "../ui/Task/taskStyles";
-import { makeAnswerString, makeTasks } from "../util/common";
+import { makeAnswerString } from "../util/common";
 
 import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
-import { initStore, makeInitState, ActionType } from "../reducers/taskStore";
-
-const getInitWriteState = (targetLang: Language, path: string) => {
-    return makeInitState<CommonTask>(makeTasks.bind(null, targetLang, path));
-}
-const checkWriteTask: (target: CommonTask, answer: string) => Feedback = (task, answer) => {
-    return task.target.toLowerCase() === answer.toLowerCase() || task.extras.includes(answer.toLowerCase());
-};
+import { ActionType, TaskStateInitConfig } from "../reducers/taskStore";
 
 const Write : React.FC = () => {
-    const {targetLang, path} = useLoaderData() as {targetLang: Language, path: string};
+    const [reducer, initState] = useLoaderData() as TaskStateInitConfig<TranslationTask>;
     const [disabled, setDisabled] = useState(true);
-    const [state, dispatchAction] = useReducer(...initStore<CommonTask>(getInitWriteState(targetLang, path), checkWriteTask));
+    const [state, dispatchAction] = useReducer(reducer, initState);
     const {score, feedback, complete, i, lives, tasks } = state;
     const task = tasks[i];
     const {source} = task;
@@ -59,7 +52,7 @@ const Write : React.FC = () => {
 
     return (
         <Suspense>
-            <Await resolve={targetLang} errorElement={<ErrorComponent />}>
+            <Await resolve={reducer} errorElement={<ErrorComponent />}>
                 <Task 
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
