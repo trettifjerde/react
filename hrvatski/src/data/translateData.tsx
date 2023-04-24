@@ -1,30 +1,9 @@
-import { Language } from "../types";
-
-type Label = 'basics' | 'common phrases' | 'questions' | 'negations';
-
-type TranslationTask = {
-    hrv: string,
-    en: string,
-    labels: Label[]
-};
-type TaskBlock = {
-    name: string,
-    path: string,
-    tasks: TranslationTask[]
-}
-
-export function isValidBerlitzTask(path?: string) {
-    return path && !isNaN(+path) && berlitz.length >= +path;
-}
-
-export function isValidBerlitzTaskParams(targetLang: Language, path?: string) {
-    return isValidBerlitzTask(path) && (targetLang === 'hrv' || targetLang === 'en');
-}
+import { Language, TaskLevel } from "../types";
 
 function makeSet(language: Language) {
     const dict = new Set<string>();
     berlitz.forEach(block => {
-        block.tasks.map(pair => pair[language])
+        block.sentences.map(pair => pair[language])
         .forEach(sentence => {
             sentence
                 .split(' ')
@@ -33,7 +12,7 @@ function makeSet(language: Language) {
     });
     return Array.from(dict);
 }
-export const berlitz : TaskBlock[] = [
+export const berlitz : TaskLevel[] = [
 /*
         name: 'Common phrases',
         path: 'commonphrases',
@@ -53,7 +32,9 @@ export const berlitz : TaskBlock[] = [
     {
         name: '1. lekcija',
         path: '1',
-        tasks: [
+        tasks: ['translate', 'write'],
+        vocabulary: {},
+        sentences: [
             {hrv: 'dobar dan', en: 'good day', labels: ['basics']},
             {hrv: 'dobra večer', en: 'good evening', labels: ['basics']},
             {hrv: 'dobro jutro', en: 'good morning', labels: ['basics']},
@@ -79,7 +60,8 @@ export const berlitz : TaskBlock[] = [
     {
         name: '2. lekcija',
         path: '2',
-        tasks: [
+        tasks: ['translate', 'write', 'negations'],
+        sentences: [
             {hrv: 'što to znači', en: 'what does it mean', labels: ['questions']},
             {hrv: 'kako se kaže na engleskom', en: 'what is the English for', labels: ['questions', 'common phrases']},
             {hrv: 'kako ste', en: 'how are you', labels: ['questions']},
@@ -98,7 +80,11 @@ export const berlitz : TaskBlock[] = [
             {hrv: 'volim učiti strane jezike', en: 'I like learning foreign languages', labels: []},
             {hrv: 'žuri mi se', en: 'I am in hurry', labels: ['common phrases']},
             {hrv: 'ti si u pravu', en: 'you are right', labels: ['common phrases']},
-        ]
+        ],
+        vocabulary: {
+            verbs: ['značiti', 'voljeti', 'biti', 'imati', 'učiti', 'govoriti', 'živjeti', 'znati', 'slušati'],
+            nouns: ['dječak', 'student', 'učenik', 'jezik', 'slovo', 'riječ']
+        }
     }
 ];
 
@@ -155,7 +141,7 @@ export const enExtras: {[key: string] : string[]} = {
     'just a second': ['just a moment', 'wait a bit', 'wait a moment'],
     'enough for today': ["that's enough for today", "it's enough for today"],
     'nice to meet you': ['my pleasure', 'it is nice to meet you', "it's nice to meet you", "i'm pleased"],
-    'what is the English for': ["what's the english for", "what's it called in english", 
+    'what is the english for': ["what's the english for", "what's it called in english", 
         "what is it called in english", "what's the english word for", 'what is the english word for',
         "how do you say it in english"
     ],
@@ -165,11 +151,11 @@ export const enExtras: {[key: string] : string[]} = {
     'i am in hurry': ["i'm in hurry"],
     'feel free to ask': ['just ask', 'ask freely'],
     'what is your name': ["what's your name"],
-    "it is my first time in Croatia": ["it's my first time in croatia", "i am in croatia for the first time", "i'm in croatia for the first time"],
-    'i know a bit Croatian': ['i know croatian a little', 'i know a little croatian', 'i speak a bit croatian'],
-    'please repeat': ['repeat please'],
+    "it is my first time in croatia": ["it's my first time in croatia", "i am in croatia for the first time", "i'm in croatia for the first time"],
+    'i know a bit croatian': ['i know croatian a little', 'i know a little croatian', 'i speak a bit croatian'],
+    'please repeat': ['repeat please', 'say it again please', 'please say it again', 'please say it once again'],
     'say one more time': ['say it one more time', 'say it once again', 'say it again'],
-    'i am not Russian': ["i'm not russian"],
+    'i am not russian': ["i'm not russian"],
     'i am a student too': ["i'm a student too", "i'm a student as well", "i am a student as well", "i'm also a student", 'i am also a student'],
     'i do not know for sure': ["i don't know for sure", "i don't really know", 'i do not really know', "i don't know for certain", "i do not know for certain"],
     'of course': ['sure', 'certainly'],
@@ -177,11 +163,11 @@ export const enExtras: {[key: string] : string[]} = {
     'remember it please': ['please remember it'],
     'this girl is a student': ['this girl is a pupil'],
     'that boy is a student': ['that lad is a student', 'that lad is a pupil', 'that boy is a pupil'],
-    'they do not like learning English': ["they don't like learning english", "they don't like learning english language", "they do not like learning english language"],
+    'they do not like learning english': ["they don't like learning english", "they don't like learning english language", "they do not like learning english language"],
     'he is a very good student': ["he's a very good student"],
-    'correct': ["that's right", "that's correct", 'that is correct', 'that is true', 'that is right', 'it is true']
+    'correct': ["that's right", "that's correct", 'that is correct', 'that is true', 'that is right', 'it is true'],
+    'i do not know croatian well': ["i don't know croatian well", 'i do not know croatian that well', "i don't know croatian that well"]
 }
 
 export const croatian = makeSet('hrv');
 export const english = makeSet('en');
-export const taskPaths = berlitz.map(block => block.path);

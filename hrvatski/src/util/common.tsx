@@ -1,3 +1,4 @@
+import { makeNegationsTasks } from "../data/grammarData";
 import { enExtras, hrvExtras, berlitz } from "../data/translateData";
 import { Language, CommonTask } from "../types";
 
@@ -20,20 +21,33 @@ export function pickRandomIndex(maxLength: number) {
     return Math.floor(Math.random() * maxLength);
 }
 
-export function makeTasks(targetLang: Language, taskId: string) {
+export function makeBerlitzTasks(level: number, targetLang: Language) {
     const sourceLang = targetLang === 'hrv' ? 'en' : 'hrv';
     const extras = targetLang === 'hrv' ? hrvExtras : enExtras;
-    const block = berlitz.find(b => b.path === taskId)!;
-    const maxQ = block.tasks.length;
-    let data = block.tasks.map(task => ({source: task[sourceLang], target: task[targetLang], extras: extras[task[targetLang].toLowerCase()] ? extras[task[targetLang].toLowerCase()] : []}));
-    let tasks: CommonTask[] = [];
+    const block = berlitz[level];
+    const maxQ = block.sentences.length;
+    let data = block.sentences.map(task => ({source: task[sourceLang], target: task[targetLang], extras: extras[task[targetLang].toLowerCase()] ? extras[task[targetLang].toLowerCase()] : []}));
+    const tasks: CommonTask[] = [];
 
     while(tasks.length < maxQ) {
-        const i = Math.floor(Math.random() * data.length);
+        const i = pickRandomIndex(data.length);
         const task = data.splice(i, 1)[0];
         tasks.push(task);
     }
     return tasks;
+}
+
+export function makeBerlitzNegationTasks(level: number) {
+    const verbs = berlitz[level].vocabulary.verbs!;
+    let data = makeNegationsTasks(verbs);
+    const maxQ = data.length;
+    const tasks: CommonTask[] = [];
+
+    while(tasks.length < maxQ) {
+        const task = data.splice(pickRandomIndex(data.length), 1)[0];
+        tasks.push(task);
+    }
+    return tasks
 }
 
 export function makeAnswerString<T extends CommonTask>(task: T) {

@@ -1,17 +1,18 @@
 import React, { Suspense, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Await, useLoaderData } from "react-router-dom";
 
-import { TranslationTask } from "../types";
+import { ActionType, CommonTask, TaskStoreConfig } from "../types";
 import { Textarea } from "../styles/styledComponents";
 import { TaskText } from "../ui/Task/taskStyles";
 import { makeAnswerString } from "../util/common";
 
 import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
-import { ActionType, TaskStateInitConfig } from "../reducers/taskStore";
 
-const Write : React.FC = () => {
-    const [reducer, initState] = useLoaderData() as TaskStateInitConfig<TranslationTask>;
+
+const Write : React.FC<{todo: string}> = ({todo}) => {
+    console.log('write');
+    const {reducer, initState} = useLoaderData() as TaskStoreConfig<CommonTask>;
     const [disabled, setDisabled] = useState(true);
     const [state, dispatchAction] = useReducer(reducer, initState);
     const {score, feedback, complete, i, lives, tasks } = state;
@@ -30,7 +31,7 @@ const Write : React.FC = () => {
     const updateDisabled = useCallback((e : React.ChangeEvent<HTMLTextAreaElement>) => {
         if (e.target.value.trim()) setDisabled(false)
         else setDisabled(true);
-    }, [setDisabled]);
+    }, [disabled, setDisabled]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
@@ -53,7 +54,7 @@ const Write : React.FC = () => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task 
+                <Task todo={todo}
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 

@@ -31,7 +31,6 @@ export const TaskHeader = styled.div`
 
 export const Lives = styled.div`
     color: var(--primary-color);
-    text-align: right;
 
     & i::before {
         font-size: 2.5rem;

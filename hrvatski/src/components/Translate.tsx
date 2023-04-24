@@ -2,18 +2,16 @@ import React, { Suspense, useCallback, useEffect, useReducer, useState } from "r
 import { Await, useLoaderData } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { TranslationTask } from "../types";
+import { ActionType, TaskStoreConfig, TranslationTask } from "../types";
 import { makeAnswerString } from "../util/common";
 import { WordSet, Word } from '../styles/styledComponents';
 import { TaskText } from "../ui/Task/taskStyles";
 
-import { ActionType, TaskStateInitConfig } from "../reducers/taskStore";
-
 import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
 
-const Translate : React.FC = () => {
-    const [reducer, initState] = useLoaderData() as TaskStateInitConfig<TranslationTask>;
+const Translate : React.FC<{todo: string}> = ({todo}) => {
+    const {reducer, initState} = useLoaderData() as TaskStoreConfig<TranslationTask>;
     const [state, dispatchAction] = useReducer(reducer, initState);
     const [answers, setAnswers] = useState<{word: string, id: number}[]>([]);
     const {score, complete, feedback, i, lives, tasks} = state;
@@ -49,7 +47,7 @@ const Translate : React.FC = () => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task 
+                <Task todo={todo}
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 

@@ -1,4 +1,4 @@
-import { GrammarTask } from "../types";
+import { CommonTask, GrammarTask } from "../types";
 import { pickRandom, pickRandomIndex, shuffle } from "../util/common";
 
 type VerbAspect = 'n' | 's';
@@ -84,6 +84,40 @@ export const VERB_FORMS: FormsDict = {
         gerund: ['govoreći'],
         imperative: makeImperatives('govoriti'),
         extras: ['whatAbout', 'whomWith', 'whereAt']
+    },
+    'voljeti': {
+        aspect: 'n',
+        pres: makePresentForms('voliti'),
+        past: ['volio', ...makePastForms('voljeti').slice(1)],
+        gerund: ['voleći'],
+        passive: ['voljen'],
+        imperative: makeImperatives('voliti'),
+        extras: ['people', 'occupation', 'food']
+    },
+    'učiti': {
+        aspect: 'n',
+        pres: makePresentForms('učiti'),
+        past: makePastForms('učiti'),
+        imperative: makeImperatives('učiti'),
+        gerund: ['učeći'],
+        passive: ['učen'],
+        extras: []
+    },
+    'živjeti': {
+        aspect: 'n',
+        pres: makePresentForms('živiti'),
+        past: makePastForms('živiti'),
+        imperative: makeImperatives('živiti'),
+        gerund: ['živeći'],
+        extras: ['whereAt']
+    },
+    'slušati': {         
+        aspect: 'n',
+        pres: makePresentForms('slušati'),
+        past: makePastForms('slušati'),
+        imperative: makeImperatives('slušati'),
+        gerund: ['slušajući'],
+        extras: ['people', 'occupation']
     },
     'jesti': {
         aspect: 'n',
@@ -196,18 +230,27 @@ const getSubjectFormVerbFormIndex : (index: number) => Pronouns = (index) => {
     }
 }
 
-function makeOneVerbTasks(verb: string) : GrammarTask[]{
-    const forms = VERB_FORMS[verb].pres;
-    const tasks: GrammarTask[] = [];
+function pickRandomSubject(j: number) {
+    return pickRandom(subjects[getSubjectFormVerbFormIndex(j)]);
+}
+
+function makeVerbEndings(verb: string) {
     const endings = VERB_FORMS[verb].extras.reduce((acc, v) => {
         acc.push(...extrasDict[v])
         return acc;
     }, [] as string[]);
+    return endings;
+}
+
+function makeOneVerbTasks(verb: string) : GrammarTask[]{
+    const forms = VERB_FORMS[verb].pres;
+    const tasks: GrammarTask[] = [];
+    const endings = makeVerbEndings(verb);
 
     for (let i = 0; i < 11; i++) {
         const j = pickRandomIndex(forms.length);
         tasks.push({
-            start: pickRandom(subjects[getSubjectFormVerbFormIndex(j)]),
+            start: pickRandomSubject(j),
             end: pickRandom(endings),
             form: forms[j],
             word: verb,
@@ -227,16 +270,12 @@ function makeShuffledVerbsTask() : GrammarTask[] {
         const verb = pickRandom(nVerbs);
         const forms = VERB_FORMS[verb].pres;
         if (!(verb in endings)) {
-            const opts = VERB_FORMS[verb].extras.reduce((acc, v) => {
-                acc.push(...extrasDict[v])
-                return acc;
-            }, [] as string[]);
-            endings[verb] = opts;
+            endings[verb] = makeVerbEndings(verb);
         }
         const ends = endings[verb];
         const j = pickRandomIndex(forms.length);
         tasks.push({
-            start: pickRandom(subjects[getSubjectFormVerbFormIndex(j)]),
+            start: pickRandomSubject(j),
             end: pickRandom(ends),
             form: forms[j],
             word: verb,
@@ -288,3 +327,28 @@ export const grammarTaskPaths = [
     {path: 'random', name: 'One random verb'},
     {path: 'prezent', name: 'Random verbs'}
 ]
+
+export function makeNegationsTasks(verbs: string[]) {
+    const tasks: CommonTask[] = [];
+    const endings: {[key: string]: string[]} = {};
+    for (const verb of verbs) {
+        const verbInfo = VERB_FORMS[verb];
+        if (!verbInfo)
+            continue;
+
+        const i = pickRandomIndex(6);
+        if (!(verb in endings)) endings[verb] = makeVerbEndings(verb);
+        const sentence = {
+            start: pickRandomSubject(i),
+            end: pickRandom(endings[verb])
+        }
+        const task = {
+            source: [sentence.start, verb, sentence.end].filter(p => p).join(', '),
+            target: [sentence.start, verbInfo.neg ? verbInfo.neg[i] : `ne ${verbInfo.pres[i]}`, sentence.end].filter(p => p).join(' ').trim(),
+            extras: []
+        };
+        tasks.push(task);
+    };
+
+    return tasks;
+}

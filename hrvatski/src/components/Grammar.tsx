@@ -1,27 +1,17 @@
 import { FC, Fragment, Suspense, useCallback, useReducer, useState} from 'react';
 import Task from '../ui/Task/Task';
-import { Feedback, GrammarTask as GT } from '../types';
-import { makeGrammarTasks } from '../data/grammarData';
-import { ActionType, initStore, makeInitState } from '../reducers/taskStore';
+import { ActionType, GrammarTask as GT, TaskStoreConfig } from '../types';
 import { Purple } from '../styles/styledComponents';
 import GrammarTask from '../ui/GrammarTask';
 import { Await, useLoaderData } from 'react-router-dom';
 import ErrorComponent from './ErrorComponent';
 
-const getInitGrammarState = (task: string) => {
-    return makeInitState<GT>(makeGrammarTasks.bind(null, task));
-}
-const checkGrammarTask: (task: GT, answer: string) => Feedback = (task, answer) => {
-    console.log(task.form, answer);
-    return task.form === answer;
-};
 
 const maxQ = 10;
 
-const Grammar: FC = () => {
-    const taskName = useLoaderData() as string;
-
-    const [state, dispatch] = useReducer(...initStore<GT>(getInitGrammarState(taskName), checkGrammarTask));
+const Grammar: FC<{todo: string}> = ({todo}) => {
+    const {reducer, initState} = useLoaderData() as TaskStoreConfig<GT>;
+    const [state, dispatch] = useReducer(reducer, initState);
     const [answer, setAnswer] = useState('');
     const {i, complete, lives, feedback, tasks, score} = state;
     const task = tasks[i];
@@ -46,8 +36,8 @@ const Grammar: FC = () => {
 
     return (
         <Suspense>
-            <Await resolve={taskName} errorElement={<ErrorComponent />}>
-                <Task 
+            <Await resolve={reducer} errorElement={<ErrorComponent />}>
+                <Task todo={todo}
                     i={i} complete={complete} score={score} maxQ={maxQ}
                     feedback={feedback} answer={getAnswerComment(task)} lives={lives} disabled={!answer}
                     retry={retry} check={check} next={next}
