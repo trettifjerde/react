@@ -352,6 +352,10 @@ h5 {
     overflow: auto;
 }
 
+.main .fadeIn {
+    padding-left: 1rem;
+}
+
 .search-bar {
     height: 4rem;
 }
@@ -557,6 +561,10 @@ textarea.form-control {
 
     .main, .side {
         height: unset;
+    }
+
+    .main .fadeIn {
+        padding-left: 0;
     }
 
     .show-recipes-btn {
