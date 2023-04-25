@@ -1,6 +1,6 @@
 import { Params } from "react-router-dom";
 
-export type TaskType = 'write' | 'translate' | 'negations';
+export type TaskType = 'write' | 'blocks' | 'negations';
 export type Language = 'hrv' | 'en';
 export type CorpusLabel = 'basics' | 'common phrases' | 'questions' | 'negations';
 

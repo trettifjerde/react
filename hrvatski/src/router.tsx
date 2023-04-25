@@ -1,13 +1,12 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import SignIn from "./pages/SignIn";
 import MainErrorPage from "./pages/MainErrorPage";
-import { LoaderArgs } from "./types";
 import ChoosePage from "./pages/ChoosePage";
-import { berlitzLoader, berlitzLevelLoader, languageLoader, homePageLoader, writeTaskLoader, translateTaskLoader, grammarTaskLoader, negationsTaskLoader } from "./router-loaders";
+import { berlitzLoader, berlitzLevelLoader, languageLoader, homePageLoader, writeTaskLoader, wordBlocksTaskLoader, grammarTaskLoader, negationsTaskLoader } from "./router-loaders";
 import Write from "./components/Write";
-import Translate from "./components/Translate";
 import Grammar from "./components/Grammar";
+import WordBlocks from "./components/WordBlocks";
 
 const router = createBrowserRouter([{
     path: '/',
@@ -24,13 +23,13 @@ const router = createBrowserRouter([{
                     {index: true, element: <ChoosePage animationName="appearFromRight" />, loader: berlitzLevelLoader},
                     {path: 'write', children: [
                         {index: true, element: <ChoosePage animationName="jumpUp" />, loader: languageLoader},
-                        {path: ':lang', element: <Write todo="Type in translation" />, loader: writeTaskLoader}
+                        {path: ':lang', element: <Write />, loader: writeTaskLoader}
                     ]},
-                    {path: 'translate', children: [
+                    {path: 'blocks', children: [
                         {index: true, element: <ChoosePage animationName="jumpUp" />, loader: languageLoader},
-                        {path: ':lang', element: <Translate todo="Translate using the words below" />, loader: translateTaskLoader}
+                        {path: ':lang', element: <WordBlocks />, loader: wordBlocksTaskLoader}
                     ]},
-                    {path: 'negations', element: <Write todo="Put negation in the sentence" />, loader: negationsTaskLoader}
+                    {path: 'negations', element: <Write />, loader: negationsTaskLoader}
 
                 ]}
             ]
@@ -48,7 +47,7 @@ const router = createBrowserRouter([{
                         ],
                         back: true
                     })},
-                    {path: ':task', element: <Grammar todo="Choose the correct form" />, loader: grammarTaskLoader}
+                    {path: ':task', element: <Grammar />, loader: grammarTaskLoader}
                 ]}
             ]
         }

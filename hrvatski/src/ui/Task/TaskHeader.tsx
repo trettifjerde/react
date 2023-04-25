@@ -2,7 +2,7 @@ import React from "react";
 import { Sentence } from "../../styles/styledComponents";
 import { TaskHeader as Header, Lives } from "./taskStyles";
 
-const TaskHeader: React.FC<{lives: number, maxQ: number, i: number, todo: string}> = React.memo(({lives, maxQ, i, todo}) => {
+const TaskHeader: React.FC<{lives: number, maxQ: number, i: number}> = React.memo(({lives, maxQ, i}) => {
     return (
         <Header>
             <Sentence>{i + 1}/{maxQ}</Sentence>

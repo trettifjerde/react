@@ -10,7 +10,7 @@ import { TaskText } from "../ui/Task/taskStyles";
 import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
 
-const Translate : React.FC<{todo: string}> = ({todo}) => {
+const WordBlocks : React.FC = () => {
     const {reducer, initState} = useLoaderData() as TaskStoreConfig<TranslationTask>;
     const [state, dispatchAction] = useReducer(reducer, initState);
     const [answers, setAnswers] = useState<{word: string, id: number}[]>([]);
@@ -47,7 +47,7 @@ const Translate : React.FC<{todo: string}> = ({todo}) => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task todo={todo}
+                <Task
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 
@@ -71,4 +71,4 @@ const Translate : React.FC<{todo: string}> = ({todo}) => {
     )
 }
 
-export default Translate;
+export default WordBlocks;

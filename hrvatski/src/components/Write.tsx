@@ -10,7 +10,7 @@ import ErrorComponent from "./ErrorComponent";
 import Task from "../ui/Task/Task";
 
 
-const Write : React.FC<{todo: string}> = ({todo}) => {
+const Write : React.FC = () => {
     console.log('write');
     const {reducer, initState} = useLoaderData() as TaskStoreConfig<CommonTask>;
     const [disabled, setDisabled] = useState(true);
@@ -54,7 +54,7 @@ const Write : React.FC<{todo: string}> = ({todo}) => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task todo={todo}
+                <Task
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 

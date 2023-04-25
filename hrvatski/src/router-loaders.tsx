@@ -1,10 +1,15 @@
 import { json } from "react-router-dom";
-import { berlitz } from "./data/translateData";
+import { berlitz } from "./data/berlitz/berlitz";
 import { CommonTask, GrammarTask, Language, LoaderArgs, PathsInfo, TaskStoreConfig, TranslationTask } from "./types";
 import { initStore, makeInitState } from "./reducers/taskStore";
-import { makeBerlitzNegationTasks, makeBerlitzTasks } from "./util/common";
-import { makeSuggestionWords } from "./util/translate";
-import { makeGrammarTasks } from "./data/grammarData";
+import { makeGrammarTasks } from "./util/taskMakers";
+import { makeBerlitzNegationTasks, makeBerlitzTasks, makeBerlitzWordBlocksTasks } from "./data/berlitz/berlitzTaskMakers";
+
+const taskNames = {
+    'write': 'Written translation',
+    'blocks': 'Word blocks',
+    'negations': 'Negations'
+};
 
 export function homePageLoader(l: LoaderArgs) : PathsInfo {
     return {
@@ -26,7 +31,7 @@ export function berlitzLevelLoader(l: LoaderArgs) : PathsInfo {
     if (level !== null) {
         return {
             back: true,
-            paths: berlitz[level].tasks.map(t => ({path: t, name: t[0].toUpperCase() + t.slice(1)}))
+            paths: berlitz[level].tasks.map(t => ({path: t, name: taskNames[t]}))
         }
     }
     throw json(404);
@@ -65,13 +70,13 @@ export function negationsTaskLoader(l: LoaderArgs) : TaskStoreConfig<CommonTask>
     return meow;
 }
 
-export function translateTaskLoader(l: LoaderArgs) : TaskStoreConfig<TranslationTask> {
+export function wordBlocksTaskLoader(l: LoaderArgs) : TaskStoreConfig<TranslationTask> {
     const level = getBerlitzLevel(l);
     const lang = getTargetLang(l);
     if (level !== null && lang) {
         return initStore(
             makeInitState(
-                () => makeBerlitzTasks(level, lang).map(task => ({...task, suggestions: makeSuggestionWords(task.target, lang, 4)}))
+                () => makeBerlitzWordBlocksTasks(level, lang)
             ),
             (task: TranslationTask, answer: string) => (answer === task.target || task.extras.includes(answer.toLowerCase()))
         );

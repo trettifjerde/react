@@ -33,6 +33,7 @@ body {
 
 a { 
   text-decoration: none;
+  -webkit-user-drag: none;
 }
 
 a.b-link {
@@ -54,6 +55,7 @@ a.b-link {
   font-size: var(--font-size);
   cursor: pointer;
   white-space: nowrap;
+  user-drag: none;
 }
 
 .btn:disabled {

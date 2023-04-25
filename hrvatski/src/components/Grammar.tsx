@@ -9,7 +9,7 @@ import ErrorComponent from './ErrorComponent';
 
 const maxQ = 10;
 
-const Grammar: FC<{todo: string}> = ({todo}) => {
+const Grammar: FC = () => {
     const {reducer, initState} = useLoaderData() as TaskStoreConfig<GT>;
     const [state, dispatch] = useReducer(reducer, initState);
     const [answer, setAnswer] = useState('');
@@ -37,7 +37,7 @@ const Grammar: FC<{todo: string}> = ({todo}) => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task todo={todo}
+                <Task
                     i={i} complete={complete} score={score} maxQ={maxQ}
                     feedback={feedback} answer={getAnswerComment(task)} lives={lives} disabled={!answer}
                     retry={retry} check={check} next={next}
