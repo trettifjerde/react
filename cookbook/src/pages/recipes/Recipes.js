@@ -11,7 +11,6 @@ import Spinner from '../../components/Spinner';
 
 
 const RecipesPage = () => {
-    console.log('Recipe Page');
     const { recipesFetched } = useLoaderData();
     const location = useLocation();
     const [isMobileVisible, setMobileVisible] = useState(true);

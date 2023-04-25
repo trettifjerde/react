@@ -10,11 +10,9 @@ import useRedirectOnLogout from "../helpers/useRedirectOnLogout";
 import EmptyComponent from "../components/Empty";
 import Spinner from "../components/Spinner";
 import ShoppingList from "../components/shopping/ShoppingList";
-import ShoppingListForm from "../components/shopping/ShoppintListForm";
+import ShoppingListForm from "../components/shopping/ShoppingListForm";
 
 const ShoppingListPage = () => {
-
-    console.log('Shopping List Page');
     const {shoppingList} = useLoaderData();
     useRedirectOnLogout();
 
@@ -40,7 +38,6 @@ export async function loader({request, params}) {
 
 async function loadShoppingList() {
     const state = store.getState().shoppingList;
-    console.log(state);
 
     if (state.isInitialized) {
         return state.items;

@@ -16,8 +16,6 @@ import useRedirectOnLogout from "../../helpers/useRedirectOnLogout";
 
 
 const RecipeFormPage = () => {
-    console.log('recipe form page');
-
     const params = useParams();
     const {recipe} = useLoaderData();
     const dispatch = useDispatch();

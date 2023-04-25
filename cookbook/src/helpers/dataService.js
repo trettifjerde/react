@@ -1,4 +1,4 @@
-import { transformFirebaseIngredientsToList, transformFirebaseRecipe, transformRecipeList } from './utils';
+import { castIngredsDbToClient, castIngredDbToClient, transformFirebaseRecipe, transformRecipeList, makeRecipe } from './utils';
 import {getToken} from '../helpers/authService';
 
 export const MAX_FETCH_BATCH = 3;
@@ -10,7 +10,7 @@ const makeUrl = (path) => {
 const makeIngredsUrl = (path) => {
     try {
         const token = getToken();
-        return `https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list/${token.id}/${path ? '/' + path : ''}.json`;
+        return `https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list/${token.id}${path ? '/' + path : ''}.json`;
     }
     catch {
         return `https://academind34-default-rtdb.europe-west1.firebasedatabase.app/list/666/${path ? '/' + path : ''}.json`;
@@ -23,7 +23,6 @@ const addAuth = (url) => {
 }
 
 export const makeError = (error) => {
-    console.log('Error caught inside make Error', error);
     return {error: {message: error.message, status: error.cause}};
 }
 
@@ -80,7 +79,8 @@ export async function sendRecipe(recipe, id) {
         makeUrl(id ? id : ''),
         id ? 'PATCH' : 'POST',
         recipe,
-        'Failed to send recipe'
+        'Failed to send recipe',
+        () => makeRecipe(recipe, id)
     );
 }
 
@@ -100,17 +100,37 @@ export async function fetchIngredients() {
         'GET',
         null,
         'Failed to fetch ingredients', 
-        transformFirebaseIngredientsToList
+        castIngredsDbToClient
     );
 }
 
-export async function addIngredient(item, id) {
+export async function addIngredient(item) {
     return privateFetch(
-        makeIngredsUrl(id),
-        id ? 'PATCH' : 'POST',
+        makeIngredsUrl(),
+        'POST',
         item,
         'Failed to send item to shopping list',
-        (data => (id ? {...data, id: id} : {...item, id: data.name}))
+        res => castIngredDbToClient(res.name, item)
+    )
+}
+
+export async function updateIngredient(id, item) {
+    return privateFetch(
+        makeIngredsUrl(id),
+        'PATCH',
+        item,
+        'Failed to send item to shopping list',
+        () => castIngredDbToClient(id, item)
+    )
+}
+
+export async function updateIngredients(items) {
+    return privateFetch(
+        makeIngredsUrl(),
+        'PUT',
+        items,
+        'Failed to send items to shopping list',
+        castIngredsDbToClient
     )
 }
 

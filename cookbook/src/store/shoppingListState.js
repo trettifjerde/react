@@ -13,7 +13,7 @@ const slice = createSlice({
     initialState,
     reducers: {
         initializeItems(state, action) {
-            state.items = action.payload.reverse();
+            state.items = action.payload;
             state.isInitialized = true;
         },
         selectItem(state, action) {
@@ -30,19 +30,14 @@ const slice = createSlice({
         },
         updateItem(state, action) {
             const item = action.payload;
-            state.items = [item, ...state.items.filter(i => i.id !== item.id)];
+            state.items = [...state.items.filter(i => i.id !== item.id), item];
             state.selectedItem = {...emptyItem};
         },
         deleteItem(state, action) {
             state.items = state.items.filter(i => i.id !== action.payload);
         },
         addIngredientsFromRecipe(state, action) {
-            const {itemsToAdd, itemsToUpdate} = action.payload;
-            const updatedItemsIDs = itemsToUpdate.map(item => item.id);
-            
-            state.items = state.items.filter(item => !updatedItemsIDs.includes(item.id))
-                .concat(itemsToUpdate)
-                .concat(itemsToAdd);
+            state.items = action.payload;
         },
         clearIngredients(state) {
             return initialState;

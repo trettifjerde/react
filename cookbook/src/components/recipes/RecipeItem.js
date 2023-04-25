@@ -3,7 +3,6 @@ import { memo } from 'react';
 
 const RecipeItem = (props) => {
     const { recipe } = props;
-    console.log('Recipe Item', recipe.name);
 
     return (
         <NavLink className="card p-2" to={recipe.id}>

@@ -3,15 +3,11 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 import './RecipeForm.css';
 
 const RecipeForm = (props) => {
-    console.log('Recipe Form Comp');
-
     const {recipe, onSubmitForm, onCancelSubmit} = props;
 
     const [ings, setIngs] = useState(makeInitIngs(recipe.ingredients));
     const [steps, setSteps] = useState(makeInitSteps(recipe.steps));
     const [errors, setErrors] = useState({});
-
-    console.log(steps);
 
     const contTop = useRef();
 
@@ -211,8 +207,19 @@ function transformToRequestData(f) {
             if (!(id in ingredients)) {
                 ingredients[id] = {};
             }
-
-            ingredients[id][type] = type === 'amount' ? +value : value.trim();
+            let val;
+            switch(type) {
+                case 'amount':
+                    val = +value ? +value : null;
+                    break;
+                case 'unit':
+                    val = value ? value : null;
+                    break;
+                case 'name':
+                    val = value.trim();
+                    break;
+            }
+            ingredients[id][type] = val;
         }
         else if (key.startsWith('step')) {
             steps.push(value.trim());

@@ -1,14 +1,13 @@
 import { removeToken } from "../helpers/authService";
 import { generalActions } from "./generalState";
 import { shoppingListActions } from "./shoppingListState";
-import { addIngredient } from "../helpers/dataService";
-import { makeDBItemFromShoppingListIngred } from "../helpers/utils";
+import { updateIngredients } from "../helpers/dataService";
+import { castIngredClientToDb, castRecipeIngredsToClient } from "../helpers/utils";
 import { store } from "./store";
 
 export function registerLogIn(token) {
     return (dispatch) => {
         const expiresIn = new Date(token.expirationDate).getTime() - new Date().getTime();
-        console.log(expiresIn);
         const timer = setTimeout(() => {
             dispatch(registerLogOut(timer));
         }, expiresIn);
@@ -29,38 +28,27 @@ export function addRecipeToShoppingList(items) {
     return async (dispatch) => {
         dispatch(generalActions.setSubmitting(true));
 
+        const ingreds = castRecipeIngredsToClient(items);
         const shoppingList = store.getState().shoppingList.items;
-        const itemsToAdd = [];
-        const itemsToUpdate = [];
+        const updatedShoppingList = [...shoppingList];
 
-        items.forEach(item => {
-            const existingItem = shoppingList.find(i => i.name === item.name && i.unit === item.unit);
-            if (existingItem)
-                itemsToUpdate.push({...existingItem, amount: (+existingItem.amount) + (+item.amount)});
+        ingreds.forEach(item => {
+            const i = shoppingList.findIndex(it => it.name === item.name && it.unit === item.unit);
+            if (i > -1) {
+                const existingItem = shoppingList[i];
+                updatedShoppingList[i] = {...existingItem, amount: (+existingItem.amount) + (+item.amount)};
+            }
             else 
-                itemsToAdd.push({...makeDBItemFromShoppingListIngred(item), id: null});
+                updatedShoppingList.push({...castIngredClientToDb(item), id: null});
         });
 
-        for (const item of itemsToUpdate) {
-            const {id, ...ingred} = item;
-            const res = await addIngredient(ingred, id);
-            if ('error' in res) {
-                dispatch(generalActions.flashToast({text: res.error.message, isError: true}));
-                break;
-            }
+        const res = await updateIngredients(updatedShoppingList);
+        if ('error' in res) {
+            dispatch(generalActions.flashToast({text: res.error.message, isError: true}));
         }
-
-        for (let i = 0; i < itemsToAdd.length; i++) {
-            const {id, ...ingred} = itemsToAdd[i];
-            const res = await addIngredient(ingred, id);
-            if ('error' in res) {
-                dispatch(generalActions.flashToast({text: res.error.message, isError: true}));
-                break;
-            }
-            itemsToAdd[i].id = res.name;
+        else {
+            dispatch(shoppingListActions.addIngredientsFromRecipe(res));
+            dispatch(generalActions.flashToast({text: 'Recipe ingredients added to shop list', isError: false}));
         }
-
-        dispatch(shoppingListActions.addIngredientsFromRecipe({itemsToAdd, itemsToUpdate}));
-        dispatch(generalActions.flashToast({text: 'Recipe ingredients added to shop list', isError: false}));
     }
 }

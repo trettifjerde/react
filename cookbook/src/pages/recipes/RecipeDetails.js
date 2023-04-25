@@ -92,7 +92,13 @@ const RecipeDetailsPage = () => {
                             <div className="detail-block">
                                 <h5>Ingredients</h5>
                                 <ul className="list-group">
-                                    {loadedRecipe.ingredients.map((ing, i) => <li key={i} className="list-group-item">{`${ing.amount} ${ing.unit} ${ing.name}`}</li>)}
+                                    {loadedRecipe.ingredients.map((ing, i) => 
+                                        <li key={i} className="list-group-item">
+                                            <div className='row justify-content-between'>
+                                                <span className='col-auto'>{ing.name}</span>
+                                                <span className='col-auto'>{ing.amount} {ing.unit}</span>
+                                            </div>
+                                        </li>)}
                                 </ul>
                             </div>
                             <div className="detail-block">

@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { shoppingListActions } from "../../store/shoppingListState";
 import { generalActions } from "../../store/generalState";
-import { addIngredient } from "../../helpers/dataService";
-import { makeDBItemFromFormData } from "../../helpers/utils";
+import { prepareIngredientSubmit } from "../../helpers/utils";
 
 const ShoppingListForm = () => {
 
-    const item = useSelector(state => state.shoppingList.selectedItem);
+    const {selectedItem : item, items} = useSelector(state => state.shoppingList);
     const {id} = item;
     const dispatch = useDispatch();
 
@@ -25,24 +24,24 @@ const ShoppingListForm = () => {
             return;
         }
 
-        const data = makeDBItemFromFormData(formData);
-
         dispatch(generalActions.setSubmitting(true));
 
-        const response = await addIngredient(data, id);
-        if ('error' in response)
-            dispatch(generalActions.flashToast({text: response.error.message, isError: true}));
+        const [submitFn, message] = prepareIngredientSubmit(formData, id, items);
+
+        if (!submitFn) {
+            dispatch(generalActions.flashToast({text: message, isError: true}));
+            return;
+        }
+
+        const res = await submitFn();
+        if ('error' in res) 
+            dispatch(generalActions.flashToast({text: res.error.message, isError: true}));
         else {
+            dispatch(shoppingListActions.updateItem(res));
+            dispatch(generalActions.flashToast({text: message, isError: false}))
+        }
 
-            dispatch(shoppingListActions.updateItem(response));
-            formEl.current.reset();
-            setErrors({});   
-
-            if (id) dispatch(generalActions.flashToast({text: 'Item updated', isError: false}));
-            else dispatch(generalActions.flashToast({text: 'Item added', isError: false}));
-        }    
-
-    }, [setErrors, dispatch, id]);
+    }, [setErrors, dispatch, id, items]);
 
     const clearForm = useCallback(() => dispatch(shoppingListActions.clearItem()), [dispatch]);
 
@@ -52,8 +51,9 @@ const ShoppingListForm = () => {
             formEl.current['amount'].value = item.amount;
             formEl.current['unit'].value = item.unit;
             formEl.current['name'].focus();
+            setErrors({});
         }
-    }, [item, formEl]);
+    }, [item, formEl, setErrors]);
 
     return (
         <div className="row">

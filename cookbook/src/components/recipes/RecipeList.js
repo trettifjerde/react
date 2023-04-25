@@ -24,8 +24,6 @@ const RecipeList = (props) => {
 
     const filteredRecipes = recipes.filter(recipe => recipe.name.includes(filterString));
 
-    console.log('RecipeListComp');
-
     const onLoadMoreRecipes = useCallback(async () => {
 
         setIsFetching(true);

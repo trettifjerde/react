@@ -1,7 +1,7 @@
 import { Pronoun } from "../data/grammarTypes";
 import { pickRandom } from "./common";
 
-function getForm(verb: string, form: 'present' | 'imperative' = 'present') {
+function makeVerbForm(verb: string, form: 'present' | 'imperative' = 'present') {
     const stem = verb.slice(0, -3);
     const group = verb.slice(-3, -2);
     let e;
@@ -20,7 +20,7 @@ function getForm(verb: string, form: 'present' | 'imperative' = 'present') {
 }
 export function makePresentForms(verb: string) {
     const stem = verb.slice(0, -2);
-    return ['m', 'š', '', 'mo', 'te'].map(e => stem + e).concat([getForm(verb)]);
+    return ['m', 'š', '', 'mo', 'te'].map(e => stem + e).concat([makeVerbForm(verb)]);
 }
 
 export function makePastForms(verb: string, extraA=false) {
@@ -29,7 +29,7 @@ export function makePastForms(verb: string, extraA=false) {
 }
 
 export function makeImperatives(verb: string) : [string, string] {
-    const form = getForm(verb, 'imperative');
+    const form = makeVerbForm(verb, 'imperative');
     return [form, form + 'te'];
 }
 
