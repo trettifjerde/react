@@ -43,7 +43,7 @@ const router = createBrowserRouter([{
                         paths: [
                             {name: '"biti"', path: 'biti'},
                             {name: 'One random verb', path: 'random'},
-                            {name: 'Verbs in prezent', path: 'prezent'}
+                            {name: 'Verbs in present', path: 'prezent'}
                         ],
                         back: true
                     })},

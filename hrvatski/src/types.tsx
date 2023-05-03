@@ -31,6 +31,7 @@ export type GrammarTask = {start: string, end: string, form: string, word: strin
 
 export type Feedback = true | false | null;
 export type TaskState<Task> = {
+    instruction: string,
     i: number,
     complete: boolean,
     feedback: Feedback,

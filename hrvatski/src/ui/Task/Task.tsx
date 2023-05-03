@@ -6,7 +6,6 @@ import TaskControl from "./TaskControl";
 import { Feedback } from "../../types";
 import TaskComments from "./TaskComments";
 import { NavLink } from "react-router-dom";
-import { Sentence } from "../../styles/styledComponents";
 
 const Task: React.FC<{
     complete: boolean, 
@@ -18,10 +17,11 @@ const Task: React.FC<{
     feedback: Feedback,
     answer: string | ReactNode,
     score: number,
+    instruction: string,
     next: () => void,
     check: () => void,
     retry: () => void
-}> = ({complete, lives, i, maxQ, children, disabled, feedback, answer, score, next, check, retry}) => {
+}> = ({complete, lives, i, maxQ, children, disabled, feedback, answer, score, instruction, next, check, retry}) => {
 
     console.log('task component');
 
@@ -34,7 +34,7 @@ const Task: React.FC<{
 
             {! complete && <Fragment>
                 <StyledTask>
-                    <TaskHeader lives={lives} i={i} maxQ={maxQ} />
+                    <TaskHeader lives={lives} i={i} maxQ={maxQ} instruction={instruction} />
                     { children }
                 </StyledTask>
 

@@ -1,14 +1,15 @@
 import { Feedback,  TaskState, TaskReducer, ActionType } from "../types";
 
 export const makeInitState: 
-    <T>(makeTasks: () => T[]) => () => TaskState<T> = 
+    <T>(makeTasks: () => {tasks: T[], instruction: string}) => () => TaskState<T> = 
     (makeTasks) => {
+        const {tasks, instruction} = makeTasks();
         return () => ({ i: 0,
             score: 0,
             lives: 3,
             feedback: null,
             complete: false,
-            tasks: makeTasks()
+            tasks, instruction
         })
     }
 

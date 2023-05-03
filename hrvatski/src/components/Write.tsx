@@ -15,7 +15,7 @@ const Write : React.FC = () => {
     const {reducer, initState} = useLoaderData() as TaskStoreConfig<CommonTask>;
     const [disabled, setDisabled] = useState(true);
     const [state, dispatchAction] = useReducer(reducer, initState);
-    const {score, feedback, complete, i, lives, tasks } = state;
+    const {score, feedback, complete, i, lives, tasks, instruction} = state;
     const task = tasks[i];
     const {source} = task;
     const ta = useRef<HTMLTextAreaElement>(null);
@@ -54,7 +54,7 @@ const Write : React.FC = () => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task
+                <Task instruction={instruction}
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 

@@ -1,8 +1,8 @@
 import { croatian, english } from "../data/berlitz/berlitz";
-import { VERBS, extrasDict, subjects } from "../data/grammarData";
-import { CommonTask, GrammarTask, Language, SuggestionWord } from "../types";
+import { LABELED_NOUNS, NOUNS, VERBS, extrasDict } from "../data/grammarData";
+import { Casus, NounLabel, Verb } from "../data/grammarTypes";
+import { CommonTask, CorpusVocabulary, GrammarTask, Language, SuggestionWord } from "../types";
 import { pickRandom, pickRandomIndex, shuffle } from "./common";
-import { getRandomPronoun } from "./grammar";
 
 export function makeSuggestionWords(phrase: string, targetLang: Language, maxWords=4): SuggestionWord[] {
     const targetDict = targetLang === 'hrv' ? croatian : english;
@@ -18,7 +18,7 @@ export function makeSuggestionWords(phrase: string, targetLang: Language, maxWor
     return extraWords.map((word, i) => ({id: i, word: word}));
 }
 
-function makeOneVerbTasks(verb: string) : GrammarTask[]{
+function makeOneVerbTasks(verb: string) {
     const forms = VERBS[verb].pres;
     const tasks: GrammarTask[] = [];
     const endings = makeVerbEndings(verb);
@@ -26,7 +26,7 @@ function makeOneVerbTasks(verb: string) : GrammarTask[]{
     for (let i = 0; i < 11; i++) {
         const j = pickRandomIndex(forms.length);
         tasks.push({
-            start: pickRandomSubject(j),
+            start: pickRandomSubject(j, VERBS[verb]),
             end: pickRandom(endings),
             form: forms[j],
             word: verb,
@@ -36,11 +36,10 @@ function makeOneVerbTasks(verb: string) : GrammarTask[]{
     return tasks;
 }
 
-function makeShuffledVerbsTask() : GrammarTask[] {
+function makeShuffledVerbsTask() {
     const tasks: GrammarTask[] = [];
     const endings: {[key: string] : string[]} = {};
     const nVerbs = Object.entries(VERBS).filter(([verb, info]) => info.aspect === 'n').map(([verb, info]) => verb);
-    console.log(nVerbs);
 
     for (let i = 0; i < 11; i++) {
         const verb = pickRandom(nVerbs);
@@ -51,7 +50,7 @@ function makeShuffledVerbsTask() : GrammarTask[] {
         const ends = endings[verb];
         const j = pickRandomIndex(forms.length);
         tasks.push({
-            start: pickRandomSubject(j),
+            start: pickRandomSubject(j, VERBS[verb]),
             end: pickRandom(ends),
             form: forms[j],
             word: verb,
@@ -61,50 +60,100 @@ function makeShuffledVerbsTask() : GrammarTask[] {
     return tasks;
 }
 
-export function makeGrammarTasks(task: string) : GrammarTask[] {
+export function makeGrammarTasks(task: string) {
+    let tasks: GrammarTask[];
     switch(task) {
         case 'biti':
-            return makeOneVerbTasks('biti');
+            tasks = makeOneVerbTasks('biti');
+            break;
         case 'prezent':
-            return makeShuffledVerbsTask();
+            tasks = makeShuffledVerbsTask();
+            break;
         default:
-            return makeOneVerbTasks(pickRandom(Object.keys(VERBS)))
+            tasks = makeOneVerbTasks(pickRandom(Object.keys(VERBS)))
     }
+    return {tasks, instruction: 'Put the verb in the correct form'};
 }
 
-function pickRandomSubject(j: number) {
-    return pickRandom(subjects[getRandomPronoun(j)]);
+function generateSubject(verb: Verb, sg: boolean) {
+    const sub = verb.subjects.reduce((acc, label) => {
+        acc.push(...LABELED_NOUNS[label].map(noun => sg ? noun : NOUNS[noun].forms[1].N))
+        return acc;
+    }, [] as string[]);
+    return sub;
+}
+
+function makeNounForm(noun: string, form: Casus, sg=true) {
+    return NOUNS[noun].forms[sg ? 0: 1][form];
+}
+
+function pickRandomObject(verb: Verb, nouns: string[]) {
+    const labeledObjects = Object.keys(verb.objects).reduce((acc, label) => {
+        nouns.forEach(noun => {
+            if (noun in NOUNS && (label === 'any' || NOUNS[noun].labels.includes(label as NounLabel))) {
+                if (!(label in acc))
+                    acc[label] = [];
+                acc[label].push(noun)
+            }
+        });
+        return acc;
+    }, {} as {[key: string]: string[]});
+    const label = pickRandom(Object.keys(labeledObjects));
+    const prep = verb.objects[label][1];
+    return `${prep ? prep + ' ' : ''}${makeNounForm(pickRandom(labeledObjects[label]), verb.objects[label][0])}`
+}
+
+
+function pickRandomSubject(j: number, verb: Verb) {
+    switch(j) {
+        case 0:
+            return 'ja';
+        case 1:
+            return 'ti';
+        case 3: 
+            return 'mi'
+        case 4: 
+            return 'vi'
+        case 2:
+            return pickRandom(generateSubject(verb, true))
+        case 5: 
+            return pickRandom(generateSubject(verb, false))
+        default:
+            return 'ja'
+    }
 }
 
 function makeVerbEndings(verb: string) {
     const endings = VERBS[verb].extras.reduce((acc, v) => {
-        acc.push(...extrasDict[v])
+        if (v in extrasDict)
+            acc.push(...extrasDict[v])
         return acc;
     }, [] as string[]);
     return endings;
 }
 
-export function makeNegationsTasks(verbs: string[]) {
+export function makeNegationsTasks(vocabulary: CorpusVocabulary) {
     const tasks: CommonTask[] = [];
-    const endings: {[key: string]: string[]} = {};
-    for (const verb of verbs) {
-        const verbInfo = VERBS[verb];
-        if (!verbInfo)
-            continue;
+    if (vocabulary.verbs) {
+        for (const verb of vocabulary.verbs) {
+            const verbInfo = VERBS[verb];
+            if (!verbInfo)
+                continue;
 
-        const i = pickRandomIndex(6);
-        if (!(verb in endings)) endings[verb] = makeVerbEndings(verb);
-        const sentence = {
-            start: pickRandomSubject(i),
-            end: pickRandom(endings[verb])
-        }
-        const task = {
-            source: [sentence.start, verb, sentence.end].filter(p => p).join(', '),
-            target: [sentence.start, verbInfo.neg ? verbInfo.neg[i] : `ne ${verbInfo.pres[i]}`, sentence.end].filter(p => p).join(' ').trim(),
-            extras: []
+            const i = pickRandomIndex(6);
+            const sentence = {
+                start: pickRandomSubject(i, verbInfo),
+                end: pickRandomObject(verbInfo, vocabulary.nouns!)
+            }
+            const task = {
+                source: `${sentence.start ? sentence.start : ''} (${verb}) ${sentence.end ? sentence.end : ''}`,
+                target: [sentence.start, verbInfo.neg ? verbInfo.neg[i] : `ne ${verbInfo.pres[i]}`, sentence.end].filter(p => p).join(' ').trim(),
+                extras: []
+            };
+            tasks.push(task);
         };
-        tasks.push(task);
-    };
+    }
+    console.log(tasks);
 
     return tasks;
 }

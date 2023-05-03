@@ -14,7 +14,7 @@ const WordBlocks : React.FC = () => {
     const {reducer, initState} = useLoaderData() as TaskStoreConfig<TranslationTask>;
     const [state, dispatchAction] = useReducer(reducer, initState);
     const [answers, setAnswers] = useState<{word: string, id: number}[]>([]);
-    const {score, complete, feedback, i, lives, tasks} = state;
+    const {score, complete, feedback, i, lives, tasks, instruction} = state;
     const suggestions = tasks[i].suggestions;
    
     const selectWord = (id: number) => {
@@ -47,7 +47,7 @@ const WordBlocks : React.FC = () => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task
+                <Task instruction={instruction}
                     complete={complete} feedback={feedback} 
                     score={score} i={i} maxQ={tasks.length} lives={lives}
                     check={checkAnswer} retry={retry} next={nextTask} 

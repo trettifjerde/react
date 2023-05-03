@@ -13,7 +13,7 @@ const Grammar: FC = () => {
     const {reducer, initState} = useLoaderData() as TaskStoreConfig<GT>;
     const [state, dispatch] = useReducer(reducer, initState);
     const [answer, setAnswer] = useState('');
-    const {i, complete, lives, feedback, tasks, score} = state;
+    const {i, complete, lives, feedback, tasks, score, instruction} = state;
     const task = tasks[i];
 
     const selectAnswer = useCallback((word: string) => setAnswer(word), [setAnswer]);
@@ -37,7 +37,7 @@ const Grammar: FC = () => {
     return (
         <Suspense>
             <Await resolve={reducer} errorElement={<ErrorComponent />}>
-                <Task
+                <Task instruction={instruction}
                     i={i} complete={complete} score={score} maxQ={maxQ}
                     feedback={feedback} answer={getAnswerComment(task)} lives={lives} disabled={!answer}
                     retry={retry} check={check} next={next}

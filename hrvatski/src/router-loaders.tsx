@@ -59,15 +59,12 @@ export function writeTaskLoader(l: LoaderArgs) : TaskStoreConfig<CommonTask> {
 }
 
 export function negationsTaskLoader(l: LoaderArgs) : TaskStoreConfig<CommonTask> {
-    console.log('negations loader');
     const level = getBerlitzLevel(l);
 
-    const meow = initStore(
+    return initStore(
         makeInitState(() => makeBerlitzNegationTasks(level!)),
-        (task: CommonTask, answer: string) => (answer === task.target)
-    );
-    console.log(meow);
-    return meow;
+        (task: CommonTask, answer: string) => (answer === task.target),
+    )
 }
 
 export function wordBlocksTaskLoader(l: LoaderArgs) : TaskStoreConfig<TranslationTask> {

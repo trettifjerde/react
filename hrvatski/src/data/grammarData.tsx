@@ -1,36 +1,55 @@
-import { makeImperatives, makePastForms, makePresentForms } from "../util/grammar";
-import {Verb} from "./grammarTypes";
+import { makeImperatives, makeNounForms, makePastForms, makePresentForms } from "../util/grammar";
+import {Noun, NounLabel, Verb} from "./grammarTypes";
 
 export const VERBS: {[key: string]: Verb} = {
     'biti': {
         aspect: 'n',
+        subjects: ['any'],
+        objects: {
+            any: ['N', '']
+        },
         pres: ['sam','si','je','smo','ste','su'],
         neg: ['nisam', 'nisi', 'nije', 'nismo', 'niste', 'nisu'],
         past: ['bio', 'bila', 'bilo', 'bili', 'bile', 'bila'],
         gerund: ['budući'],
         imperative: ['budi', 'budite'],
-        extras: ['whereFrom', 'whereAt', 'whomWith']
+        extras: ['whereFrom', 'whereAt']
     },
     'govoriti': {
         aspect: 'n',
+        subjects: ['people'],
+        objects: {
+            people: ['I', 's'],
+            any: ['L', 'o']
+        },
         pres: makePresentForms('govoriti'),
         past: makePastForms('govoriti'),
         passive: ['govoren'],
         gerund: ['govoreći'],
         imperative: makeImperatives('govoriti'),
-        extras: ['whatAbout', 'whomWith', 'whereAt']
+        extras: ['whatAbout', 'whereAt']
     },
     'voljeti': {
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {
+            any: ['A', '']
+        },
         pres: makePresentForms('voliti'),
         past: ['volio', ...makePastForms('voljeti').slice(1)],
         gerund: ['voleći'],
         passive: ['voljen'],
         imperative: makeImperatives('voliti'),
-        extras: ['people', 'occupation', 'food']
+        extras: []
     },
     'učiti': {
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {
+            people: ['A', ''],
+            animals: ['A', ''],
+            any: ['A', '']
+        },
         pres: makePresentForms('učiti'),
         past: makePastForms('učiti'),
         imperative: makeImperatives('učiti'),
@@ -40,6 +59,10 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'živjeti': {
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {
+            places: ['L', 'u']
+        },
         pres: makePresentForms('živiti'),
         past: makePastForms('živiti'),
         imperative: makeImperatives('živiti'),
@@ -48,23 +71,35 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'slušati': {         
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {
+            people: ['A', ''],
+            animals: ['A', '']
+        },
         pres: makePresentForms('slušati'),
         past: makePastForms('slušati'),
         imperative: makeImperatives('slušati'),
         gerund: ['slušajući'],
-        extras: ['people', 'occupation']
+        extras: []
     },
     'jesti': {
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {
+            people: ['A', ''],
+            food: ['A', '']
+        },
         pres: ['jedem','jedeš','jede','jedemo','jedete','jedu'],
         past: makePastForms('jeti'),
         passive: ['jeden'],
         gerund: ['jedući'],
         imperative: ['jedi', 'jedite'],
-        extras: ['food', 'people', 'whenPresent', 'whomWith']
+        extras: ['whenPresent', 'whomWith']
     },
     'spavati': {
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {},
         pres: makePresentForms('spavati'),
         past: makePastForms('spavati'),
         gerund: ['spavajući'],
@@ -73,6 +108,12 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'ići': {
         aspect: 'n',
+        subjects: ['animals', 'people', 'vehicle'],
+        objects: {
+            people: ['I', 's'],
+            animals: ['I', 's'],
+            vehicle: ['I', '']
+        },
         pres: makePresentForms('ideti'),
         past: ['išao', 'išla', 'išlo', 'išli', 'išle', 'išla'],
         gerund: ['idući'],
@@ -81,6 +122,10 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'raditi': {
         aspect: 'n',
+        subjects: ['people', 'mechanism'],
+        objects: {
+            people: ['I', 's']
+        },
         pres: makePresentForms('raditi'),
         past: makePastForms('raditi'),
         gerund: ['radeći'],
@@ -89,14 +134,22 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'znati': {
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {
+            any: ['A', '']
+        },
         pres: makePresentForms('znati'),
         past: makePastForms('znati'),
         gerund: ['znajući'],
         imperative: makeImperatives('znati'),
-        extras: ['people']
+        extras: []
     },
     'misliti': {
         aspect: 'n',
+        subjects: ['animals', 'people'],
+        objects: {
+            any: ['L', 'o']
+        },
         pres: makePresentForms('misliti'),
         past: makePastForms('misliti'),
         imperative: makeImperatives('misliti'),
@@ -105,15 +158,24 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'imati': {
         aspect: 'n',
+        subjects: ['any'],
+        objects: {
+            any: ['A', '']
+        },
         pres: makePresentForms('imati'),
         past: makePastForms('imati'),
         imperative: makeImperatives('imati'),
         neg: ['nemam', 'nemaš', 'nema', 'nemamo', 'nemate', 'nemaju'],
         gerund: ['imajući'],
-        extras: ['food', 'people']
+        extras: []
     },
     'pomoći': {
         aspect: 's',
+        subjects: ['any'],
+        objects: {
+            people: ['D', ''],
+            any: ['I', 's']
+        },
         pres: makePresentForms('pomogneti'),
         past: makePastForms('pomogti', true),
         imperative: ['pomozi', 'pomozite'],
@@ -122,6 +184,11 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'pomagati': {
         aspect: 'n',
+        subjects: ['any'],
+        objects: {
+            people: ['D', ''],
+            any: ['I', 's']
+        },
         pres: makePresentForms('pomažeti'),
         past: makePastForms('pomagati'),
         imperative: ['pomaži', 'pomažite'],
@@ -130,14 +197,23 @@ export const VERBS: {[key: string]: Verb} = {
     },
     'pitati': {
         aspect: 'n',
+        subjects: ['people'],
+        objects: {
+            people: ['A', ''],
+            any: ['L', 'o']
+        },
         pres: makePresentForms('pitati'),
         past: makePastForms('pitati'),
         imperative: makeImperatives('pitati'),
         gerund: ['pitajući'],
-        extras: ['whom']
+        extras: []
     },
     'odgovoriti': {
         aspect: 's',
+        subjects: ['people'],
+        objects: {
+            people: ['D', '']
+        },
         pres: makePresentForms('odgovoriti'),
         past: makePastForms('odgovoriti'),
         imperative: makeImperatives('odgovoriti'),
@@ -146,17 +222,68 @@ export const VERBS: {[key: string]: Verb} = {
     }
 }
 
-export const subjects = {
-    ja: ['ja'],
-    ti: ['ti'],
-    vi: ['vi'],
-    mi: ['mi', 'ja i Kisik', 'ja i Muhsik'],
-    oni: ['prijateli', 'studenti', 'momci', 'psi', 'radnici', 'učenici', 'radnici', 'Kesak i Muhsik'],
-    one: ['prijateljice', 'djevojke', 'učenice', 'studentice', 'radnice', 'miske'],
-    on: ['pas', 'prijatelj', 'Kesak', 'student', 'Hrvat', 'Rus', 'radnik', 'učenik', 'momak'],
-    ona: ['Miska', 'prijateljica', 'cura', 'djevojka', 'studentica', 'radnice', 'Muhsik', 'Hrvatica', 'Ruskinja'],
-    ono: ['dijete']
+export const NOUNS: {[key: string]: Noun} = {
+    'dječak': {
+        gender: 'm',
+        animate: true,
+        forms: makeNounForms('dječak', 'm', true),
+        labels: ['people']
+    },
+    'student': {
+        gender: 'm',
+        animate: true,
+        forms: makeNounForms('student', 'm', true),
+        labels: ['people']
+    },
+    'učenik': {
+        gender: 'm',
+        animate: true,
+        forms: makeNounForms('učenik', 'm', true),
+        labels: ['people']
+    },
+    'jezik': {
+        gender: 'm',
+        animate: false,
+        forms: makeNounForms('jezik', 'm'),
+        labels: []
+    },
+    'slovo': {
+        gender: 'n',
+        animate: false,
+        forms: makeNounForms('slovo', 'n'),
+        labels: []
+    },
+    'riječ': {
+        gender: 'f',
+        animate: false,
+        forms: makeNounForms('riječ', 'f'),
+        labels: []
+    },
+    'Zagreb': {
+        gender: 'm',
+        animate: false,
+        forms: makeNounForms('Zagreb', 'm'),
+        labels: ['places']
+    },
+    'Zadar': {
+        gender: 'm',
+        animate: false,
+        forms: makeNounForms('Zadar', 'm'),
+        labels: ['places']
+    },
+    'Split': {
+        gender: 'm',
+        animate: false,
+        forms: makeNounForms('Split', 'm'),
+        labels: ['places']
+    }
 };
+
+export const LABELED_NOUNS: {[key: string]: string[]} = {};
+
+['animals', 'food', 'people', 'occupation', 'vehicle', 'mechanism', 'places'].forEach(label => {
+    LABELED_NOUNS[label] = filterByLabel(label as NounLabel);
+})
 
 export const extrasDict = {
     whereAt: ['u školi', 'u dućanu', 'na poslu', 'vani', 'kod kuće', 'u kafiću', 'u gradu'],
@@ -165,11 +292,7 @@ export const extrasDict = {
     whomWith: ['s prijateljem', 's majkom', 's Kesakom', 's mačkom', 'sa psom'],
     whereTo: ['na posao', 'u školu', 'kući', 'u grad', 'u kafić'],
     whomTo: ['prijatelju', 'meni', 'tebi', 'nama', 'mački', 'curi', 'momku', 'majci', 'prijateljici'],
-    food: ['jabuku', 'juhu', 'krušku', 'meso', 'ribu', 'hrvatska jela'],
-    people: ['prijatelja', 'Kesaka', 'misku', 'dijete'],
-    whenPresent: ['ujutro', 'navečer', 'po podne', 'poslije podne', 'noću'],
-    occupation: ['nastava', 'sastanak', 'tečaj hrvatskog jezika', 'doručak'],
-    whom: []
+    whenPresent: ['ujutro', 'navečer', 'po podne', 'poslije podne', 'noću']
 }
 
 export const grammarTaskPaths = [
@@ -177,3 +300,7 @@ export const grammarTaskPaths = [
     {path: 'random', name: 'One random verb'},
     {path: 'prezent', name: 'Random verbs'}
 ]
+
+function filterByLabel(l: NounLabel) {
+    return Object.entries(NOUNS).filter(([noun, info]) => info.labels.includes(l)).map(([noun, info]) => (noun));
+}

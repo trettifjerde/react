@@ -27,6 +27,10 @@ export const TaskHeader = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
+    & > div:first-of-type, & > div:last-of-type {
+        width: 6rem;
+    }
 `;
 
 export const Lives = styled.div`

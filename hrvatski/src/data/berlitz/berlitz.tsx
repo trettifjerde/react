@@ -84,7 +84,7 @@ export const berlitz : TaskLevel[] = [
         ],
         vocabulary: {
             verbs: ['značiti', 'voljeti', 'biti', 'imati', 'učiti', 'govoriti', 'živjeti', 'znati', 'slušati'],
-            nouns: ['dječak', 'student', 'učenik', 'jezik', 'slovo', 'riječ']
+            nouns: ['dječak', 'student', 'učenik', 'jezik', 'slovo', 'riječ', 'Zagreb', 'Zadar', 'Split']
         }
     }
 ];

@@ -17,12 +17,11 @@ export function makeBerlitzTasks(level: number, targetLang: Language) {
         const task = data.splice(i, 1)[0];
         tasks.push(task);
     }
-    return tasks;
+    return {tasks: tasks, instruction: `Write this in ${targetLang === 'hrv' ? 'Croatian' : 'English'}`};
 }
 
 export function makeBerlitzNegationTasks(level: number) {
-    const verbs = berlitz[level].vocabulary.verbs!;
-    let data = makeNegationsTasks(verbs);
+    let data = makeNegationsTasks(berlitz[level].vocabulary);
     const maxQ = data.length;
     const tasks: CommonTask[] = [];
 
@@ -30,9 +29,13 @@ export function makeBerlitzNegationTasks(level: number) {
         const task = data.splice(pickRandomIndex(data.length), 1)[0];
         tasks.push(task);
     }
-    return tasks
+    return {tasks: tasks, instruction: "Make a NEGATIVE sentence in present"}
 }
 
 export function makeBerlitzWordBlocksTasks(level: number, lang: Language) {
-    return makeBerlitzTasks(level, lang).map(task => ({...task, suggestions: makeSuggestionWords(task.target, lang, 4)}));
-}
+    const {tasks, instruction} = makeBerlitzTasks(level, lang);
+    return {
+        tasks: tasks.map(task => ({...task, suggestions: makeSuggestionWords(task.target, lang, 4)})),
+        instruction
+    }
+};

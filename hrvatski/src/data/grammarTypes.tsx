@@ -2,6 +2,8 @@ export type Pronoun = 'ja' | 'ti' | 'on' | 'ona' | 'oni' | 'ono' | 'one' | 'mi' 
 
 export type Verb = {
     aspect: 'n' | 's', 
+    subjects: NounLabel[],
+    objects: {[key: string]: [Casus, string]},
     pres: string[], 
     past: string[],
     passive?: string[],
@@ -11,6 +13,13 @@ export type Verb = {
     neg?: string[]
 };
 
+export type Noun = {
+    gender: Gender,
+    animate: boolean,
+    forms: [Declination, Declination],
+    labels: NounLabel[]
+};
+
 export type VerbTaskPresent = {
     start: string,
     end: string,
@@ -18,8 +27,20 @@ export type VerbTaskPresent = {
     form: number
 }
 
-export type GrammarTaskDict = VerbTaskPresent;
+export type Declination = {
+    N: string,
+    G: string,
+    D: string,
+    A: string,
+    I: string,
+    L: string,
+    V: string
+};
 
-export type Adverbials = 'whereAt' | 'whereFrom' | 'whatAbout' | 'whomWith' | 'whereTo' | 'whenPresent' | 'whomTo' | 'whom';
-export type Objects = 'food' | 'people' | 'occupation';
-export type Extras = Adverbials | Objects;
+export type Casus = 'N' | 'G' | 'D' | 'A' | 'I' | 'L' | 'V';
+export type Gender = 'm' | 'f' | 'n';
+export type GrammarTaskDict = VerbTaskPresent;
+export type NounLabel = 'animals' | 'food' | 'people' | 'occupation' | 'vehicle' | 'mechanism'| 'places' | 'any';
+
+export type Adverbials = 'whereAt' | 'whereFrom' | 'whatAbout' | 'whomWith' | 'whereTo' | 'whenPresent' | 'whomTo';
+export type Extras = Adverbials;
