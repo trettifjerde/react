@@ -1,5 +1,4 @@
-import { NOUNS } from "../data/grammarData";
-import { Declination, Gender, NounLabel, Pronoun } from "../data/grammarTypes";
+import { Declination, Gender, Pronoun } from "../data/grammarTypes";
 import { pickRandom } from "./common";
 
 function makeVerbForm(verb: string, form: 'present' | 'imperative' = 'present') {

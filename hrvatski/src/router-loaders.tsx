@@ -51,7 +51,7 @@ export function writeTaskLoader(l: LoaderArgs) : TaskStoreConfig<CommonTask> {
     const lang = getTargetLang(l);
     if (level !== null && lang) {
         return initStore(
-            makeInitState(() => makeBerlitzTasks(level, lang)),
+            () => makeInitState(() => makeBerlitzTasks(level, lang)),
             (task: CommonTask, answer: string) => (answer.toLowerCase() === task.target.toLowerCase() || task.extras.includes(answer.toLowerCase()))
         );
     }
@@ -62,7 +62,7 @@ export function negationsTaskLoader(l: LoaderArgs) : TaskStoreConfig<CommonTask>
     const level = getBerlitzLevel(l);
 
     return initStore(
-        makeInitState(() => makeBerlitzNegationTasks(level!)),
+        () => makeInitState(() => makeBerlitzNegationTasks(level!)),
         (task: CommonTask, answer: string) => (answer === task.target),
     )
 }
@@ -72,9 +72,7 @@ export function wordBlocksTaskLoader(l: LoaderArgs) : TaskStoreConfig<Translatio
     const lang = getTargetLang(l);
     if (level !== null && lang) {
         return initStore(
-            makeInitState(
-                () => makeBerlitzWordBlocksTasks(level, lang)
-            ),
+            () => makeInitState(() => makeBerlitzWordBlocksTasks(level, lang)),
             (task: TranslationTask, answer: string) => (answer === task.target || task.extras.includes(answer.toLowerCase()))
         );
     }
@@ -85,7 +83,7 @@ export function grammarTaskLoader(l: LoaderArgs) : TaskStoreConfig<GrammarTask> 
     const task = l.params.task;
     if (task && (task === 'biti' || task === 'random' || task === 'prezent'))
         return initStore(
-            makeInitState(() => makeGrammarTasks(task)),
+            () => makeInitState(() => makeGrammarTasks(task)),
             (task: GrammarTask, answer: string) => (task.form === answer)
         )
     throw json(404);

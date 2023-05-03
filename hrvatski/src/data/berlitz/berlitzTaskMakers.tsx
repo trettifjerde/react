@@ -5,6 +5,7 @@ import { berlitz } from "./berlitz";
 import { enExtras, hrvExtras } from "./berlitzExtras";
 
 export function makeBerlitzTasks(level: number, targetLang: Language) {
+    console.log('making berlitz tasks');
     const sourceLang = targetLang === 'hrv' ? 'en' : 'hrv';
     const extras = targetLang === 'hrv' ? hrvExtras : enExtras;
     const block = berlitz[level];
@@ -33,6 +34,7 @@ export function makeBerlitzNegationTasks(level: number) {
 }
 
 export function makeBerlitzWordBlocksTasks(level: number, lang: Language) {
+    console.log('making berlitzword blocks');
     const {tasks, instruction} = makeBerlitzTasks(level, lang);
     return {
         tasks: tasks.map(task => ({...task, suggestions: makeSuggestionWords(task.target, lang, 4)})),

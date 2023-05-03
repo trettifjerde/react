@@ -1,6 +1,8 @@
 import { croatian, english } from "../data/berlitz/berlitz";
-import { LABELED_NOUNS, NOUNS, VERBS, extrasDict } from "../data/grammarData";
-import { Casus, NounLabel, Verb } from "../data/grammarTypes";
+import { extrasDict } from "../data/grammarData";
+import { VERBS } from "../data/verbs";
+import { LABELED_NOUNS, NOUNS } from "../data/nouns";
+import { Casus, Verb, nounLabels as nl } from "../data/grammarTypes";
 import { CommonTask, CorpusVocabulary, GrammarTask, Language, SuggestionWord } from "../types";
 import { pickRandom, pickRandomIndex, shuffle } from "./common";
 
@@ -83,26 +85,28 @@ function generateSubject(verb: Verb, sg: boolean) {
     return sub;
 }
 
-function makeNounForm(noun: string, form: Casus, sg=true) {
-    return NOUNS[noun].forms[sg ? 0: 1][form];
+function makeNounForm(noun: string, form: Casus, sg=true, prep='') {
+    let prepos: string;
+    switch(prep) {
+        case 's':
+            prepos = ['s', 'š', 'z', 'ž'].includes(noun[0]) || ['s', 'š', 'z', 'ž'].includes(noun[1]) ? 'sa' : 's';
+            break;
+        default:
+            prepos = prep;
+    }
+    return `${prepos ? prepos + ' ': ''}${NOUNS[noun].forms[sg ? 0 : 1][form]}`;
 }
 
 function pickRandomObject(verb: Verb, nouns: string[]) {
-    const labeledObjects = Object.keys(verb.objects).reduce((acc, label) => {
-        nouns.forEach(noun => {
-            if (noun in NOUNS && (label === 'any' || NOUNS[noun].labels.includes(label as NounLabel))) {
-                if (!(label in acc))
-                    acc[label] = [];
-                acc[label].push(noun)
-            }
-        });
-        return acc;
-    }, {} as {[key: string]: string[]});
-    const label = pickRandom(Object.keys(labeledObjects));
-    const prep = verb.objects[label][1];
-    return `${prep ? prep + ' ' : ''}${makeNounForm(pickRandom(labeledObjects[label]), verb.objects[label][0])}`
+    const filtered = nl.any in verb.objects ? nouns : nouns.filter(noun => NOUNS[noun].labels.some(label => label in verb.objects));
+    if (filtered.length > 0) {
+        const noun = pickRandom(filtered);
+        const label = NOUNS[noun].labels.find(label => label in verb.objects) || nl.any;
+        const [casus, prep] = verb.objects[label];
+        return makeNounForm(noun, casus, true, prep);
+    }
+    else return '';
 }
-
 
 function pickRandomSubject(j: number, verb: Verb) {
     switch(j) {
@@ -153,7 +157,5 @@ export function makeNegationsTasks(vocabulary: CorpusVocabulary) {
             tasks.push(task);
         };
     }
-    console.log(tasks);
-
     return tasks;
 }
