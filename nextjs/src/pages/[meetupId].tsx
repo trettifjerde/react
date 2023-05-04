@@ -1,14 +1,34 @@
 import MeetUpDetailsComponent from "../../components/meetups/MeetupDetails";
+import { MeetUp } from "../../util/types";
+import { GetStaticProps, NextPage } from "next";
+import { getMeetup, getMeetupIds, getMeetups } from "../../util/casters";
 
-const meetup =   {
-    id: '01',
-    title: 'First Meetup',
-    image: 'https://www.yarrah.com/media/81/9c/f0/1644837814/Yarrah-cat-meow.jpg',
-    description: 'To make some meows',
-    address: 'Meow St. 13'
-};
-const MeetUpDetails = () => {
+type MeetUpDetailsProps = {
+    meetup: MeetUp
+}
+
+const MeetUpDetails: NextPage<{meetup: MeetUp}> = ({meetup}) => {
     return <MeetUpDetailsComponent meetup={meetup} />
+}
+
+export const getStaticProps : GetStaticProps<MeetUpDetailsProps> = async (context) => {
+    const meetupId = context.params!.meetupId as string;
+    const meetup = await getMeetup(meetupId);
+    return {
+        props: {
+            meetup: meetup
+        }
+    }
+}
+
+export async function getStaticPaths() {
+    const meetups = await getMeetupIds();
+    const paths = meetups.map(meetupId => ({params: {meetupId: meetupId}}));
+
+    return {
+        fallback: false, //false - 404 if not listed, true - try to generate dynamically when request is received
+        paths: paths
+    }
 }
 
 export default MeetUpDetails;
