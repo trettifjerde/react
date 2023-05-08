@@ -48,7 +48,7 @@ export function addRecipeToShoppingList(items) {
         }
         else {
             dispatch(shoppingListActions.addIngredientsFromRecipe(res));
-            dispatch(generalActions.flashToast({text: 'Recipe ingredients added to shop list', isError: false}));
+            dispatch(generalActions.flashToast({text: 'Recipe ingredients added to shopping list', isError: false}));
         }
     }
 }

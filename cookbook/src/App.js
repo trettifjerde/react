@@ -58,7 +58,8 @@ const router = createBrowserRouter([
             {
                 path: 'list',
                 element: <Suspense fallback={<Spinner/>}><ShoppingListPage /></Suspense>,
-                loader: (args) => import ('./pages/Shopping').then(module => module.loader(args))
+                loader: (args) => import ('./pages/Shopping').then(module => module.loader(args)),
+                action: (args) => import('./pages/Shopping').then(module => module.action(args))
             },
             {
                 path: 'login',

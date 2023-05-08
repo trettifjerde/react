@@ -58,10 +58,11 @@ export function castIngredDbToClient(id, data) {
     }
 }
 
-export function castIngredFormDataToClient(formData, id) {
+export function castIngredFormDataToClient(formData) {
     const name = formData.get('name').trim();
     const amount = formData.get('amount').trim();
     const unit = formData.get('unit').trim();
+    const id = formData.get('id').trim();
     return {
         id,
         name,
@@ -90,13 +91,13 @@ export function checkIfIngredExists(data, items) {
         return [null, null];
 }
 
-export function prepareIngredientSubmit(formData, id, items) {
+export function prepareIngredientSubmit(formData, items) {
     const data = castIngredFormDataToClient(formData);
     let submitFn;
     let message;
 
-    if (id) {
-        submitFn = updateIngredient.bind(null, id, castIngredClientToDb(data));
+    if (data.id) {
+        submitFn = updateIngredient.bind(null, data.id, castIngredClientToDb(data));
         message = `Item updated: ${data.name}`;
     }
     else {
@@ -130,4 +131,26 @@ function castRecipeIngredToClient(item) {
 
 export function castRecipeIngredsToClient(items) {
     return items.map(item => castRecipeIngredToClient(item))
+}
+
+export function checkIngredErrors(formData) {
+    const errors = {};
+    for (const [key, value] of formData.entries()) {
+        if (key === 'name') {
+            if (!value.trim()) {
+                errors[key] = 'Name is required';
+            }
+        }
+        else if (key === 'amount') {
+            if (value.trim() && (isNaN(value) || +value < 0.01)) {
+                errors[key] = 'Invalid amount';
+            }
+        }
+        else if (key === 'unit') {
+            if (value.trim() && (!formData.get('amount') || isNaN(formData.get('amount')) || +formData.get('amount') < 0.01)) {
+                errors[key] = 'Cannot enter units without specifying amount'
+            }
+        }
+    }
+    return errors;
 }

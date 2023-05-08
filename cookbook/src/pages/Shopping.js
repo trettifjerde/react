@@ -5,7 +5,9 @@ import { store } from '../store/store';
 import { shoppingListActions } from "../store/shoppingListState";
 import { fetchIngredients } from "../helpers/dataService";
 import { authGuard } from "../helpers/authService";
+import { generalActions } from "../store/generalState";
 import useRedirectOnLogout from "../helpers/useRedirectOnLogout";
+import { prepareIngredientSubmit } from "../helpers/utils"; 
 
 import EmptyComponent from "../components/Empty";
 import Spinner from "../components/Spinner";
@@ -48,5 +50,32 @@ async function loadShoppingList() {
     if ('error' in response) throw new Error();
 
     store.dispatch(shoppingListActions.initializeItems(response));
+    
     return response;
+}
+
+export async function action({request, params}) {
+    const dispatch = store.dispatch;
+    
+    dispatch(generalActions.setSubmitting(true));
+
+    const items = store.getState().shoppingList.items;
+    const formData = await request.formData();
+
+    const [submitFn, message] = prepareIngredientSubmit(formData, items);
+
+    if (!submitFn) {
+        dispatch(generalActions.flashToast({text: message, isError: true}));
+        return;
+    }
+
+    const res = await submitFn();
+    if ('error' in res) 
+        dispatch(generalActions.flashToast({text: res.error.message, isError: true}));
+    else {
+        dispatch(shoppingListActions.updateItem(res));
+        dispatch(shoppingListActions.clearItem());
+        dispatch(generalActions.flashToast({text: message, isError: false}))
+    }
+    return null;
 }

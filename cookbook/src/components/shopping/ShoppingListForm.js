@@ -2,51 +2,36 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { shoppingListActions } from "../../store/shoppingListState";
-import { generalActions } from "../../store/generalState";
-import { prepareIngredientSubmit } from "../../helpers/utils";
+import { checkIngredErrors } from "../../helpers/utils";
+import { Form, useSubmit } from "react-router-dom";
 
 const ShoppingListForm = () => {
 
-    const {selectedItem : item, items} = useSelector(state => state.shoppingList);
-    const {id} = item;
+    const {selectedItem : item} = useSelector(state => state.shoppingList);
     const dispatch = useDispatch();
-
+    const submit = useSubmit();
     const [errors, setErrors] = useState({});
     const formEl = useRef();
 
-    const saveIngredient = useCallback(async event => {
+    const validateIngredient = useCallback(async event => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const errors = ingredErrors(formData);
+        const errors = checkIngredErrors(formData);
 
         if (Object.keys(errors).length > 0) {
             setErrors(errors);
             return;
         }
 
-        dispatch(generalActions.setSubmitting(true));
+        submit(event.target);
 
-        const [submitFn, message] = prepareIngredientSubmit(formData, id, items);
-
-        if (!submitFn) {
-            dispatch(generalActions.flashToast({text: message, isError: true}));
-            return;
-        }
-
-        const res = await submitFn();
-        if ('error' in res) 
-            dispatch(generalActions.flashToast({text: res.error.message, isError: true}));
-        else {
-            dispatch(shoppingListActions.updateItem(res));
-            dispatch(generalActions.flashToast({text: message, isError: false}))
-        }
-
-    }, [setErrors, dispatch, id, items]);
+    }, [setErrors, submit]);
 
     const clearForm = useCallback(() => dispatch(shoppingListActions.clearItem()), [dispatch]);
 
     useEffect(() => {
         if (formEl.current) {
+            formEl.current['id'].value = item.id ? item.id : '';
             formEl.current['name'].value = item.name;
             formEl.current['amount'].value = item.amount;
             formEl.current['unit'].value = item.unit;
@@ -58,7 +43,8 @@ const ShoppingListForm = () => {
     return (
         <div className="row">
             <div className="col">
-                <form onSubmit={saveIngredient} ref={formEl}>
+                <Form method="post" onSubmit={validateIngredient} ref={formEl}>
+                    <input type="hidden" name="id" />
                     <div className="row mb-2 g-2">
                         <div className="col-8 form-group">
                             <label htmlFor="name">Name</label>
@@ -82,31 +68,9 @@ const ShoppingListForm = () => {
                         </div>
                         {Object.keys(errors).length > 0 && <div className="col text-danger form-text text-end flex-grow-1">{Object.values(errors).join('. ')}</div>}
                     </div>
-                </form>
+                </Form>
             </div>
         </div>
     )
 }
 export default ShoppingListForm;
-
-function ingredErrors(formData) {
-    const errors = {};
-    for (const [key, value] of formData.entries()) {
-        if (key === 'name') {
-            if (!value.trim()) {
-                errors[key] = 'Name is required';
-            }
-        }
-        else if (key === 'amount') {
-            if (value.trim() && (isNaN(value) || +value < 0.01)) {
-                errors[key] = 'Invalid amount';
-            }
-        }
-        else if (key === 'unit') {
-            if (value.trim() && (!formData.get('amount') || isNaN(formData.get('amount')) || +formData.get('amount') < 0.01)) {
-                errors[key] = 'Cannot enter units without specifying amount'
-            }
-        }
-    }
-    return errors;
-}
