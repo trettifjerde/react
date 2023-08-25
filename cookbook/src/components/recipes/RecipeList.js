@@ -20,9 +20,9 @@ const RecipeList = (props) => {
 
     const loadBtn = useRef();
 
-    const {filterString} = props;
+    const filterString = props.filterString.toLowerCase();
 
-    const filteredRecipes = recipes.filter(recipe => recipe.name.includes(filterString));
+    const filteredRecipes = recipes.filter(recipe => recipe.name.toLowerCase().includes(filterString));
 
     const onLoadMoreRecipes = useCallback(async () => {
 
