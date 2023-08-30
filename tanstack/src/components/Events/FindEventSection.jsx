@@ -10,9 +10,10 @@ export default function FindEventSection() {
   const [query, setQuery] = useState('');
 
   const {data, isLoading, isError, error} = useQuery({
-    queryKey: ['events', {query}],
+    queryKey: ['events', query],
     queryFn: ({signal}) => fetchEvents({signal, query}),
-    enabled: !!query
+    enabled: !!query,
+    staleTime: 5000
   })
 
   const handleSubmit = (event) => {
@@ -31,7 +32,7 @@ export default function FindEventSection() {
 
   if (data) {
     if(data.length > 0) {
-      content = <ul className='event-list'>
+      content = <ul className='events-list'>
         {data.map(event => <li key={event.id}><EventItem event={event} /></li>)}
       </ul>
     }
