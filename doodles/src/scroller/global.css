@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.form-group {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 4px;
+}
+
+.section {
+    min-height: 100vh;
+    padding: 10%;
+}
+
+.section:nth-child(odd) {
+    background-color: beige;
+}
+.section:nth-child(event) {
+    background-color: bisque;
+}
+
+button {
+    padding: 0.5rem;
+    border: none;
+    outline: none;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}

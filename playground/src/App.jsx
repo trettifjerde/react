@@ -16,6 +16,7 @@ function App() {
           <input
             type="number"
             id="x"
+            value={x}
             onChange={(event) => setX(+event.target.value)}
           />
         </p>
@@ -25,6 +26,7 @@ function App() {
           <input
             type="number"
             id="y"
+            value={y}
             onChange={(event) => setY(+event.target.value)}
           />
         </p>
@@ -34,6 +36,7 @@ function App() {
           <input
             type="number"
             id="rotate"
+            value={rotate}
             onChange={(event) => setRotate(+event.target.value)}
           />
         </p>
