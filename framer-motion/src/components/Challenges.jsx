@@ -1,8 +1,15 @@
 import { useContext, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { ChallengesContext } from '../store/challenges-context.jsx';
 import ChallengeItem from './ChallengeItem.jsx';
 import ChallengeTabs from './ChallengeTabs.jsx';
+
+const listAnimationVariants = {
+  initial: {opacity: 0, y: 20},
+  exit: {opacity: 0, y: -20},
+  animate: {opacity: 1, y: 0}
+}
 
 export default function Challenges() {
   const { challenges } = useContext(ChallengesContext);
@@ -39,21 +46,27 @@ export default function Challenges() {
         challenges={filteredChallenges}
         onSelectType={handleSelectType}
         selectedType={selectedType}
-      >
-        {displayedChallenges.length > 0 && (
-          <ol className="challenge-items">
-            {displayedChallenges.map((challenge) => (
-              <ChallengeItem
-                key={challenge.id}
-                challenge={challenge}
-                onViewDetails={() => handleViewDetails(challenge.id)}
-                isExpanded={expanded === challenge.id}
-              />
-            ))}
-          </ol>
-        )}
-        {displayedChallenges.length === 0 && <p>No challenges found.</p>}
-      </ChallengeTabs>
+        >
+          <AnimatePresence mode="wait">
+            {displayedChallenges.length > 0 && (
+              <motion.ol key="list" className="challenge-items" 
+                variants={listAnimationVariants} initial="initial" animate="animate" exit="exit">
+                <AnimatePresence>
+                  {displayedChallenges.map((challenge) => (
+                    <ChallengeItem
+                      key={challenge.id}
+                      challenge={challenge}
+                      onViewDetails={() => handleViewDetails(challenge.id)}
+                      isExpanded={expanded === challenge.id}
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.ol>
+            )}
+            {displayedChallenges.length === 0 && <motion.p key="fallback" 
+              variants={listAnimationVariants} initial="initial" animate="animate" exit="exit">No challenges found.</motion.p>}
+            </AnimatePresence>
+        </ChallengeTabs>
     </div>
   );
 }
