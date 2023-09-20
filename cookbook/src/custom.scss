@@ -224,6 +224,10 @@ textarea.form-control.larger {
     flex-flow: row nowrap;
     gap: 0.5rem;
     align-items: center;
+
+    img {
+        object-fit: cover;
+    }
 }
 
 .card-body {
