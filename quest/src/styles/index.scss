@@ -1,5 +1,58 @@
+@use './variables' as *;
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, input, button {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+h1, h2, h3 {
+    margin-block: 0;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 10px;
+    border: 1px solid $orange;
+}
+
+input, button {
+    outline: none;
+    display: block;
+    padding: 0.7rem;
+    border-radius: 10px;
+    margin-inline: auto;
+    border: 1px solid $orange;
+    width: 100%;
+}
+
+button {
+    padding-inline: 1.5rem;
+    color: $orange;
+    background-color: $dark;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1.2rem;
 }

@@ -2,7 +2,7 @@
 
 .container {
     background-color: black;
-    background-image: url('../assets/cats.jpg');
+    background-image: url('/cats.jpg');
     background-repeat: repeat;
     background-position: center;
     background-attachment: fixed;
@@ -22,15 +22,16 @@
     background-repeat: repeat;
     background-position: center;
     background-size: auto;
+    visibility: hidden;
 }
 
 .confetti {
-    background-image: url(../assets/confetti.gif);
+    background-image: url('/confetti.gif');
 
 }
 
 .fireworks {
-    background-image: url(../assets/fireworks.gif);
+    background-image: url('/fireworks.gif');
 }
 
 .content {

@@ -1,4 +1,5 @@
-export type AppState = 'preload' | 'start' | 'start-next' | 'current' | 'next' | 'end' | 'reward';
+export type State = 'launcher' | 'greeting-enter' | 'greeting-exit' |'task-enter' | 'task-exit' | 'congrats' | 'reward';
+
 export type Task = {
     pic: string,
     task: string,
