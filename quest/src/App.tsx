@@ -88,7 +88,6 @@ function App() {
   }
 
   const onAnimationEnd = (def: AnimationDefinition) => {
-    console.log('onAnimationEnd', def);
     switch(def) {
       case 'greeting-exit':
         initTasks(0);
@@ -119,7 +118,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log('useEffect', stateName);
 
     async function greet() {
       await contentControls.start('greeting-enter1');

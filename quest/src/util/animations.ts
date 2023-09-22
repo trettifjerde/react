@@ -19,12 +19,12 @@ export const animations : {[key: string] : any} = {
             transition: { duration: START_DURATION / 5, times: [0, 0.25, 0.35, 1]}
         },
         'greeting-enter2': {
-            rotate: ['0deg, -10deg', '10deg', '-10deg', '10deg', '0deg'],
-            transition: { duration: START_DURATION / 100 * 8}
+            rotate: [0, -10, 10, -10, 10, -10, 10, 0],
+            transition: { duration: START_DURATION / 20}
         },
         'greeting-enter3': {
             scale: [1, 0.95, 1.2, 0.85, 1.2, 0.85, 1.2, 0.85, 1.1, 0.9, 1],
-            transition: {duration: START_DURATION / 25 * 12, times: [0, 0.05, 0.19, 0.24, 0.39, 0.44, 0.59, 0.64, 0.97, 1]}
+            transition: {duration: START_DURATION / 2, times: [0, 0.05, 0.20, 0.25, 0.40, 0.45, 0.60, 0.65, 0.80, 0.85, 1]}
         },
         'greeting-enter4': {
             y: [0, -20, 20, -20, 20, -20, 0],
